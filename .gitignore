@@ -227,6 +227,3 @@ __pycache__/
 
 # Windows thumbnail cache files
 Thumbs.db
-
-# ManualTests
-ManualTests/*
