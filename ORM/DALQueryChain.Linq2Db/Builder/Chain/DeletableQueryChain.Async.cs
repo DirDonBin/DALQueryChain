@@ -40,5 +40,32 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             await _context.DeleteAsync(entity);
             await _repository.OnAfterDeleteAsync(entity);
         }
+
+        /// <summary>
+        /// Soft Delete record. Need to override the SoftDelete method in the repository
+        /// </summary>
+        /// <param name="entity">Entity model for delete</param>
+        public async Task SoftDeleteAsync(TEntity entity)
+        {
+            await _repository.SoftDeleteAsync(entity);
+        }
+
+        /// <summary>
+        /// Soft Delete records. Need to override the SoftDelete method in the repository
+        /// </summary>
+        /// <param name="entities">Entity models for delete</param>
+        public async Task BulkSoftDeleteAsync(IEnumerable<TEntity> entities)
+        {
+            await _repository.SoftBulkDeleteAsync(entities);
+        }
+
+        /// <summary>
+        /// Soft Delete records. Need to override the SoftDelete method in the repository
+        /// </summary>
+        /// <param name="predicate">Сondition for entries to be deleted</param>
+        public async Task BulkSoftDeleteAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            await _repository.SoftBulkDeleteAsync(predicate);
+        }
     }
 }

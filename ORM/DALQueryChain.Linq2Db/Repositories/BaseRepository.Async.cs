@@ -4,6 +4,7 @@ using LinqToDB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,32 +14,52 @@ namespace DALQueryChain.Linq2Db.Repositories
         where TContext : DataConnection
         where TEntity : class, IDbModelBase
     {
-        protected internal virtual Task OnBeforeBulkInsertAsync(IEnumerable<TEntity> models)
+        #region Events
+        #region Bulk Operations
+        protected internal virtual async Task OnBeforeBulkInsertAsync(IEnumerable<TEntity> models)
         {
-            return Task.CompletedTask;
+            foreach (var model in models)
+                await OnBeforeInsertAsync(model);
         }
 
-        protected internal virtual Task OnAfterBulkInsertAsync(IEnumerable<TEntity> models)
+        protected internal virtual async Task OnAfterBulkInsertAsync(IEnumerable<TEntity> models)
         {
-            return Task.CompletedTask;
+            foreach (var model in models)
+                await OnAfterInsertAsync(model);
         }
 
+        protected internal virtual async Task OnBeforeBulkUpdateAsync(IEnumerable<TEntity> models)
+        {
+            foreach (var model in models)
+                await OnBeforeUpdateAsync(model);
+        }
+
+        protected internal virtual async Task OnAfterBulkUpdateAsync(IEnumerable<TEntity> models)
+        {
+            foreach (var model in models)
+                await OnAfterUpdateAsync(model);
+        }
+
+        protected internal virtual async Task OnBeforeBulkDeleteAsync(IEnumerable<TEntity> models)
+        {
+            foreach (var model in models)
+                await OnBeforeDeleteAsync(model);
+        }
+
+        protected internal virtual async Task OnAfterBulkDeleteAsync(IEnumerable<TEntity> models)
+        {
+            foreach (var model in models)
+                await OnAfterDeleteAsync(model);
+        }
+        #endregion
+
+        #region Single Operations
         protected internal virtual Task OnBeforeInsertAsync(TEntity model)
         {
             return Task.CompletedTask;
         }
 
         protected internal virtual Task OnAfterInsertAsync(TEntity model)
-        {
-            return Task.CompletedTask;
-        }
-
-        protected internal virtual Task OnBeforeBulkUpdateAsync(IEnumerable<TEntity> models)
-        {
-            return Task.CompletedTask;
-        }
-
-        protected internal virtual Task OnAfterBulkUpdateAsync(IEnumerable<TEntity> models)
         {
             return Task.CompletedTask;
         }
@@ -53,16 +74,6 @@ namespace DALQueryChain.Linq2Db.Repositories
             return Task.CompletedTask;
         }
 
-        protected internal virtual Task OnBeforeBulkDeleteAsync(IEnumerable<TEntity> models)
-        {
-            return Task.CompletedTask;
-        }
-
-        protected internal virtual Task OnAfterBulkDeleteAsync(IEnumerable<TEntity> models)
-        {
-            return Task.CompletedTask;
-        }
-
         protected internal virtual Task OnBeforeDeleteAsync(TEntity model)
         {
             return Task.CompletedTask;
@@ -71,24 +82,22 @@ namespace DALQueryChain.Linq2Db.Repositories
         protected internal virtual Task OnAfterDeleteAsync(TEntity model)
         {
             return Task.CompletedTask;
-        }
+        } 
+        #endregion
 
-        protected internal virtual Task OnBeforeBulkSoftDeleteAsync(IEnumerable<TEntity> models)
+        #endregion
+
+        protected internal virtual Task SoftDeleteAsync(TEntity model)
         {
             return Task.CompletedTask;
         }
 
-        protected internal virtual Task OnAfterBulkSoftDeleteAsync(IEnumerable<TEntity> models)
+        protected internal virtual Task SoftBulkDeleteAsync(IEnumerable<TEntity> model)
         {
             return Task.CompletedTask;
         }
 
-        protected internal virtual Task OnBeforeSoftDeleteAsync(TEntity model)
-        {
-            return Task.CompletedTask;
-        }
-
-        protected internal virtual Task OnAfterSoftDeleteAsync(TEntity model)
+        protected internal virtual Task SoftBulkDeleteAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return Task.CompletedTask;
         }

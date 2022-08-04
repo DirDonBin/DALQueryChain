@@ -4,6 +4,7 @@ using LinqToDB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,8 @@ namespace DALQueryChain.Linq2Db.Repositories
         where TContext : DataConnection
         where TEntity : class, IDbModelBase
     {
+        #region Events
+        #region Bulk Operations
         protected internal virtual void OnBeforeBulkInsert(IEnumerable<TEntity> models)
         {
             foreach (var item in models)
@@ -23,16 +26,6 @@ namespace DALQueryChain.Linq2Db.Repositories
         {
             foreach (var item in models)
                 OnAfterInsert(item);
-        }
-
-        protected internal virtual void OnBeforeInsert(TEntity model)
-        {
-            
-        }
-
-        protected internal virtual void OnAfterInsert(TEntity model)
-        {
-
         }
 
         protected internal virtual void OnBeforeBulkUpdate(IEnumerable<TEntity> models)
@@ -47,16 +40,6 @@ namespace DALQueryChain.Linq2Db.Repositories
                 OnAfterUpdate(item);
         }
 
-        protected internal virtual void OnBeforeUpdate(TEntity model)
-        {
-
-        }
-
-        protected internal virtual void OnAfterUpdate(TEntity model)
-        {
-
-        }
-
         protected internal virtual void OnBeforeBulkDelete(IEnumerable<TEntity> models)
         {
             foreach (var item in models)
@@ -67,6 +50,28 @@ namespace DALQueryChain.Linq2Db.Repositories
         {
             foreach (var item in models)
                 OnAfterDelete(item);
+        } 
+        #endregion
+
+        #region Single Operations
+        protected internal virtual void OnBeforeInsert(TEntity model)
+        {
+
+        }
+
+        protected internal virtual void OnAfterInsert(TEntity model)
+        {
+
+        }
+
+        protected internal virtual void OnBeforeUpdate(TEntity model)
+        {
+
+        }
+
+        protected internal virtual void OnAfterUpdate(TEntity model)
+        {
+
         }
 
         protected internal virtual void OnBeforeDelete(TEntity model)
@@ -77,26 +82,23 @@ namespace DALQueryChain.Linq2Db.Repositories
         protected internal virtual void OnAfterDelete(TEntity model)
         {
 
-        }
+        } 
+        #endregion
 
-        protected internal virtual void OnBeforeBulkSoftDelete(IEnumerable<TEntity> models)
-        {
-            foreach (var item in models)
-                OnBeforeSoftDelete(item);
-        }
 
-        protected internal virtual void OnAfterBulkSoftDelete(IEnumerable<TEntity> models)
-        {
-            foreach (var item in models)
-                OnAfterSoftDelete(item);
-        }
+        #endregion
 
-        protected internal virtual void OnBeforeSoftDelete(TEntity model)
+        protected internal virtual void SoftDelete(TEntity model)
         {
 
         }
 
-        protected internal virtual void OnAfterSoftDelete(TEntity model)
+        protected internal virtual void SoftBulkDelete(IEnumerable<TEntity> model)
+        {
+
+        }
+
+        protected internal virtual void SoftBulkDelete(Expression<Func<TEntity, bool>> predicate)
         {
 
         }
