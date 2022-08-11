@@ -1,7 +1,7 @@
 ## DALQueryChain
 
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/DALQueryChain?includePreReleases=true)](https://www.nuget.org/packages/DALQueryChain/)
-[![License](https://img.shields.io/github/license/linq2db/linq2db)](MIT-LICENSE.txt)
+[![License](https://img.shields.io/github/license/linq2db/linq2db)](LICENSE.txt)
 
 ## Let's get started
 
