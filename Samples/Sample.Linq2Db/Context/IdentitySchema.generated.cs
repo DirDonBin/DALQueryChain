@@ -14,7 +14,7 @@ using System.Collections.Generic;
 #pragma warning disable 1573, 1591
 #nullable enable
 
-namespace Sample.Linq2Db.Context
+namespace ManualTest.Linq2Db.Context
 {
 	public static partial class IdentitySchema
 	{
@@ -34,8 +34,8 @@ namespace Sample.Linq2Db.Context
 		[Table("Roles", Schema = "identity")]
 		public class Role : IDbModelBase
 		{
-			[Column("Id"  , IsPrimaryKey = true )] public Guid   Id   { get; set; } // uuid
-			[Column("Name", CanBeNull    = false)] public string Name { get; set; } = null!; // character varying(150)
+			[Column("Id"  , IsPrimaryKey = true , IsIdentity = true, SkipOnInsert = true, SkipOnUpdate = true)] public int    Id   { get; set; } // integer
+			[Column("Name", CanBeNull    = false                                                             )] public string Name { get; set; } = null!; // character varying(150)
 
 			#region Associations
 			/// <summary>
@@ -49,26 +49,27 @@ namespace Sample.Linq2Db.Context
 		[Table("Users", Schema = "identity")]
 		public class User : IDbModelBase
 		{
-			[Column("Id"               , IsPrimaryKey = true )] public Guid      Id                { get; set; } // uuid
-			[Column("RoleId"                                 )] public Guid?     RoleId            { get; set; } // uuid
-			[Column("AccessFailedCount"                      )] public int       AccessFailedCount { get; set; } // integer
-			[Column("Email"                                  )] public string?   Email             { get; set; } // character varying(350)
-			[Column("EmailConfirmed"                         )] public bool      EmailConfirmed    { get; set; } // boolean
-			[Column("PasswordHash"     , CanBeNull    = false)] public string    PasswordHash      { get; set; } = null!; // text
-			[Column("UserName"         , CanBeNull    = false)] public string    UserName          { get; set; } = null!; // text
-			[Column("Phone"                                  )] public string?   Phone             { get; set; } // character varying(30)
-			[Column("PhoneConfirmed"                         )] public bool      PhoneConfirmed    { get; set; } // boolean
-			[Column("TwoFactorEnabled"                       )] public bool      TwoFactorEnabled  { get; set; } // boolean
-			[Column("CreateAt"                               )] public DateTime  CreateAt          { get; set; } // timestamp (6) without time zone
-			[Column("ModifyAt"                               )] public DateTime  ModifyAt          { get; set; } // timestamp (6) without time zone
-			[Column("DeleteAt"                               )] public DateTime? DeleteAt          { get; set; } // timestamp (6) without time zone
+			[Column("Id"               , IsPrimaryKey = true , IsIdentity = true, SkipOnInsert = true, SkipOnUpdate = true)] public int       Id                { get; set; } // integer
+			[Column("RoleId"                                                                                              )] public int       RoleId            { get; set; } // integer
+			[Column("AccessFailedCount"                                                                                   )] public int       AccessFailedCount { get; set; } // integer
+			[Column("Email"                                                                                               )] public string?   Email             { get; set; } // character varying(350)
+			[Column("EmailConfirmed"                                                                                      )] public bool      EmailConfirmed    { get; set; } // boolean
+			[Column("PasswordHash"     , CanBeNull    = false                                                             )] public string    PasswordHash      { get; set; } = null!; // text
+			[Column("Salt"             , CanBeNull    = false                                                             )] public string    Salt              { get; set; } = null!; // text
+			[Column("Username"         , CanBeNull    = false                                                             )] public string    Username          { get; set; } = null!; // text
+			[Column("Phone"                                                                                               )] public string?   Phone             { get; set; } // character varying(30)
+			[Column("PhoneConfirmed"                                                                                      )] public bool      PhoneConfirmed    { get; set; } // boolean
+			[Column("TwoFactorEnabled"                                                                                    )] public bool      TwoFactorEnabled  { get; set; } // boolean
+			[Column("CreateAt"                                                                                            )] public DateTime  CreateAt          { get; set; } // timestamp (6) without time zone
+			[Column("ModifyAt"                                                                                            )] public DateTime  ModifyAt          { get; set; } // timestamp (6) without time zone
+			[Column("DeleteAt"                                                                                            )] public DateTime? DeleteAt          { get; set; } // timestamp (6) without time zone
 
 			#region Associations
 			/// <summary>
 			/// FK_Users_RoleId_Roles_Id
 			/// </summary>
-			[Association(ThisKey = nameof(RoleId), OtherKey = nameof(IdentitySchema.Role.Id))]
-			public Role? Role { get; set; }
+			[Association(CanBeNull = false, ThisKey = nameof(RoleId), OtherKey = nameof(IdentitySchema.Role.Id))]
+			public Role Role { get; set; } = null!;
 			#endregion
 		}
 	}

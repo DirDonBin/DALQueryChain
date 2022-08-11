@@ -1,7 +1,7 @@
 using DALQueryChain.Linq2Db;
 using LinqToDB.AspNet;
 using LinqToDB.Configuration;
-using Sample.Linq2Db.Context;
+using ManualTest.Linq2Db.Context;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

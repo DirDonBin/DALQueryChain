@@ -1,7 +1,7 @@
 using DALQueryChain.Interfaces;
-using Sample.Linq2Db.Context;
+using ManualTest.Linq2Db.Context;
 using Microsoft.AspNetCore.Mvc;
-using static Sample.Linq2Db.Context.IdentitySchema;
+using static ManualTest.Linq2Db.Context.IdentitySchema;
 
 namespace Sample.Linq2Db.Controllers
 {
@@ -22,21 +22,7 @@ namespace Sample.Linq2Db.Controllers
         [HttpGet(Name = "Test")]
         public IActionResult Get()
         {
-            var user = _qs.For<User>().Insert.InsertWithObject(new User
-            {
-                AccessFailedCount = 0,
-                UserName = "test1",
-                CreateAt = DateTime.Now,
-                DeleteAt = DateTime.Now,
-                EmailConfirmed = false,
-                Id = Guid.NewGuid(),
-                ModifyAt = DateTime.Now,
-                PasswordHash = "",
-                PhoneConfirmed = false,
-                TwoFactorEnabled = false,
-            });
-
-            var users = _qs.For<User>().Get.ToList();
+            var user = _qs.For<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToList();
 
             return Ok();
         }
