@@ -16,11 +16,11 @@ namespace DALQueryChain.Linq2Db.Repositories
         protected readonly IQueryable<TEntity> _query;
         protected IQueryBuilder<TEntity> _queryChain => _dalQueryChain.For<TEntity>();
 
-        public BaseRepository(TContext context, IDALQueryChain<TContext> queryChain)
+        public BaseRepository(TContext context)
         {
             _context = context;
             _query = context.GetTable<TEntity>().AsQueryable();
-            _dalQueryChain = queryChain;
+            _dalQueryChain = new BuildQuery<TContext>(context);
         }
 
         protected IQueryBuilder<T> GetQueryChain<T>() where T : class, IDbModelBase => _dalQueryChain.For<T>();
