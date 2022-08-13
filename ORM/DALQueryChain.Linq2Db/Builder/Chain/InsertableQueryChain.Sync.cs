@@ -1,6 +1,5 @@
 ﻿using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
-using DALQueryChain.Linq2Db.Repositories;
 using LinqToDB;
 using LinqToDB.Data;
 

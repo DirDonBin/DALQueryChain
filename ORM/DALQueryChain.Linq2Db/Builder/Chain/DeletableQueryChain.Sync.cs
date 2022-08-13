@@ -2,7 +2,6 @@
 using DALQueryChain.Interfaces.QueryBuilder;
 using LinqToDB;
 using LinqToDB.Data;
-using LinqToDB.Expressions;
 using System.Linq.Expressions;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain

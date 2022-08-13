@@ -3,7 +3,6 @@ using DALQueryChain.Interfaces.QueryBuilder;
 using LinqToDB;
 using LinqToDB.Data;
 using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain
 {

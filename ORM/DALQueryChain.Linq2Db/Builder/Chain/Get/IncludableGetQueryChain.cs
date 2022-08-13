@@ -1,14 +1,6 @@
-﻿using DALQueryChain.Interfaces;
-using DALQueryChain.Interfaces.QueryBuilder.Get;
-using DALQueryChain.Linq2Db.Repositories;
+﻿using DALQueryChain.Interfaces.QueryBuilder.Get;
 using LinqToDB;
-using LinqToDB.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain.Get
 {
