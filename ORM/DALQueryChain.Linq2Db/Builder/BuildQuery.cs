@@ -12,6 +12,7 @@ namespace DALQueryChain.Linq2Db.Builder
         where TContext : notnull, DataConnection
     {
         private readonly TContext _context;
+        private object? _cacheQBC;
 
         public BuildQuery(TContext context)
         {
@@ -24,7 +25,7 @@ namespace DALQueryChain.Linq2Db.Builder
         /// <typeparam name="TEntity">Entity Type</typeparam>
         public IQueryBuilder<TEntity> For<TEntity>() where TEntity : class, IDbModelBase
         {
-            return new QueryBuilderChain<TContext, TEntity>(_context);
+            return (IQueryBuilder<TEntity>)(_cacheQBC ??= new QueryBuilderChain<TContext, TEntity>(_context, this));
         }
     }
 }

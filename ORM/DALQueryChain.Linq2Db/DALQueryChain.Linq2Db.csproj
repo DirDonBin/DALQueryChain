@@ -18,7 +18,7 @@
     <Authors>etai-group</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
-    <VersionPrefix>1.0.4</VersionPrefix>
+    <VersionPrefix>1.0.5</VersionPrefix>
     <PackageOutputPath>..\..\nuget</PackageOutputPath>
   </PropertyGroup>
 

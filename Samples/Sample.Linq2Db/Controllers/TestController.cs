@@ -19,10 +19,28 @@ namespace Sample.Linq2Db.Controllers
             _qs = qs;
         }
 
-        [HttpGet(Name = "Test")]
-        public IActionResult Get()
+        [HttpGet("OneTest")]
+        public async Task<IActionResult> TestOne() 
         {
-            var user = _qs.For<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToList();
+            var user = await _qs.For<User>().Insert.InsertWithObjectAsync(new User
+            {
+                AccessFailedCount = 1,
+                CreateAt = DateTime.Now,
+                DeleteAt = DateTime.Now,
+                Email = Guid.NewGuid().ToString(),
+                EmailConfirmed = false,
+                ModifyAt = DateTime.Now,
+                PasswordHash = "",
+                PhoneConfirmed = false,
+                RoleId = 1,
+                Salt = "",
+                TwoFactorEnabled = false,
+                Username = Guid.NewGuid().ToString()
+            });
+
+            var users1 = await _qs.For<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToListAsync();
+
+            var users2 = await _qs.For<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToListAsync();
 
             return Ok();
         }

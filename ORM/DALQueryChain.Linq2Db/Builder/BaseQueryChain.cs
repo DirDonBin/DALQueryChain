@@ -9,11 +9,15 @@ namespace DALQueryChain.Linq2Db.Builder
         where TContext : DataConnection
     {
         protected readonly TContext _context;
-        private static ConcurrentDictionary<Type, object?> _cachedRepositories = new();
 
-        internal BaseQueryChain(TContext context)
+        private readonly IDALQueryChain<TContext>? _defQC;
+
+        private ConcurrentDictionary<Type, object?> _cachedRepositories = new();
+
+        internal BaseQueryChain(TContext context, IDALQueryChain<TContext>? defQC = null)
         {
             _context = context;
+            _defQC = defQC;
         }
 
         internal TRepository? GetRepository<TRepository, TEntity>()
@@ -29,11 +33,14 @@ namespace DALQueryChain.Linq2Db.Builder
 
             if (!_cachedRepositories.TryGetValue(repType, out obj) || obj is null)
             {
-                obj = Activator.CreateInstance(repType);
+                obj = Activator.CreateInstance(repType, _context);
                 _cachedRepositories.TryAdd(repType, obj);
             }
 
-            return (TRepository?)obj;
+            var rep = (BaseRepository<TContext, TEntity>)obj!;
+            rep.InitQueryChain(_defQC);
+
+            return (TRepository?)(object)rep;
         }
 
         internal BaseRepository<TContext, TEntity> GetGenericRepository<TEntity>()
@@ -59,7 +66,10 @@ namespace DALQueryChain.Linq2Db.Builder
                 }
             }
 
-            return (BaseRepository<TContext, TEntity>)obj!;
+            var rep = (BaseRepository<TContext, TEntity>)obj!;
+            rep.InitQueryChain(_defQC);
+
+            return rep;
 
         }
     }

@@ -13,9 +13,13 @@ namespace Sample.Linq2Db.Repositories
 
         protected override void OnBeforeInsert(User model)
         {
-            model.DeleteAt = DateTime.Now;
-            model.CreateAt = new DateTime(2020, 11, 25);
-            model.ModifyAt = new DateTime(2021, 5, 2);
+            var users = GetQueryChain<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToList();
+        }
+
+        protected override async Task OnBeforeInsertAsync(User model)
+        {
+            var users = await GetQueryChain<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToListAsync();
         }
     }
 }
+    
