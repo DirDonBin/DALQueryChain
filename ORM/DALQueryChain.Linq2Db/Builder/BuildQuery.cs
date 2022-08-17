@@ -1,6 +1,7 @@
 ﻿using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
 using LinqToDB.Data;
+using System.Collections.Concurrent;
 
 namespace DALQueryChain.Linq2Db.Builder
 {
@@ -12,7 +13,7 @@ namespace DALQueryChain.Linq2Db.Builder
         where TContext : notnull, DataConnection
     {
         private readonly TContext _context;
-        private object? _cacheQBC;
+        private ConcurrentDictionary<Type, object> _cacheQBC;
 
         public BuildQuery(TContext context)
         {
@@ -25,7 +26,9 @@ namespace DALQueryChain.Linq2Db.Builder
         /// <typeparam name="TEntity">Entity Type</typeparam>
         public IQueryBuilder<TEntity> For<TEntity>() where TEntity : class, IDbModelBase
         {
-            return (IQueryBuilder<TEntity>)(_cacheQBC ??= new QueryBuilderChain<TContext, TEntity>(_context, this));
+            var qbc = _cacheQBC.GetOrAdd(typeof(TEntity), new QueryBuilderChain<TContext, TEntity>(_context, this));
+
+            return (IQueryBuilder<TEntity>)qbc;
         }
     }
 }
