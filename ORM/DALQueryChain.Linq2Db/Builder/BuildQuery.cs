@@ -18,6 +18,7 @@ namespace DALQueryChain.Linq2Db.Builder
         public BuildQuery(TContext context)
         {
             _context = context;
+            _cacheQBC = new();
         }
 
         /// <summary>
