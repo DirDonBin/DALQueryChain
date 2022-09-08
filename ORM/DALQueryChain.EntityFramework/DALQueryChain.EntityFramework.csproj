@@ -1,9 +1,44 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageTags>DALQueryChain, QueryChain, Entity Framework, DAL</PackageTags>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <PackageReleaseNotes></PackageReleaseNotes>
+        <RepositoryUrl>https://github.com/DirDonBin/DALQueryChain</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/DirDonBin/DALQueryChain</PackageProjectUrl>
+        <Description>Query Chain for Data Access Layer built on the Entity Framework ORM, allowing you to proxy queries to the DAL and use triggers</Description>
+        <Copyright>Etai-group</Copyright>
+        <Title>DAL Query Chain for Linq2Db</Title>
+        <Authors>etai-group</Authors>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryType>git</RepositoryType>
+        <VersionPrefix>1.0.9</VersionPrefix>
+        <PackageOutputPath>..\..\nuget</PackageOutputPath>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.txt" Link="LICENSE.txt">
+      <PackagePath></PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Include="..\..\README.md" Link="README.md">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DALQueryChain\DALQueryChain.csproj" />
+  </ItemGroup>
 
 </Project>

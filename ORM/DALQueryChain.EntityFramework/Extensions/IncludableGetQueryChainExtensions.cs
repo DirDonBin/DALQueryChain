@@ -1,9 +1,10 @@
-﻿using DALQueryChain.Interfaces.QueryBuilder.Get;
-using DALQueryChain.Linq2Db.Builder.Chain.Get;
-using LinqToDB;
+﻿using DALQueryChain.EntityFramework.Builder.Chain.Get;
+using DALQueryChain.Interfaces.QueryBuilder.Get;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
-namespace DALQueryChain.Linq2Db.Extensions
+namespace DALQueryChain.EntityFramework.Extensions
 {
     public static class IncludableGetQueryChainExtensions
     {
@@ -13,7 +14,7 @@ namespace DALQueryChain.Linq2Db.Extensions
             )
             where TEntity : class
         {
-            var qr = ((ILoadWithQueryable<TEntity, TPreviousProperty>)source.Query).ThenLoad(selector);
+            var qr = ((IIncludableQueryable<TEntity, TPreviousProperty>)source.Query).ThenInclude(selector);
             return new IncludableGetQueryChain<TEntity, TProperty>(qr);
         }
 
@@ -23,7 +24,7 @@ namespace DALQueryChain.Linq2Db.Extensions
             )
             where TEntity : class
         {
-            var qr = ((ILoadWithQueryable<TEntity, IEnumerable<TPreviousProperty>>)source.Query).ThenLoad(selector);
+            var qr = ((IIncludableQueryable<TEntity, IEnumerable<TPreviousProperty>>)source.Query).ThenInclude(selector);
             return new IncludableGetQueryChain<TEntity, TProperty>(qr);
         }
 
@@ -33,7 +34,7 @@ namespace DALQueryChain.Linq2Db.Extensions
             )
             where TEntity : class
         {
-            var qr = ((ILoadWithQueryable<TEntity, IList<TPreviousProperty>>)source.Query).ThenLoad(selector);
+            var qr = ((IIncludableQueryable<TEntity, IList<TPreviousProperty>>)source.Query).ThenInclude(selector);
             return new IncludableGetQueryChain<TEntity, TProperty>(qr);
         }
 
@@ -43,7 +44,7 @@ namespace DALQueryChain.Linq2Db.Extensions
             )
             where TEntity : class
         {
-            var qr = ((ILoadWithQueryable<TEntity, List<TPreviousProperty>>)source.Query).ThenLoad(selector);
+            var qr = ((IIncludableQueryable<TEntity, List<TPreviousProperty>>)source.Query).ThenInclude(selector);
             return new IncludableGetQueryChain<TEntity, TProperty>(qr);
         }
     }

@@ -1,6 +1,6 @@
 ﻿using DALQueryChain.Interfaces.QueryBuilder.Get;
 
-namespace DALQueryChain.Linq2Db.Builder.Chain.Get
+namespace DALQueryChain.EntityFramework.Builder.Chain.Get
 {
     internal class IncludableGetQueryChain<T, TPreviousProperty> : FilterableQueryChain<T>, IIncludableGetQueryChain<T, TPreviousProperty>
         where T : class

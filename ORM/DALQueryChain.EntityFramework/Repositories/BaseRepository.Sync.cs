@@ -1,11 +1,11 @@
 ﻿using DALQueryChain.Interfaces;
-using LinqToDB.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace DALQueryChain.Linq2Db.Repositories
+namespace DALQueryChain.EntityFramework.Repositories
 {
     public abstract partial class BaseRepository<TContext, TEntity> : IRepository
-        where TContext : DataConnection
+        where TContext : DbContext
         where TEntity : class, IDbModelBase
     {
         #region Events

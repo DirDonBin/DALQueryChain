@@ -1,4 +1,4 @@
-﻿using DALQueryChain.Linq2Db.Builder.Chain.Get;
+﻿using DALQueryChain.Linq2Db.Extensions;
 using DALQueryChain.Linq2Db.Repositories;
 using LinqToDB;
 using ManualTest.Linq2Db.Context;
@@ -26,4 +26,3 @@ namespace Sample.Linq2Db.Repositories
         }
     }
 }
-    

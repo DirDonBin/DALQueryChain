@@ -14,9 +14,11 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         public IFilterableQueryChain<T> WhereIf(bool condition, Expression<Func<T, bool>> predicate);
 
         public IFilterableQueryChain<T> Skip(int count);
-        public IFilterableQueryChain<T> Skip(Expression<Func<int>> selector);
+        //TODO: заменить на SkipWhile
+        //public IFilterableQueryChain<T> Skip(Expression<Func<int>> selector);
         public IFilterableQueryChain<T> Take(int count);
-        public IFilterableQueryChain<T> Take(Expression<Func<int>> selector);
+        //TODO: заменить на TakeWhile
+        //public IFilterableQueryChain<T> Take(Expression<Func<int>> selector);
 
         public IFilterableQueryChain<T[]> Chunk(int count);
     }

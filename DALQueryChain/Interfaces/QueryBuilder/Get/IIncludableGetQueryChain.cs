@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace DALQueryChain.Interfaces.QueryBuilder.Get
+﻿namespace DALQueryChain.Interfaces.QueryBuilder.Get
 {
     public interface IIncludableGetQueryChain<T, TPreviousProperty> : IFilterableQueryChain<T>
         where T : class

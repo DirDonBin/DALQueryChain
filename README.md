@@ -10,3 +10,6 @@ From **NuGet**:
 
 For **Linq2Db ORM**:
 * `Install-Package DALQueryChain.Linq2Db`
+
+For **EntityFramework ORM**:
+* `Install-Package DALQueryChain.EntityFramework`

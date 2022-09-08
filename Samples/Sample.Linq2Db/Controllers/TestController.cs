@@ -1,5 +1,4 @@
 using DALQueryChain.Interfaces;
-using DALQueryChain.Linq2Db.Builder.Chain.Get;
 using DALQueryChain.Linq2Db.Extensions;
 using ManualTest.Linq2Db.Context;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +21,7 @@ namespace Sample.Linq2Db.Controllers
         }
 
         [HttpGet("OneTest")]
-        public async Task<IActionResult> TestOne() 
+        public async Task<IActionResult> TestOne()
         {
             //var user = await _qs.For<User>().Insert.InsertWithObjectAsync(new User
             //{

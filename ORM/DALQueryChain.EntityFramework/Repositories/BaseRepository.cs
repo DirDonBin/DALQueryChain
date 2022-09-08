@@ -1,13 +1,12 @@
-﻿using DALQueryChain.Interfaces;
+﻿using DALQueryChain.EntityFramework.Builder;
+using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
-using DALQueryChain.Linq2Db.Builder;
-using LinqToDB;
-using LinqToDB.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace DALQueryChain.Linq2Db.Repositories
+namespace DALQueryChain.EntityFramework.Repositories
 {
     public abstract partial class BaseRepository<TContext, TEntity> : IRepository
-        where TContext : DataConnection
+        where TContext : DbContext
         where TEntity : class, IDbModelBase
     {
         private readonly TContext _context;
@@ -19,8 +18,7 @@ namespace DALQueryChain.Linq2Db.Repositories
         public BaseRepository(TContext context)
         {
             _context = context;
-            _query = context.GetTable<TEntity>().AsQueryable();
-
+            _query = context.Set<TEntity>().AsQueryable();
         }
 
         internal void InitQueryChain(IDALQueryChain<TContext>? dalQueryChain)
@@ -30,6 +28,6 @@ namespace DALQueryChain.Linq2Db.Repositories
 
         protected IQueryBuilder<T> GetQueryChain<T>() where T : class, IDbModelBase => _dalQueryChain!.For<T>();
 
-        protected IQueryable<T> GetQuery<T>() where T : class, IDbModelBase => _context.GetTable<T>().AsQueryable();
+        protected IQueryable<T> GetQuery<T>() where T : class, IDbModelBase => _context.Set<T>().AsQueryable();
     }
 }
