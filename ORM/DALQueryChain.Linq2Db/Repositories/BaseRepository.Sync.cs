@@ -84,7 +84,7 @@ namespace DALQueryChain.Linq2Db.Repositories
 
         protected internal virtual void SoftDelete(TEntity model)
         {
-
+            
         }
 
         protected internal virtual void SoftBulkDelete(IEnumerable<TEntity> model)

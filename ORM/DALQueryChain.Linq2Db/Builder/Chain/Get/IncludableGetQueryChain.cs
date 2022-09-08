@@ -11,14 +11,6 @@ namespace DALQueryChain.Linq2Db.Builder.Chain.Get
         {
         }
 
-        public IIncludableGetQueryChain<T, IEnumerable<TProperty>> ThenLoad<TProperty>(Expression<Func<TPreviousProperty, IEnumerable<TProperty>>> selector)
-        {
-            return new IncludableGetQueryChain<T, IEnumerable<TProperty>>(((ILoadWithQueryable<T, TPreviousProperty>)_prevQuery).ThenLoad(selector));
-        }
-
-        public IIncludableGetQueryChain<T, TProperty> ThenLoad<TProperty>(Expression<Func<TPreviousProperty, TProperty>> selector)
-        {
-            return new IncludableGetQueryChain<T, TProperty>(((ILoadWithQueryable<T, TPreviousProperty>)_prevQuery).ThenLoad(selector));
-        }
+        IQueryable<T> IIncludableGetQueryChain<T, TPreviousProperty>.Query => _prevQuery;
     }
 }

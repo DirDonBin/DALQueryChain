@@ -5,7 +5,6 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
     public interface IFilterableQueryChain<T> : IExecutableQueryChain<T>, ISelectableQueryChain<T>
         where T : class
     {
-        public IIncludableGetQueryChain<T, IEnumerable<TProperty>> LoadWith<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> selector);
         public IIncludableGetQueryChain<T, TProperty> LoadWith<TProperty>(Expression<Func<T, TProperty>> selector);
 
         public IOrderableQueryChain<T> OrderBy(Expression<Func<T, object>> selector);

@@ -18,9 +18,7 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             using var trans = await _context.BeginTransactionAsync();
 
             foreach (var entity in entities)
-            {
-                await _context.UpdateAsync(entity);
-            }
+                await _context.DeleteAsync(entity);
 
             await trans.CommitAsync();
 
