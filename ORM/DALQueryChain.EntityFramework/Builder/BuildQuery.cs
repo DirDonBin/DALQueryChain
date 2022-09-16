@@ -13,7 +13,7 @@ namespace DALQueryChain.EntityFramework.Builder
         where TContext : notnull, DbContext
     {
         private readonly TContext _context;
-        private ConcurrentDictionary<Type, object> _cacheQBC;
+        private readonly ConcurrentDictionary<Type, object> _cacheQBC;
 
         public BuildQuery(TContext context)
         {
@@ -30,6 +30,40 @@ namespace DALQueryChain.EntityFramework.Builder
             var qbc = _cacheQBC.GetOrAdd(typeof(TEntity), new QueryBuilderChain<TContext, TEntity>(_context, this));
 
             return (IQueryBuilder<TEntity>)qbc;
+        }
+
+        public void Transaction(Action<IDALQueryChain<TContext>> operation)
+        {
+            using var tr = _context.Database.BeginTransaction();
+
+            try
+            {
+                operation.Invoke(this);
+
+                tr.Commit();
+            }
+            catch (Exception)
+            {
+                tr.Rollback();
+                throw;
+            }
+        }
+
+        public async Task TransactionAsync(Func<IDALQueryChain<TContext>, CancellationToken, Task> operation, CancellationToken ctn = default)
+        {
+            using var tr = await _context.Database.BeginTransactionAsync(ctn);
+
+            try
+            {
+                await operation.Invoke(this, ctn);
+
+                await tr.CommitAsync(ctn);
+            }
+            catch (Exception)
+            {
+                await tr.RollbackAsync(ctn);
+                throw;
+            }
         }
     }
 }

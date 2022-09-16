@@ -16,7 +16,7 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageOutputPath>..\nuget</PackageOutputPath>
-    <VersionPrefix>1.0.9</VersionPrefix>
+    <VersionPrefix>1.0.10</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>

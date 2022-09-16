@@ -21,6 +21,8 @@ namespace DALQueryChain.EntityFramework.Builder
 
         IDeletableQueryChain<TEntity> IQueryBuilder<TEntity>.Delete => new DeletableQueryChain<TContext, TEntity>(_context, _baseRepository);
 
+
+
         internal QueryBuilderChain(TContext context, IDALQueryChain<TContext>? defQC = null) : base(context, defQC)
         {
             _baseRepository = GetGenericRepository<TEntity>();

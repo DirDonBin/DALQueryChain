@@ -48,15 +48,54 @@ namespace Sample.Linq2Db.Controllers
             //    useren.Username = "Test Change Field";
             //}
 
-            var users1 = await _qs.For<User>().Get.LoadWith(x => x.Role)
-                .ThenLoad(x => x!.UsersRoleIdIds)
-                .ThenLoad(x => x.Role)
-                .ToListAsync();
+            
 
-            var roles = await _qs.For<Role>().Get.LoadWith(x => x.UsersRoleIdIds)
-                .ThenLoad(x => x.Role)
-                .ThenLoad(x => x.UsersRoleIdIds)
-                .ToListAsync();
+            await _qs.TransactionAsync(async (qs, ctn) => {
+                await _qs.For<User>().Insert.InsertWithObjectAsync(new User
+                {
+                    AccessFailedCount = 1,
+                    CreateAt = DateTime.Now,
+                    DeleteAt = DateTime.Now,
+                    Email = Guid.NewGuid().ToString(),
+                    EmailConfirmed = false,
+                    ModifyAt = DateTime.Now,
+                    PasswordHash = "",
+                    PhoneConfirmed = false,
+                    RoleId = 1,
+                    Salt = "",
+                    Username = Guid.NewGuid().ToString()
+                }, ctn);
+
+                await _qs.For<User>().Insert.InsertWithObjectAsync(new User
+                {
+                    AccessFailedCount = 1,
+                    CreateAt = DateTime.Now,
+                    DeleteAt = DateTime.Now,
+                    Email = Guid.NewGuid().ToString(),
+                    EmailConfirmed = false,
+                    ModifyAt = DateTime.Now,
+                    PasswordHash = "",
+                    PhoneConfirmed = false,
+                    RoleId = 1,
+                    Salt = "",
+                    Username = Guid.NewGuid().ToString()
+                }, ctn);
+
+                await _qs.For<User>().Insert.InsertWithObjectAsync(new User
+                {
+                    AccessFailedCount = 1,
+                    CreateAt = DateTime.Now,
+                    DeleteAt = DateTime.Now,
+                    Email = Guid.NewGuid().ToString(),
+                    EmailConfirmed = false,
+                    ModifyAt = DateTime.Now,
+                    PasswordHash = "",
+                    PhoneConfirmed = false,
+                    RoleId = 1,
+                    Salt = "",
+                    Username = Guid.NewGuid().ToString()
+                }, ctn);
+            });
 
             //var ewnum = roles.Select(x => x.Name);
 

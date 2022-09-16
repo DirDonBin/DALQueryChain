@@ -18,7 +18,7 @@ namespace Sample.Linq2Db.Repositories
             var users = GetQueryChain<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToList();
         }
 
-        protected override async Task OnBeforeInsertAsync(User model)
+        protected override async Task OnBeforeInsertAsync(User model, CancellationToken ctn = default)
         {
             var users = await GetQueryChain<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToListAsync();
 

@@ -3,7 +3,7 @@
     //Async
     public partial interface IUpdatableQueryChain<TEntity> where TEntity : class, IDbModelBase
     {
-        public Task UpdateAsync(TEntity entity);
-        public Task BulkUpdateAsync(IEnumerable<TEntity> entities);
+        public Task UpdateAsync(TEntity entity, CancellationToken ctn = default);
+        public Task BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default);
     }
 }

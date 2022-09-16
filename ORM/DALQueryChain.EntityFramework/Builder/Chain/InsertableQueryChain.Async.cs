@@ -8,40 +8,43 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         where TContext : DbContext
         where TEntity : class, IDbModelBase
     {
-        public async Task BulkInsertAsync(IEnumerable<TEntity> entities)
+        public async Task BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeBulkInsertAsync(entities);
+            await _repository.OnBeforeBulkInsertAsync(entities, ctn);
 
-            using var trans = await _context.Database.BeginTransactionAsync();
+            using var trans = await _context.Database.BeginTransactionAsync(ctn);
 
             foreach (var entity in entities)
+            {
+                if (ctn.IsCancellationRequested) break;
                 _context.Set<TEntity>().Add(entity);
+            }
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(ctn);
 
-            await trans.CommitAsync();
+            await trans.CommitAsync(ctn);
 
-            await _repository.OnAfterBulkInsertAsync(entities);
+            await _repository.OnAfterBulkInsertAsync(entities, ctn);
         }
 
-        public async Task InsertAsync(TEntity entity)
+        public async Task InsertAsync(TEntity entity, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeInsertAsync(entity);
+            await _repository.OnBeforeInsertAsync(entity, ctn);
 
             _context.Set<TEntity>().Add(entity);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(ctn);
 
-            await _repository.OnAfterInsertAsync(entity);
+            await _repository.OnAfterInsertAsync(entity, ctn);
         }
 
-        public async Task<TEntity> InsertWithObjectAsync(TEntity entity)
+        public async Task<TEntity> InsertWithObjectAsync(TEntity entity, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeInsertAsync(entity);
+            await _repository.OnBeforeInsertAsync(entity, ctn);
 
             _context.Set<TEntity>().Add(entity);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(ctn);
 
-            await _repository.OnAfterInsertAsync(entity);
+            await _repository.OnAfterInsertAsync(entity, ctn);
 
             return entity;
         }
