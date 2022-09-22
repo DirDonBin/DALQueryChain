@@ -3,7 +3,6 @@
 namespace DALQueryChain.Interfaces.QueryBuilder.Get
 {
     public partial interface IExecutableQueryChain<T>
-        where T : class
     {
         /// <summary>
 		/// Returns the first element of a sequence, or a default value if the sequence contains no elements
@@ -41,6 +40,62 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         T? SingleOrDefault(Expression<Func<T, bool>> predicate);
 
         /// <summary>
+        /// Returns the last element of a sequence, or a default value if the sequence contains no elements
+        /// </summary>
+        /// <returns></returns>
+        T? LastOrDefault();
+
+        /// <summary>
+        /// Returns the last element of the sequence that satisfies a condition or a default value if no such element is found
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <returns></returns>
+        T? LastOrDefault(Expression<Func<T, bool>> predicate);
+
+        /// <summary>
+        /// Returns the last element according to a specified key selector function or a default value if no such element is found
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        T? LastOrDefault<TKey>(Expression<Func<T, TKey>> keySelector);
+
+        /// <summary>
+        /// Returns the last element of the sequence that satisfies a condition and according to a specified key selector function or a default value if no such element is found
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        T? LastOrDefault<TKey>(Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> keySelector);
+
+        /// <summary>
+        /// Returns the last element of a sequence
+        /// </summary>
+        /// <returns></returns>
+        T Last();
+
+        /// <summary>
+        /// Returns the last element of the sequence that satisfies a condition
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <returns></returns>
+        T Last(Expression<Func<T, bool>> predicate);
+
+        /// <summary>
+        /// Returns the last element according to a specified key selector function
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        T Last<TKey>(Expression<Func<T, TKey>> keySelector);
+
+        /// <summary>
+        /// Returns the last element of the sequence that satisfies a condition and according to a specified key selector function
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        T Last<TKey>(Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> keySelector);
+
+        /// <summary>
         /// Creates a System.Collections.Generic.List`1 from an query
         /// </summary>
         List<T> ToList();
@@ -72,5 +127,47 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition</param>
         bool All(Expression<Func<T, bool>> predicate);
+
+        /// <summary>
+        /// Returns the maximum value
+        /// </summary>
+        /// <returns></returns>
+        T? Max();
+
+        /// <summary>
+        /// Returns the maximum value of a sequence satisfy a condition 
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <returns></returns>
+        TResult? Max<TResult>(Expression<Func<T, TResult>> predicate);
+
+        /// <summary>
+        /// Returns the maximum value according to a specified key selector function.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        T? MaxBy<TKey>(Expression<Func<T, TKey>> keySelector);
+
+        /// <summary>
+        /// Returns the minimum value
+        /// </summary>
+        /// <returns></returns>
+        T? Min();
+
+        /// <summary>
+        /// Returns the minimum value of a sequence satisfy a condition 
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <returns></returns>
+        TResult? Min<TResult>(Expression<Func<T, TResult>> predicate);
+
+        /// <summary>
+        /// Returns the minimum value according to a specified key selector function.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        T? MinBy<TKey>(Expression<Func<T, TKey>> keySelector);
     }
 }

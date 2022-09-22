@@ -3,7 +3,6 @@
 namespace DALQueryChain.Interfaces.QueryBuilder.Get
 {
     public interface IOrderableQueryChain<T> : IFilterableQueryChain<T>
-        where T : class
     {
         /// <summary>
         /// Performs a subsequent ordering of the elements in a sequence in ascending order according to a key

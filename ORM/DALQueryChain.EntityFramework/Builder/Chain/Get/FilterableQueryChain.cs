@@ -6,20 +6,17 @@ using System.Linq.Expressions;
 namespace DALQueryChain.EntityFramework.Builder.Chain
 {
     internal partial class FilterableQueryChain<T> : BaseGetQueryChain<T>, IFilterableQueryChain<T>
-        where T : class
     {
+        IQueryable<T> IFilterableQueryChain<T>.Query => _prevQuery;
+
         public FilterableQueryChain(IQueryable<T> prevQuery) : base(prevQuery)
         {
         }
 
+
         public IFilterableQueryChain<T[]> Chunk(int count)
         {
             return new FilterableQueryChain<T[]>(_prevQuery.Chunk(count));
-        }
-
-        public IIncludableGetQueryChain<T, TProperty> LoadWith<TProperty>(Expression<Func<T, TProperty>> selector)
-        {
-            return new IncludableGetQueryChain<T, TProperty>(_prevQuery.Include(selector));
         }
 
         public IOrderableQueryChain<T> OrderBy(Expression<Func<T, object>> selector)
@@ -38,11 +35,11 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
             return this;
         }
 
-        //public IFilterableQueryChain<T> Skip(Expression<Func<int>> selector)
-        //{
-        //    _prevQuery = _prevQuery.Skip(selector.);
-        //    return this;
-        //}
+        public IFilterableQueryChain<T> SkipWhile(Expression<Func<T, bool>> predicate)
+        {
+            _prevQuery = _prevQuery.SkipWhile(predicate);
+            return this;
+        }
 
         public IFilterableQueryChain<T> Take(int count)
         {
@@ -50,11 +47,11 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
             return this;
         }
 
-        //public IFilterableQueryChain<T> Take(Expression<Func<int>> selector)
-        //{
-        //    _prevQuery = _prevQuery.Take(selector.);
-        //    return this;
-        //}
+        public IFilterableQueryChain<T> TakeWhile(Expression<Func<T, bool>> predicate)
+        {
+            _prevQuery = _prevQuery.TakeWhile(predicate);
+            return this;
+        }
 
         public IFilterableQueryChain<T> Where(Expression<Func<T, bool>> predicate)
         {

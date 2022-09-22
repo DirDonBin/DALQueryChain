@@ -50,56 +50,57 @@ namespace Sample.Linq2Db.Controllers
 
             
 
-            await _qs.TransactionAsync(async (qs, ctn) => {
-                await _qs.For<User>().Insert.InsertWithObjectAsync(new User
-                {
-                    AccessFailedCount = 1,
-                    CreateAt = DateTime.Now,
-                    DeleteAt = DateTime.Now,
-                    Email = Guid.NewGuid().ToString(),
-                    EmailConfirmed = false,
-                    ModifyAt = DateTime.Now,
-                    PasswordHash = "",
-                    PhoneConfirmed = false,
-                    RoleId = 1,
-                    Salt = "",
-                    Username = Guid.NewGuid().ToString()
-                }, ctn);
+            //await _qs.TransactionAsync(async (qs, ctn) => {
+            //    await _qs.For<User>().Insert.InsertWithObjectAsync(new User
+            //    {
+            //        AccessFailedCount = 1,
+            //        CreateAt = DateTime.Now,
+            //        DeleteAt = DateTime.Now,
+            //        Email = Guid.NewGuid().ToString(),
+            //        EmailConfirmed = false,
+            //        ModifyAt = DateTime.Now,
+            //        PasswordHash = "",
+            //        PhoneConfirmed = false,
+            //        RoleId = 1,
+            //        Salt = "",
+            //        Username = Guid.NewGuid().ToString()
+            //    }, ctn);
 
-                await _qs.For<User>().Insert.InsertWithObjectAsync(new User
-                {
-                    AccessFailedCount = 1,
-                    CreateAt = DateTime.Now,
-                    DeleteAt = DateTime.Now,
-                    Email = Guid.NewGuid().ToString(),
-                    EmailConfirmed = false,
-                    ModifyAt = DateTime.Now,
-                    PasswordHash = "",
-                    PhoneConfirmed = false,
-                    RoleId = 1,
-                    Salt = "",
-                    Username = Guid.NewGuid().ToString()
-                }, ctn);
+            //    await _qs.For<User>().Insert.InsertWithObjectAsync(new User
+            //    {
+            //        AccessFailedCount = 1,
+            //        CreateAt = DateTime.Now,
+            //        DeleteAt = DateTime.Now,
+            //        Email = Guid.NewGuid().ToString(),
+            //        EmailConfirmed = false,
+            //        ModifyAt = DateTime.Now,
+            //        PasswordHash = "",
+            //        PhoneConfirmed = false,
+            //        RoleId = 1,
+            //        Salt = "",
+            //        Username = Guid.NewGuid().ToString()
+            //    }, ctn);
 
-                await _qs.For<User>().Insert.InsertWithObjectAsync(new User
-                {
-                    AccessFailedCount = 1,
-                    CreateAt = DateTime.Now,
-                    DeleteAt = DateTime.Now,
-                    Email = Guid.NewGuid().ToString(),
-                    EmailConfirmed = false,
-                    ModifyAt = DateTime.Now,
-                    PasswordHash = "",
-                    PhoneConfirmed = false,
-                    RoleId = 1,
-                    Salt = "",
-                    Username = Guid.NewGuid().ToString()
-                }, ctn);
-            });
+            //    await _qs.For<User>().Insert.InsertWithObjectAsync(new User
+            //    {
+            //        AccessFailedCount = 1,
+            //        CreateAt = DateTime.Now,
+            //        DeleteAt = DateTime.Now,
+            //        Email = Guid.NewGuid().ToString(),
+            //        EmailConfirmed = false,
+            //        ModifyAt = DateTime.Now,
+            //        PasswordHash = "",
+            //        PhoneConfirmed = false,
+            //        RoleId = 1,
+            //        Salt = "",
+            //        Username = Guid.NewGuid().ToString()
+            //    }, ctn);
+            //});
 
             //var ewnum = roles.Select(x => x.Name);
 
-            //var users2 = await _qs.For<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToListAsync();
+            var users2 = await _qs.For<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ThenLoad(x => x.Role).ToListAsync();
+            var users3 = await _qs.For<Role>().Get.LoadWith(x => x.UsersRoleIdIds).ThenLoad(x => x!.Role).ThenLoad(x => x.UsersRoleIdIds).ToListAsync();
 
             return Ok();
         }

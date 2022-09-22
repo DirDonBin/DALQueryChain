@@ -1,8 +1,7 @@
 ﻿namespace DALQueryChain.Interfaces.QueryBuilder.Get
 {
-    public interface IIncludableGetQueryChain<T, TPreviousProperty> : IFilterableQueryChain<T>
-        where T : class
+    public interface IIncludableGetQueryChain<T, out TPreviousProperty> : IFilterableQueryChain<T>
+        where TPreviousProperty : class
     {
-        IQueryable<T> Query { get; }
     }
 }

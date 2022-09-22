@@ -1,7 +1,8 @@
-﻿namespace DALQueryChain.Linq2Db.Builder.Chain.Get
+﻿using DALQueryChain.Interfaces.QueryBuilder.Get;
+
+namespace DALQueryChain.Linq2Db.Builder.Chain.Get
 {
     internal abstract class BaseGetQueryChain<T>
-        where T : class
     {
         protected IQueryable<T> _prevQuery;
 

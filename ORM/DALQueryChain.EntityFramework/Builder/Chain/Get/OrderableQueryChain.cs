@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 namespace DALQueryChain.EntityFramework.Builder.Chain.Get
 {
     internal class OrderableQueryChain<T> : FilterableQueryChain<T>, IOrderableQueryChain<T>
-        where T : class
     {
         public OrderableQueryChain(IQueryable<T> prevQuery) : base(prevQuery)
         {
