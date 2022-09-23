@@ -10,7 +10,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public void BulkUpdate(IEnumerable<TEntity> entities)
         {
-            _repository.OnBeforeBulkUpdate(entities);
+            _repository.InitTriggers(entities);
+            _repository.OnBeforeUpdate();
 
             //TODO: Проверить скорость работы
             using var trans = _context.Database.BeginTransaction();
@@ -22,15 +23,26 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             trans.Commit();
 
-            _repository.OnAfterBulkUpdate(entities);
+            _repository.OnAfterUpdate();
         }
 
         public void Update(TEntity entity)
         {
-            _repository.OnBeforeUpdate(entity);
+            _repository.InitTriggers(entity);
+            _repository.OnBeforeUpdate();
             _context.Set<TEntity>().Update(entity);
             _context.SaveChanges();
-            _repository.OnAfterUpdate(entity);
+            _repository.OnAfterUpdate();
+        }
+
+        public void Update()
+        {
+            if (_entities is null) throw new InvalidOperationException("Has not been used of method Where");
+
+            _repository.InitTriggers(_entities);
+            _repository.OnBeforeUpdate();
+            _context.SaveChanges();
+            _repository.OnAfterUpdate();
         }
     }
 }

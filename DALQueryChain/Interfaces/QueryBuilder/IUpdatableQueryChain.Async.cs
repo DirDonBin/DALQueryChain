@@ -5,5 +5,6 @@
     {
         public Task UpdateAsync(TEntity entity, CancellationToken ctn = default);
         public Task BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default);
+        public Task UpdateAsync(CancellationToken ctn = default);
     }
 }

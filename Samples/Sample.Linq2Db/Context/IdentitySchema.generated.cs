@@ -23,9 +23,9 @@ namespace ManualTest.Linq2Db.Context
 			private readonly IDataContext _dataContext;
 
 			public ITable<Role>         Roles         => _dataContext.GetTable<Role>();
+			public ITable<RefreshToken> RefreshTokens => _dataContext.GetTable<RefreshToken>();
 			public ITable<UsersSetting> UsersSettings => _dataContext.GetTable<UsersSetting>();
 			public ITable<User>         Users         => _dataContext.GetTable<User>();
-			public ITable<RefreshToken> RefreshTokens => _dataContext.GetTable<RefreshToken>();
 
 			public DataContext(IDataContext dataContext)
 			{
@@ -45,6 +45,26 @@ namespace ManualTest.Linq2Db.Context
 			/// </summary>
 			[Association(ThisKey = nameof(Id), OtherKey = nameof(User.RoleId))]
 			public List<User> UsersRoleIdIds { get; set; } = null!;
+			#endregion
+		}
+
+		[Table("RefreshTokens", Schema = "identity")]
+		public class RefreshToken : IDbModelBase
+		{
+			[Column("Id"       , IsPrimaryKey = true , IsIdentity = true, SkipOnInsert = true, SkipOnUpdate = true)] public long      Id        { get; set; } // bigint
+			[Column("UserId"                                                                                      )] public long      UserId    { get; set; } // bigint
+			[Column("Token"    , CanBeNull    = false                                                             )] public string    Token     { get; set; } = null!; // text
+			[Column("ExpiryAt"                                                                                    )] public DateTime  ExpiryAt  { get; set; } // timestamp (6) without time zone
+			[Column("CreateAt"                                                                                    )] public DateTime  CreateAt  { get; set; } // timestamp (6) without time zone
+			[Column("ModifyAt"                                                                                    )] public DateTime  ModifyAt  { get; set; } // timestamp (6) without time zone
+			[Column("RevokedAt"                                                                                   )] public DateTime? RevokedAt { get; set; } // timestamp (6) without time zone
+
+			#region Associations
+			/// <summary>
+			/// FK_RefreshTokens_UserId_Users_Id
+			/// </summary>
+			[Association(CanBeNull = false, ThisKey = nameof(UserId), OtherKey = nameof(IdentitySchema.User.Id))]
+			public User User { get; set; } = null!;
 			#endregion
 		}
 
@@ -96,6 +116,12 @@ namespace ManualTest.Linq2Db.Context
 
 			#region Associations
 			/// <summary>
+			/// FK_RefreshTokens_UserId_Users_Id backreference
+			/// </summary>
+			[Association(ThisKey = nameof(Id), OtherKey = nameof(RefreshToken.UserId))]
+			public List<RefreshToken> RefreshTokensUserIdIds { get; set; } = null!;
+
+			/// <summary>
 			/// FK_UsersSettings_Id_Users_Id backreference
 			/// </summary>
 			[Association(ThisKey = nameof(Id), OtherKey = nameof(UsersSetting.Id))]
@@ -106,32 +132,6 @@ namespace ManualTest.Linq2Db.Context
 			/// </summary>
 			[Association(CanBeNull = false, ThisKey = nameof(RoleId), OtherKey = nameof(IdentitySchema.Role.Id))]
 			public Role Role { get; set; } = null!;
-
-			/// <summary>
-			/// FK_RefreshTokens_UserId_Users_Id backreference
-			/// </summary>
-			[Association(ThisKey = nameof(Id), OtherKey = nameof(RefreshToken.UserId))]
-			public List<RefreshToken> RefreshTokensUserIdIds { get; set; } = null!;
-			#endregion
-		}
-
-		[Table("RefreshTokens", Schema = "identity")]
-		public class RefreshToken : IDbModelBase
-		{
-			[Column("Id"       , IsPrimaryKey = true , IsIdentity = true, SkipOnInsert = true, SkipOnUpdate = true)] public long      Id        { get; set; } // bigint
-			[Column("UserId"                                                                                      )] public long      UserId    { get; set; } // bigint
-			[Column("Token"    , CanBeNull    = false                                                             )] public string    Token     { get; set; } = null!; // text
-			[Column("ExpiryAt"                                                                                    )] public DateTime  ExpiryAt  { get; set; } // timestamp (6) without time zone
-			[Column("CreateAt"                                                                                    )] public DateTime  CreateAt  { get; set; } // timestamp (6) without time zone
-			[Column("ModifyAt"                                                                                    )] public DateTime  ModifyAt  { get; set; } // timestamp (6) without time zone
-			[Column("RevokedAt"                                                                                   )] public DateTime? RevokedAt { get; set; } // timestamp (6) without time zone
-
-			#region Associations
-			/// <summary>
-			/// FK_RefreshTokens_UserId_Users_Id
-			/// </summary>
-			[Association(CanBeNull = false, ThisKey = nameof(UserId), OtherKey = nameof(IdentitySchema.User.Id))]
-			public User User { get; set; } = null!;
 			#endregion
 		}
 	}

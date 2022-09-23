@@ -13,7 +13,7 @@ namespace DALQueryChain.EntityFramework.Builder
     {
         private readonly BaseRepository<TContext, TEntity> _baseRepository;
 
-        IFilterableQueryChain<TEntity> IQueryBuilder<TEntity>.Get => new FilterableQueryChain<TEntity>(_context.Set<TEntity>());
+        IFilterableQueryChain<TEntity> IQueryBuilder<TEntity>.Get => new FilterableQueryChain<TEntity>(_context.Set<TEntity>().AsNoTracking());
 
         IInsertableQueryChain<TEntity> IQueryBuilder<TEntity>.Insert => new InsertableQueryChain<TContext, TEntity>(_context, _baseRepository);
 

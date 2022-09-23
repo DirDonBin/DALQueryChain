@@ -13,7 +13,6 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         {
         }
 
-
         public IFilterableQueryChain<T[]> Chunk(int count)
         {
             return new FilterableQueryChain<T[]>(_prevQuery.Chunk(count));

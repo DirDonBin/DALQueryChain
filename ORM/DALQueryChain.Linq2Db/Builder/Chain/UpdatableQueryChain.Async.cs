@@ -2,6 +2,8 @@
 using DALQueryChain.Interfaces.QueryBuilder;
 using LinqToDB;
 using LinqToDB.Data;
+using LinqToDB.Linq;
+using System.Linq.Expressions;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain
 {
@@ -11,29 +13,29 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public async Task BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeBulkUpdateAsync(entities, ctn);
-
-            //TODO: Проверить скорость работы
-            using var trans = await _context.BeginTransactionAsync(ctn);
-
-            foreach (var entity in entities)
-            {
-                if (ctn.IsCancellationRequested)
-                    break;
-
-                await _context.UpdateAsync(entity, token: ctn);
-            }
-
-            await trans.CommitAsync();
-
-            await _repository.OnAfterBulkUpdateAsync(entities, ctn);
+            _repository.InitTriggers(entities);
+            await _repository.OnBeforeUpdate(ctn);
+            await _context.UpdateAsync(entities, token: ctn);
+            await _repository.OnAfterUpdate(ctn);
         }
 
         public async Task UpdateAsync(TEntity entity, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeUpdateAsync(entity, ctn);
+            _repository.InitTriggers(entity);
+            await _repository.OnBeforeUpdate(ctn);
             await _context.UpdateAsync(entity, token: ctn);
-            await _repository.OnAfterUpdateAsync(entity, ctn);
+            await _repository.OnAfterUpdate(ctn);
+        }
+
+        public async Task UpdateAsync(CancellationToken ctn = default)
+        {
+            if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+            if (_prevUpdateQuery is null) throw new InvalidOperationException("No update entity values ​​set. Use Method 'Set'"); ;
+
+            _repository.InitTriggers(_prevQuery);
+            await _repository.OnBeforeUpdate(ctn);
+            await _prevUpdateQuery.UpdateAsync(ctn);
+            await _repository.OnAfterUpdate(ctn);
         }
     }
 }

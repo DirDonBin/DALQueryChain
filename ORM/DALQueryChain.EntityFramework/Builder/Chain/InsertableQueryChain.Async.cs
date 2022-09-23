@@ -10,7 +10,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public async Task BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeBulkInsertAsync(entities, ctn);
+            _repository.InitTriggers(entities);
+            await _repository.OnBeforeInsert(ctn);
 
             using var trans = await _context.Database.BeginTransactionAsync(ctn);
 
@@ -24,27 +25,29 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             await trans.CommitAsync(ctn);
 
-            await _repository.OnAfterBulkInsertAsync(entities, ctn);
+            await _repository.OnAfterInsert(ctn);
         }
 
         public async Task InsertAsync(TEntity entity, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeInsertAsync(entity, ctn);
+            _repository.InitTriggers(entity);
+            await _repository.OnBeforeInsert(ctn);
 
             _context.Set<TEntity>().Add(entity);
             await _context.SaveChangesAsync(ctn);
 
-            await _repository.OnAfterInsertAsync(entity, ctn);
+            await _repository.OnAfterInsert(ctn);
         }
 
         public async Task<TEntity> InsertWithObjectAsync(TEntity entity, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeInsertAsync(entity, ctn);
+            _repository.InitTriggers(entity);
+            await _repository.OnBeforeInsert(ctn);
 
             _context.Set<TEntity>().Add(entity);
             await _context.SaveChangesAsync(ctn);
 
-            await _repository.OnAfterInsertAsync(entity, ctn);
+            await _repository.OnAfterInsert(ctn);
 
             return entity;
         }

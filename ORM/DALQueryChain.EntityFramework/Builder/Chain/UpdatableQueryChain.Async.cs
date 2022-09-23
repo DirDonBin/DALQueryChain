@@ -1,6 +1,7 @@
 ﻿using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
 using Microsoft.EntityFrameworkCore;
+using System.Net.NetworkInformation;
 
 namespace DALQueryChain.EntityFramework.Builder.Chain
 {
@@ -10,7 +11,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public async Task BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeBulkUpdateAsync(entities, ctn);
+            _repository.InitTriggers(entities);
+            await _repository.OnBeforeUpdate(ctn);
 
             //TODO: Проверить скорость работы
             using var trans = await _context.Database.BeginTransactionAsync(ctn);
@@ -25,15 +27,26 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             await trans.CommitAsync(ctn);
 
-            await _repository.OnAfterBulkUpdateAsync(entities, ctn);
+            await _repository.OnAfterUpdate(ctn);
         }
 
         public async Task UpdateAsync(TEntity entity, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeUpdateAsync(entity, ctn);
+            _repository.InitTriggers(entity);
+            await _repository.OnBeforeUpdate(ctn);
             _context.Set<TEntity>().Update(entity);
             await _context.SaveChangesAsync(ctn);
-            await _repository.OnAfterUpdateAsync(entity, ctn);
+            await _repository.OnAfterUpdate(ctn);
+        }
+
+        public async Task UpdateAsync(CancellationToken ctn = default)
+        {
+            if (_entities is null) throw new InvalidOperationException("Has not been used of method Where");
+
+            _repository.InitTriggers(_entities);
+            await _repository.OnBeforeUpdate(ctn);
+            await _context.SaveChangesAsync(ctn);
+            await _repository.OnAfterUpdate(ctn);
         }
     }
 }

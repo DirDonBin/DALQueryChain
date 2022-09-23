@@ -23,84 +23,40 @@ namespace Sample.Linq2Db.Controllers
         [HttpGet("OneTest")]
         public async Task<IActionResult> TestOne()
         {
-            //var user = await _qs.For<User>().Insert.InsertWithObjectAsync(new User
+            //var users = new List<User>();
+
+            //for (int i = 0; i < 50; i++)
             //{
-            //    AccessFailedCount = 1,
-            //    CreateAt = DateTime.Now,
-            //    DeleteAt = DateTime.Now,
-            //    Email = Guid.NewGuid().ToString(),
-            //    EmailConfirmed = false,
-            //    ModifyAt = DateTime.Now,
-            //    PasswordHash = "",
-            //    PhoneConfirmed = false,
-            //    RoleId = 1,
-            //    Salt = "",
-            //    TwoFactorEnabled = false,
-            //    Username = Guid.NewGuid().ToString()
-            //});
-
-            //var users = await _qs.For<User>().Get.ToListAsync();
-
-            //var en = users.AsEnumerable();
-
-            //foreach (var useren in en)
-            //{
-            //    useren.Username = "Test Change Field";
+            //    users.Add(new User
+            //    {
+            //        AccessFailedCount = 1,
+            //        CreateAt = DateTime.Now,
+            //        DeleteAt = DateTime.Now,
+            //        Email = Guid.NewGuid().ToString(),
+            //        EmailConfirmed = false,
+            //        ModifyAt = DateTime.Now,
+            //        PasswordHash = "",
+            //        PhoneConfirmed = false,
+            //        RoleId = 1,
+            //        Salt = "",
+            //        Username = Guid.NewGuid().ToString()
+            //    });
             //}
 
-            
+            //await _qs.For<User>().Insert.BulkInsertAsync(users);
 
-            //await _qs.TransactionAsync(async (qs, ctn) => {
-            //    await _qs.For<User>().Insert.InsertWithObjectAsync(new User
-            //    {
-            //        AccessFailedCount = 1,
-            //        CreateAt = DateTime.Now,
-            //        DeleteAt = DateTime.Now,
-            //        Email = Guid.NewGuid().ToString(),
-            //        EmailConfirmed = false,
-            //        ModifyAt = DateTime.Now,
-            //        PasswordHash = "",
-            //        PhoneConfirmed = false,
-            //        RoleId = 1,
-            //        Salt = "",
-            //        Username = Guid.NewGuid().ToString()
-            //    }, ctn);
+            //var tmp = _qs.For<User>().Get.ToList();
 
-            //    await _qs.For<User>().Insert.InsertWithObjectAsync(new User
-            //    {
-            //        AccessFailedCount = 1,
-            //        CreateAt = DateTime.Now,
-            //        DeleteAt = DateTime.Now,
-            //        Email = Guid.NewGuid().ToString(),
-            //        EmailConfirmed = false,
-            //        ModifyAt = DateTime.Now,
-            //        PasswordHash = "",
-            //        PhoneConfirmed = false,
-            //        RoleId = 1,
-            //        Salt = "",
-            //        Username = Guid.NewGuid().ToString()
-            //    }, ctn);
+            //tmp.ForEach(x => x.Email = Guid.NewGuid().ToString());
 
-            //    await _qs.For<User>().Insert.InsertWithObjectAsync(new User
-            //    {
-            //        AccessFailedCount = 1,
-            //        CreateAt = DateTime.Now,
-            //        DeleteAt = DateTime.Now,
-            //        Email = Guid.NewGuid().ToString(),
-            //        EmailConfirmed = false,
-            //        ModifyAt = DateTime.Now,
-            //        PasswordHash = "",
-            //        PhoneConfirmed = false,
-            //        RoleId = 1,
-            //        Salt = "",
-            //        Username = Guid.NewGuid().ToString()
-            //    }, ctn);
-            //});
+            //_qs.For<User>().Update.BulkUpdate(tmp);
 
-            //var ewnum = roles.Select(x => x.Name);
+            _qs.For<User>().Update
+                .Where(x => true)
+                .Set(x => x.Email, () => Guid.NewGuid().ToString())
+                .Update();
 
-            var users2 = await _qs.For<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ThenLoad(x => x.Role).ToListAsync();
-            var users3 = await _qs.For<Role>().Get.LoadWith(x => x.UsersRoleIdIds).ThenLoad(x => x!.Role).ThenLoad(x => x.UsersRoleIdIds).ToListAsync();
+            //await _qs.For<User>().Delete.DeleteAsync(x => x.Id > 0);
 
             return Ok();
         }

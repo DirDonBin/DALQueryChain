@@ -2,6 +2,7 @@
 using DALQueryChain.Interfaces.QueryBuilder;
 using LinqToDB;
 using LinqToDB.Data;
+using System;
 using System.Linq.Expressions;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain
@@ -12,59 +13,62 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public void BulkDelete(IEnumerable<TEntity> entities)
         {
-            _repository.OnBeforeBulkDelete(entities);
+            _repository.InitTriggers(entities);
 
-            //TODO: Проверить скорость работы
-            using var trans = _context.BeginTransaction();
-
-            foreach (var entity in entities)
-            {
-                _context.Delete(entity);
-            }
-
-            trans.Commit();
-
-            _repository.OnAfterBulkDelete(entities);
+            _repository.OnBeforeDelete();
+            _context.Delete(entities);
+            _repository.OnAfterDelete();
         }
 
         public void BulkDelete(Expression<Func<TEntity, bool>> predicate)
         {
-            var data = _context.GetTable<TEntity>().Where(predicate).ToList();
-            BulkDelete(data);
+            _repository.InitTriggers(predicate);
+
+            _repository.OnBeforeDelete();
+            _context.GetTable<TEntity>().Where(predicate).Delete();
+            _repository.OnAfterDelete();
         }
 
         public void Delete(TEntity entity)
         {
-            _repository.OnBeforeDelete(entity);
+            _repository.InitTriggers(entity);
+
+            _repository.OnBeforeDelete();
             _context.Delete(entity);
-            _repository.OnAfterDelete(entity);
+            _repository.OnAfterDelete();
+        }
+
+        public void Delete(Expression<Func<TEntity, bool>> predicate)
+        {
+            _repository.InitTriggers(predicate);
+
+            _repository.OnBeforeDelete();
+            _context.GetTable<TEntity>().Where(predicate).Delete();
+            _repository.OnAfterDelete();
         }
 
         /// <summary>
         /// Soft Delete record. Need to override the SoftDelete method in the repository
         /// </summary>
         /// <param name="entity">Entity model for delete</param>
-        public void SoftDelete(TEntity entity)
-        {
-            _repository.SoftDelete(entity);
-        }
+        public void SoftDelete(TEntity entity) => _repository.SoftDelete(entity);
+
+        /// <summary>
+        /// Soft Delete record. Need to override the SoftDelete method in the repository
+        /// </summary>
+        /// <param name="predicate">Сondition for entries to be deleted</param>
+        public void SoftDelete(Expression<Func<TEntity, bool>> predicate) => _repository.SoftDelete(predicate);
 
         /// <summary>
         /// Soft Delete records. Need to override the SoftDelete method in the repository
         /// </summary>
         /// <param name="entities">Entity models for delete</param>
-        public void BulkSoftDelete(IEnumerable<TEntity> entities)
-        {
-            _repository.SoftBulkDelete(entities);
-        }
+        public void BulkSoftDelete(IEnumerable<TEntity> entities) => _repository.SoftBulkDelete(entities);
 
         /// <summary>
         /// Soft Delete records. Need to override the SoftDelete method in the repository
         /// </summary>
         /// <param name="predicate">Сondition for entries to be deleted</param>
-        public void BulkSoftDelete(Expression<Func<TEntity, bool>> predicate)
-        {
-            _repository.SoftBulkDelete(predicate);
-        }
+        public void BulkSoftDelete(Expression<Func<TEntity, bool>> predicate) => _repository.SoftBulkDelete(predicate);
     }
 }

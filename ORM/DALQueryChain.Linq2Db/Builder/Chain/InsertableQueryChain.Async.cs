@@ -11,30 +11,26 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public async Task BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeBulkInsertAsync(entities, ctn);
-
+            _repository.InitTriggers(entities);
+            await _repository.OnBeforeInsert(ctn);
             await _context.BulkCopyAsync(entities, ctn);
-
-            await _repository.OnAfterBulkInsertAsync(entities, ctn);
+            await _repository.OnAfterInsert(ctn);
         }
 
         public async Task InsertAsync(TEntity entity, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeInsertAsync(entity, ctn);
-
+            _repository.InitTriggers(entity);
+            await _repository.OnBeforeInsert(ctn);
             await _context.InsertAsync(entity, token: ctn);
-
-            await _repository.OnAfterInsertAsync(entity, ctn);
+            await _repository.OnAfterInsert(ctn);
         }
 
         public async Task<TEntity> InsertWithObjectAsync(TEntity entity, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeInsertAsync(entity, ctn);
-
+            _repository.InitTriggers(entity);
+            await _repository.OnBeforeInsert(ctn);
             var res = await _context.GetTable<TEntity>().InsertWithOutputAsync(entity, ctn);
-
-            await _repository.OnAfterInsertAsync(res, ctn);
-
+            await _repository.OnAfterInsert(ctn);
             return res;
         }
     }

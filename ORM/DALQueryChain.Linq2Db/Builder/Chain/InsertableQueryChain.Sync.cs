@@ -11,30 +11,26 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public void BulkInsert(IEnumerable<TEntity> entities)
         {
-            _repository.OnBeforeBulkInsert(entities);
-
+            _repository.InitTriggers(entities);
+            _repository.OnBeforeInsert();
             _context.BulkCopy(entities);
-
-            _repository.OnAfterBulkInsert(entities);
+            _repository.OnAfterInsert();
         }
 
         public void Insert(TEntity entity)
         {
-            _repository.OnBeforeInsert(entity);
-
+            _repository.InitTriggers(entity);
+            _repository.OnBeforeInsert();
             _context.Insert(entity);
-
-            _repository.OnAfterInsert(entity);
+            _repository.OnAfterInsert();
         }
 
         public TEntity InsertWithObject(TEntity entity)
         {
-            _repository.OnBeforeInsert(entity);
-
+            _repository.InitTriggers(entity);
+            _repository.OnBeforeInsert();
             var res = _context.GetTable<TEntity>().InsertWithOutput(entity);
-
-            _repository.OnAfterInsert(res);
-
+            _repository.OnAfterInsert();
             return res;
         }
     }

@@ -5,5 +5,6 @@
     {
         public void Update(TEntity entity);
         public void BulkUpdate(IEnumerable<TEntity> entities);
+        public void Update();
     }
 }

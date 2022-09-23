@@ -12,60 +12,62 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public async Task BulkDeleteAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeBulkDeleteAsync(entities, ctn);
+            _repository.InitTriggers(entities);
 
-            //TODO: Проверить скорость работы
-            using var trans = await _context.BeginTransactionAsync(ctn);
-
-            foreach (var entity in entities)
-            {
-                if (ctn.IsCancellationRequested) break;
-                await _context.DeleteAsync(entity, token: ctn);
-            }
-
-            await trans.CommitAsync(ctn);
-
-            await _repository.OnAfterBulkDeleteAsync(entities, ctn);
+            await _repository.OnBeforeDelete(ctn);
+            await _context.DeleteAsync(entities, token: ctn);
+            await _repository.OnAfterDelete(ctn);
         }
 
         public async Task BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
         {
-            var data = await _context.GetTable<TEntity>().Where(predicate).ToListAsync(ctn);
-            await BulkDeleteAsync(data, ctn);
+            _repository.InitTriggers(predicate);
+
+            await _repository.OnBeforeDelete(ctn);
+            await _context.GetTable<TEntity>().Where(predicate).DeleteAsync(token: ctn);
+            await _repository.OnAfterDelete(ctn);
         }
 
         public async Task DeleteAsync(TEntity entity, CancellationToken ctn = default)
         {
-            await _repository.OnBeforeDeleteAsync(entity, ctn);
+            _repository.InitTriggers(entity);
+
+            await _repository.OnBeforeDelete(ctn);
             await _context.DeleteAsync(entity, token: ctn);
-            await _repository.OnAfterDeleteAsync(entity, ctn);
+            await _repository.OnAfterDelete(ctn);
+        }
+
+        public async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
+        {
+            _repository.InitTriggers(predicate);
+
+            await _repository.OnBeforeDelete(ctn);
+            await _context.GetTable<TEntity>().Where(predicate).DeleteAsync(token: ctn);
+            await _repository.OnAfterDelete(ctn);
         }
 
         /// <summary>
         /// Soft Delete record. Need to override the SoftDelete method in the repository
         /// </summary>
         /// <param name="entity">Entity model for delete</param>
-        public async Task SoftDeleteAsync(TEntity entity, CancellationToken ctn = default)
-        {
-            await _repository.SoftDeleteAsync(entity, ctn);
-        }
+        public Task SoftDeleteAsync(TEntity entity, CancellationToken ctn = default) => _repository.SoftDelete(entity, ctn);
+
+        /// <summary>
+        /// Soft Delete record. Need to override the SoftDelete method in the repository
+        /// </summary>
+        /// <param name="predicate">Сondition for entries to be deleted</param>
+        public Task SoftDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default) => _repository.SoftDelete(predicate, ctn);
 
         /// <summary>
         /// Soft Delete records. Need to override the SoftDelete method in the repository
         /// </summary>
         /// <param name="entities">Entity models for delete</param>
-        public async Task BulkSoftDeleteAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
-        {
-            await _repository.SoftBulkDeleteAsync(entities, ctn);
-        }
+        public Task BulkSoftDeleteAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default) => _repository.SoftBulkDelete(entities, ctn);
 
         /// <summary>
         /// Soft Delete records. Need to override the SoftDelete method in the repository
         /// </summary>
         /// <param name="predicate">Сondition for entries to be deleted</param>
-        public async Task BulkSoftDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
-        {
-            await _repository.SoftBulkDeleteAsync(predicate, ctn);
-        }
+        public Task BulkSoftDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default) => _repository.SoftBulkDelete(predicate, ctn);
     }
 }

@@ -13,16 +13,58 @@ namespace Sample.Linq2Db.Repositories
 
         }
 
-        protected override void OnBeforeInsert(User model)
+        protected override async Task OnBeforeDelete(CancellationToken ctn = default)
         {
-            var users = GetQueryChain<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToList();
+            var deletedEntities = await GetTriggerData(ctn);
+
+            //Some Actions...
         }
 
-        protected override async Task OnBeforeInsertAsync(User model, CancellationToken ctn = default)
+        protected override async Task OnAfterDelete(CancellationToken ctn = default)
         {
-            var users = await GetQueryChain<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToListAsync();
+            var deletedEntities = await GetTriggerData(ctn);
 
-            _query.LoadWith(x => x.Role).ThenLoad(x => x.UsersRoleIdIds).ThenLoad(x => x.Role);
+            //Some Actions...
         }
+
+        protected override async Task OnBeforeUpdate(CancellationToken ctn = default)
+        {
+            var updatedEntities = await GetTriggerData(ctn);
+
+            //Some Actions...
+        }
+
+        protected override async Task OnAfterUpdate(CancellationToken ctn = default)
+        {
+            var updatedEntities = await GetTriggerData(ctn);
+
+            //Some Actions...
+        }
+
+        protected override async Task OnBeforeInsert(CancellationToken ctn = default)
+        {
+            var insertedEntities = await GetTriggerData(ctn);
+
+            //Some Actions...
+        }
+
+        protected override async Task OnAfterInsert(CancellationToken ctn = default)
+        {
+            var insertedEntities = await GetTriggerData(ctn);
+
+            //Some Actions...
+        }
+
+        //protected override void OnBeforeInsert(User model)
+        //{
+        //    var users = GetQueryChain<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToList();
+        //}
+
+        //protected override async Task OnBeforeInsertAsync(User model, CancellationToken ctn = default)
+        //{
+        //    var users = await GetQueryChain<User>().Get.LoadWith(x => x.Role).ThenLoad(x => x!.UsersRoleIdIds).ToListAsync();
+
+        //    _query.LoadWith(x => x.Role).ThenLoad(x => x.UsersRoleIdIds).ThenLoad(x => x.Role);
+        //}
     }
 }
