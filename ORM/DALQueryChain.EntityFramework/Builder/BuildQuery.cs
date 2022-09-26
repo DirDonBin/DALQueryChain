@@ -27,7 +27,9 @@ namespace DALQueryChain.EntityFramework.Builder
         /// <typeparam name="TEntity">Entity Type</typeparam>
         public IQueryBuilder<TEntity> For<TEntity>() where TEntity : class, IDbModelBase
         {
-            var qbc = _cacheQBC.GetOrAdd(typeof(TEntity), new QueryBuilderChain<TContext, TEntity>(_context, this));
+            var qbc = _cacheQBC.ContainsKey(typeof(TEntity))
+                ? _cacheQBC[typeof(TEntity)]
+                : _cacheQBC.GetOrAdd(typeof(TEntity), new QueryBuilderChain<TContext, TEntity>(_context, this));
 
             return (IQueryBuilder<TEntity>)qbc;
         }
