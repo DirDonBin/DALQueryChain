@@ -58,6 +58,7 @@ namespace Sample.Linq2Db.Controllers
             //await _qs.For<User>().Delete.DeleteAsync(x => true);
 
             _qs.Repository<UserRepository>().Test();
+            _qs.Repository<RoleRepository>().Test();
             //var rep1 = _qs.For<User>().Repository<UserRepository>();
             //var rep2 = _qs.For<User>().Repository<UserRepository>();
             //var rep3 = _qs.For<User>().Repository<UserRepository>();
@@ -102,6 +103,7 @@ namespace Sample.Linq2Db.Controllers
             //await _qs.For<User>().Delete.DeleteAsync(x => true);
 
             var rep = _qs.Repository<UserRepository>();
+            var rep2 = _qs.Repository<RoleRepository>();
 
             return Ok();
         }

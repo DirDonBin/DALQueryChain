@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ITestDI, TestDI>();
+builder.Services.AddScoped<ITestDI, TestDI>();
 
 builder.Services.AddQueryChain(Assembly.GetExecutingAssembly());
 

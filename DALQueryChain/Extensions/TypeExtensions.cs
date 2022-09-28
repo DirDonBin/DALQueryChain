@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,10 +22,20 @@ namespace DALQueryChain.Extensions
             if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
                 return true;
 
-            Type baseType = givenType.BaseType!;
-            if (baseType == null) return false;
+            if (givenType.BaseType == null) return false;
 
-            return IsAssignableToGenericType(baseType, genericType);
+            return IsAssignableToGenericType(givenType.BaseType, genericType);
+        }
+
+        public static MethodInfo? GetMethodByAllParrent(this Type givenType, string name, BindingFlags flags)
+        {
+            var method = givenType.GetMethod(name, flags);
+
+            if (method is not null) return method;
+
+            if (givenType.BaseType is null) return null;
+
+            return GetMethodByAllParrent(givenType.BaseType, name, flags);
         }
     }
 }

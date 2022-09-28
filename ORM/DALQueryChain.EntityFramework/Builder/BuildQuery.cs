@@ -93,7 +93,7 @@ namespace DALQueryChain.EntityFramework.Builder
 
             var entityType = repType.BaseType!.GenericTypeArguments.First(x => typeof(IDbModelBase).IsAssignableFrom(x));
 
-            var methodInfo = typeof(TRepository).BaseType!.GetMethod("InitQueryChain", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(TRepository).BaseType!.GetMethodByAllParrent("InitQueryChain", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             methodInfo!.Invoke(obj, new object[] { this, _serviceProvider });
 
             return (TRepository)obj!;
