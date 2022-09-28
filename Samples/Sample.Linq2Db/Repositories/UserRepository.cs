@@ -2,15 +2,18 @@
 using DALQueryChain.Linq2Db.Repositories;
 using LinqToDB;
 using ManualTest.Linq2Db.Context;
+using Sample.Linq2Db.Controllers;
 using static ManualTest.Linq2Db.Context.IdentitySchema;
 
 namespace Sample.Linq2Db.Repositories
 {
     public class UserRepository : BaseRepository<TestContext, User>
     {
-        public UserRepository(TestContext context) : base(context)
-        {
+        private readonly ITestDI _testDI;
 
+        public UserRepository(TestContext context, ITestDI testDI) : base(context)
+        {
+            _testDI = testDI;
         }
 
         protected override async Task OnBeforeDelete(CancellationToken ctn = default)
@@ -53,6 +56,11 @@ namespace Sample.Linq2Db.Repositories
             var insertedEntities = await GetTriggerData(ctn);
 
             //Some Actions...
+        }
+
+        public void Test()
+        {
+            _testDI.Test();
         }
 
         //protected override void OnBeforeInsert(User model)

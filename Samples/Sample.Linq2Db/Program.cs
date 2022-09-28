@@ -2,6 +2,7 @@ using DALQueryChain.Linq2Db;
 using LinqToDB.AspNet;
 using LinqToDB.Configuration;
 using ManualTest.Linq2Db.Context;
+using Sample.Linq2Db.Controllers;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<ITestDI, TestDI>();
 
 builder.Services.AddQueryChain(Assembly.GetExecutingAssembly());
 

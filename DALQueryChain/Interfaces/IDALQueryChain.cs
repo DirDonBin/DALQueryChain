@@ -9,5 +9,7 @@ namespace DALQueryChain.Interfaces
 
         void Transaction(Action<IDALQueryChain<TContext>> operation);
         Task TransactionAsync(Func<IDALQueryChain<TContext>, CancellationToken, Task> operation, CancellationToken ctn = default);
+
+        TRepository Repository<TRepository>();
     }
 }

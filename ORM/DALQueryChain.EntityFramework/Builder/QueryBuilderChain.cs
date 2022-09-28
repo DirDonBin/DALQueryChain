@@ -23,7 +23,7 @@ namespace DALQueryChain.EntityFramework.Builder
 
 
 
-        internal QueryBuilderChain(TContext context, IDALQueryChain<TContext>? defQC = null) : base(context, defQC)
+        internal QueryBuilderChain(TContext context, IServiceProvider serviceProvider, IDALQueryChain<TContext>? defQC = null) : base(context, serviceProvider, defQC)
         {
             _baseRepository = GetGenericRepository<TEntity>();
         }

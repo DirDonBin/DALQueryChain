@@ -4,6 +4,7 @@ using DALQueryChain.Linq2Db.Builder;
 using DALQueryChain.Linq2Db.Triggres;
 using LinqToDB;
 using LinqToDB.Data;
+using System;
 using System.Linq.Expressions;
 
 namespace DALQueryChain.Linq2Db.Repositories
@@ -22,12 +23,11 @@ namespace DALQueryChain.Linq2Db.Repositories
         {
             _context = context;
             _query = context.GetTable<TEntity>().AsQueryable();
-
         }
 
-        internal void InitQueryChain(IDALQueryChain<TContext>? dalQueryChain)
+        internal void InitQueryChain(IDALQueryChain<TContext>? dalQueryChain, IServiceProvider serviceProvider)
         {
-            _dalQueryChain = dalQueryChain ?? new BuildQuery<TContext>(_context);
+            _dalQueryChain = dalQueryChain ?? new BuildQuery<TContext>(_context, serviceProvider);
         }
 
         protected IQueryBuilder<T> GetQueryChain<T>() where T : class, IDbModelBase => _dalQueryChain!.For<T>();

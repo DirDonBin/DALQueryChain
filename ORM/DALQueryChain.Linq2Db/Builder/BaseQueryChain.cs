@@ -13,11 +13,13 @@ namespace DALQueryChain.Linq2Db.Builder
         private readonly IDALQueryChain<TContext>? _defQC;
 
         private ConcurrentDictionary<Type, object?> _cachedRepositories = new();
+        private readonly IServiceProvider _serviceProvider;
 
-        internal BaseQueryChain(TContext context, IDALQueryChain<TContext>? defQC = null)
+        internal BaseQueryChain(TContext context, IServiceProvider serviceProvider, IDALQueryChain<TContext>? defQC = null)
         {
             _context = context;
             _defQC = defQC;
+            _serviceProvider = serviceProvider;
         }
 
         internal TRepository? GetRepository<TRepository, TEntity>()
@@ -38,7 +40,7 @@ namespace DALQueryChain.Linq2Db.Builder
             }
 
             var rep = (BaseRepository<TContext, TEntity>)obj!;
-            rep.InitQueryChain(_defQC);
+            rep.InitQueryChain(_defQC, _serviceProvider);
 
             return (TRepository?)(object)rep;
         }
@@ -67,7 +69,7 @@ namespace DALQueryChain.Linq2Db.Builder
             }
 
             var rep = (BaseRepository<TContext, TEntity>)obj!;
-            rep.InitQueryChain(_defQC);
+            rep.InitQueryChain(_defQC, _serviceProvider);
 
             return rep;
 

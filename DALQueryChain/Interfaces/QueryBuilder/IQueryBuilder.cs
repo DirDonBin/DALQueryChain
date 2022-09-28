@@ -8,6 +8,8 @@ namespace DALQueryChain.Interfaces.QueryBuilder
         public IInsertableQueryChain<TEntity> Insert { get; }
         public IUpdatableQueryChain<TEntity> Update { get; }
         public IDeletableQueryChain<TEntity> Delete { get; }
+
+        [Obsolete("Use IDALQueryChain<TContext>().Repository<TRepository>()")]
         public TRepository? Repository<TRepository>() where TRepository : IRepository;
     }
 }

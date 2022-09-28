@@ -57,10 +57,10 @@ namespace Sample.Linq2Db.Controllers
 
             //await _qs.For<User>().Delete.DeleteAsync(x => true);
 
-            var rep = _qs.For<User>().Repository<UserRepository>();
-            var rep1 = _qs.For<User>().Repository<UserRepository>();
-            var rep2 = _qs.For<User>().Repository<UserRepository>();
-            var rep3 = _qs.For<User>().Repository<UserRepository>();
+            _qs.Repository<UserRepository>().Test();
+            //var rep1 = _qs.For<User>().Repository<UserRepository>();
+            //var rep2 = _qs.For<User>().Repository<UserRepository>();
+            //var rep3 = _qs.For<User>().Repository<UserRepository>();
 
             return Ok();
         }
@@ -101,9 +101,19 @@ namespace Sample.Linq2Db.Controllers
 
             //await _qs.For<User>().Delete.DeleteAsync(x => true);
 
-            var rep = _qs.For<User>().Repository<UserRepository>();
+            var rep = _qs.Repository<UserRepository>();
 
             return Ok();
         }
+    }
+
+    public interface ITestDI
+    {
+        void Test();
+    }
+
+    public class TestDI : ITestDI
+    {
+        public void Test() { }
     }
 }

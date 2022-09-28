@@ -22,7 +22,7 @@ namespace DALQueryChain.Linq2Db.Builder
 
         IDeletableQueryChain<TEntity> IQueryBuilder<TEntity>.Delete => new DeletableQueryChain<TContext, TEntity>(_context, _baseRepository);
 
-        internal QueryBuilderChain(TContext context, IDALQueryChain<TContext>? defQC = null) : base(context, defQC)
+        internal QueryBuilderChain(TContext context, IServiceProvider serviceProvider, IDALQueryChain<TContext>? defQC = null) : base(context, serviceProvider, defQC)
         {
             _baseRepository = GetGenericRepository<TEntity>();
         }
