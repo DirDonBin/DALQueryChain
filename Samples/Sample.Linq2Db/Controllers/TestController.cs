@@ -1,5 +1,4 @@
 using DALQueryChain.Interfaces;
-using DALQueryChain.Linq2Db.Extensions;
 using ManualTest.Linq2Db.Context;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Linq2Db.Repositories;
@@ -11,13 +10,10 @@ namespace Sample.Linq2Db.Controllers
     [Route("[controller]")]
     public class TestController : ControllerBase
     {
-
-        private readonly ILogger<TestController> _logger;
         private readonly IDALQueryChain<TestContext> _qs;
 
-        public TestController(ILogger<TestController> logger, IDALQueryChain<TestContext> qs)
+        public TestController(IDALQueryChain<TestContext> qs)
         {
-            _logger = logger;
             _qs = qs;
         }
 
@@ -56,6 +52,23 @@ namespace Sample.Linq2Db.Controllers
             //var tmp = _qs.For<User>().Get.Select(x => x.Email).Max();
 
             //await _qs.For<User>().Delete.DeleteAsync(x => true);
+
+            var user = new User
+            {
+                AccessFailedCount = 1,
+                CreateAt = DateTime.Now,
+                DeleteAt = DateTime.Now,
+                Email = Guid.NewGuid().ToString(),
+                EmailConfirmed = false,
+                ModifyAt = DateTime.Now,
+                PasswordHash = "",
+                PhoneConfirmed = false,
+                RoleId = 1,
+                Salt = "",
+                Username = Guid.NewGuid().ToString()
+            };
+
+            var user1 = await _qs.For<User>().Insert.InsertWithObjectAsync(user);
 
             _qs.Repository<UserRepository>().Test();
             _qs.Repository<RoleRepository>().Test();

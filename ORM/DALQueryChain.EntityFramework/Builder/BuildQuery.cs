@@ -36,7 +36,7 @@ namespace DALQueryChain.EntityFramework.Builder
         {
             var qbc = _cacheQBC.ContainsKey(typeof(TEntity))
                 ? _cacheQBC[typeof(TEntity)]
-                : _cacheQBC.GetOrAdd(typeof(TEntity), new QueryBuilderChain<TContext, TEntity>(_context, _serviceProvider, this));
+                : _cacheQBC.GetOrAdd(typeof(TEntity), new QueryBuilderChain<TContext, TEntity>(_context, this));
 
             return (IQueryBuilder<TEntity>)qbc;
         }
@@ -94,9 +94,39 @@ namespace DALQueryChain.EntityFramework.Builder
             var entityType = repType.BaseType!.GenericTypeArguments.First(x => typeof(IDbModelBase).IsAssignableFrom(x));
 
             var methodInfo = typeof(TRepository).BaseType!.GetMethodByAllParrent("InitQueryChain", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-            methodInfo!.Invoke(obj, new object[] { this, _serviceProvider });
+            methodInfo!.Invoke(obj, new object[] { this });
 
             return (TRepository)obj!;
+        }
+
+        internal BaseRepository<TContext, TEntity> GetGenericRepository<TEntity>()
+            where TEntity : class, IDbModelBase
+        {
+            object? obj = null;
+
+            var repType = Configure.CachedRepoTypes.FirstOrDefault(x => typeof(BaseRepository<TContext, TEntity>).IsAssignableFrom(x));
+
+            if (repType is not null && (!_cachedRepositories.TryGetValue(repType, out obj) || obj is null))
+            {
+                obj = ActivatorUtilities.CreateInstance(_serviceProvider, repType, _context);
+                _cachedRepositories.TryAdd(repType, obj);
+            }
+
+            if (obj is null)
+            {
+                repType = typeof(BaseRepository<TContext, TEntity>);
+                if (!_cachedRepositories.TryGetValue(repType, out obj) || obj is null)
+                {
+                    obj = new GenericRepository<TContext, TEntity>(_context);
+                    _cachedRepositories.TryAdd(repType, (BaseRepository<TContext, TEntity>)obj);
+                }
+            }
+
+            var rep = (BaseRepository<TContext, TEntity>)obj!;
+            rep.InitQueryChain(this);
+
+            return rep;
+
         }
     }
 }

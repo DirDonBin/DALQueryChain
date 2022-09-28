@@ -1,7 +1,6 @@
 ﻿using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
 using Microsoft.EntityFrameworkCore;
-using System.Net.NetworkInformation;
 
 namespace DALQueryChain.EntityFramework.Builder.Chain
 {
