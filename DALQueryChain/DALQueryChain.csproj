@@ -20,6 +20,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\QueryBuilder\IUpdatableSetterQueryChain.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\LICENSE.txt">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -28,6 +32,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Include="Interfaces\QueryBuilder\IUpdatableSetterQueryChain.cs" />
   </ItemGroup>
 
   <ItemGroup>

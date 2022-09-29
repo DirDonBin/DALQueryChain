@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain
 {
-    internal partial class UpdatableQueryChain<TContext, TEntity> : IUpdatableQueryChain<TEntity>
+    internal partial class UpdatableSetterQueryChain<TContext, TEntity> : IUpdatableSetterQueryChain<TEntity>
         where TContext : DataConnection
         where TEntity : class, IDbModelBase
     {
@@ -17,19 +17,13 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         private IQueryable<TEntity>? _prevQuery = null;
         private IUpdatable<TEntity>? _prevUpdateQuery = null;
 
-        public UpdatableQueryChain(TContext context, BaseRepository<TContext, TEntity> repository)
+        public UpdatableSetterQueryChain(TContext context, BaseRepository<TContext, TEntity> repository)
         {
             _repository = repository;
             _context = context;
         }
 
-        public IUpdatableSetterQueryChain<TEntity> Where(Expression<Func<TEntity, bool>> predicate)
-        {
-            _prevQuery = _context.GetTable<TEntity>().Where(predicate);
-            return new UpdatableSetterQueryChain<TContext, TEntity>(_context, _repository);
-        }
-
-        public IUpdatableQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, TV value)
+        public IUpdatableSetterQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, TV value)
         {
             if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
 
@@ -42,7 +36,7 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             return this;
         }
 
-        public IUpdatableQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, Expression<Func<TV>> value)
+        public IUpdatableSetterQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, Expression<Func<TV>> value)
         {
             if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
 

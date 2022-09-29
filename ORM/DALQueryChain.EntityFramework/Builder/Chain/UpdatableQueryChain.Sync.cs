@@ -34,15 +34,5 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
             _context.SaveChanges();
             _repository.OnAfterUpdate();
         }
-
-        public void Update()
-        {
-            if (_entities is null) throw new InvalidOperationException("Has not been used of method Where");
-
-            _repository.InitTriggers(_entities);
-            _repository.OnBeforeUpdate();
-            _context.SaveChanges();
-            _repository.OnAfterUpdate();
-        }
     }
 }

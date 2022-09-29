@@ -53,6 +53,8 @@ namespace Sample.Linq2Db.Controllers
 
             //await _qs.For<User>().Delete.DeleteAsync(x => true);
 
+            //_qs.For<User>().Update.Where(x => true).Set
+
             var user = new User
             {
                 AccessFailedCount = 1,

@@ -9,8 +9,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         where TContext : DbContext
         where TEntity : class, IDbModelBase
     {
-        private BaseRepository<TContext, TEntity> _repository;
-        private TContext _context;
+        private readonly BaseRepository<TContext, TEntity> _repository;
+        private readonly TContext _context;
 
         public InsertableQueryChain(TContext context, BaseRepository<TContext, TEntity> repository)
         {

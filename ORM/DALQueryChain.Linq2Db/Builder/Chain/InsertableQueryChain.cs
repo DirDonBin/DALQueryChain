@@ -9,8 +9,8 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         where TContext : DataConnection
         where TEntity : class, IDbModelBase
     {
-        private BaseRepository<TContext, TEntity> _repository;
-        private TContext _context;
+        private readonly BaseRepository<TContext, TEntity> _repository;
+        private readonly TContext _context;
 
         public InsertableQueryChain(TContext context, BaseRepository<TContext, TEntity> repository)
         {
