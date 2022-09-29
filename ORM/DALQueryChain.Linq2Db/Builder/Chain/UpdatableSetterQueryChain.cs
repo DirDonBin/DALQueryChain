@@ -13,14 +13,13 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         where TEntity : class, IDbModelBase
     {
         private readonly BaseRepository<TContext, TEntity> _repository;
-        private readonly TContext _context;
-        private IQueryable<TEntity>? _prevQuery = null;
-        private IUpdatable<TEntity>? _prevUpdateQuery = null;
+        private readonly IQueryable<TEntity>? _prevQuery;
+        private IUpdatable<TEntity>? _prevUpdateQuery;
 
-        public UpdatableSetterQueryChain(TContext context, BaseRepository<TContext, TEntity> repository)
+        public UpdatableSetterQueryChain(BaseRepository<TContext, TEntity> repository, IQueryable<TEntity>? prevQuery)
         {
             _repository = repository;
-            _context = context;
+            _prevQuery = prevQuery;
         }
 
         public IUpdatableSetterQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, TV value)

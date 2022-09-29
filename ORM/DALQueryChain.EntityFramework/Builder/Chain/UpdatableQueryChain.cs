@@ -10,9 +10,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         where TContext : DbContext
         where TEntity : class, IDbModelBase
     {
-        private BaseRepository<TContext, TEntity> _repository;
-        private TContext _context;
-        private IEnumerable<TEntity>? _entities = null;
+        private readonly BaseRepository<TContext, TEntity> _repository;
+        private readonly TContext _context;
 
         public UpdatableQueryChain(TContext context, BaseRepository<TContext, TEntity> repository)
         {
@@ -21,9 +20,6 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         }
 
         public IUpdatableSetterQueryChain<TEntity> Where(Expression<Func<TEntity, bool>> predicate)
-        {
-            _entities = _context.Set<TEntity>().Where(predicate).ToList();
-            return new UpdatableSetterQueryChain<TContext, TEntity>(_context, _repository);
-        }
+            => new UpdatableSetterQueryChain<TContext, TEntity>(_context, _repository, _context.Set<TEntity>().Where(predicate).ToList());
     }
 }

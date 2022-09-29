@@ -24,16 +24,5 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             await _context.UpdateAsync(entity, token: ctn);
             await _repository.OnAfterUpdate(ctn);
         }
-
-        public async Task UpdateAsync(CancellationToken ctn = default)
-        {
-            if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
-            if (_prevUpdateQuery is null) throw new InvalidOperationException("No update entity values ​​set. Use Method 'Set'"); ;
-
-            _repository.InitTriggers(_prevQuery);
-            await _repository.OnBeforeUpdate(ctn);
-            await _prevUpdateQuery.UpdateAsync(ctn);
-            await _repository.OnAfterUpdate(ctn);
-        }
     }
 }

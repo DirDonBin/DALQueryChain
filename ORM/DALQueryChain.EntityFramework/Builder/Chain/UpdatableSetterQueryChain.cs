@@ -12,12 +12,13 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         private readonly BaseRepository<TContext, TEntity> _repository;
         private readonly TContext _context;
-        private readonly IEnumerable<TEntity>? _entities = null;
+        private readonly IEnumerable<TEntity> _entities;
 
-        public UpdatableSetterQueryChain(TContext context, BaseRepository<TContext, TEntity> repository)
+        public UpdatableSetterQueryChain(TContext context, BaseRepository<TContext, TEntity> repository, IEnumerable<TEntity> entities)
         {
             _repository = repository;
             _context = context;
+            _entities = entities;
         }
 
         public IUpdatableSetterQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, TV value)
