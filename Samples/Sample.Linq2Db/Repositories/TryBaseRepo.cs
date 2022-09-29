@@ -5,7 +5,7 @@ using Sample.Linq2Db.Controllers;
 
 namespace Sample.Linq2Db.Repositories
 {
-    public abstract class TryBaseRepo<TContext, TEntity>: BaseRepository<TContext, TEntity>
+    public abstract class TryBaseRepo<TContext, TEntity> : BaseRepository<TContext, TEntity>
         where TContext : DataConnection
         where TEntity : class, IDbModelBase
     {

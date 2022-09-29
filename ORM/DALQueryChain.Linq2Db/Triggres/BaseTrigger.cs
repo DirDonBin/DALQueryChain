@@ -1,13 +1,7 @@
 ﻿using DALQueryChain.Interfaces;
 using LinqToDB;
 using LinqToDB.Data;
-using LinqToDB.SqlQuery;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DALQueryChain.Linq2Db.Triggres
 {

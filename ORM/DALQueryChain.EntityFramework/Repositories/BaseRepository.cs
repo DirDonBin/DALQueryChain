@@ -1,9 +1,7 @@
-﻿using DALQueryChain.EntityFramework.Builder;
-using DALQueryChain.EntityFramework.Triggres;
+﻿using DALQueryChain.EntityFramework.Triggres;
 using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 
 namespace DALQueryChain.EntityFramework.Repositories
@@ -24,9 +22,9 @@ namespace DALQueryChain.EntityFramework.Repositories
             _query = context.Set<TEntity>().AsQueryable();
         }
 
-        internal void InitQueryChain(IDALQueryChain<TContext>? dalQueryChain, IServiceProvider serviceProvider)
+        internal void InitQueryChain(IDALQueryChain<TContext> dalQueryChain)
         {
-            _dalQueryChain = dalQueryChain ??= new BuildQuery<TContext>(_context, serviceProvider);
+            _dalQueryChain = dalQueryChain;
         }
 
         protected IQueryBuilder<T> GetQueryChain<T>() where T : class, IDbModelBase => _dalQueryChain!.For<T>();

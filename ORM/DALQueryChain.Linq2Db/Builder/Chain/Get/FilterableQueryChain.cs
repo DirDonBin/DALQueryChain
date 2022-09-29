@@ -1,7 +1,6 @@
 ﻿using DALQueryChain.Interfaces.QueryBuilder.Get;
 using DALQueryChain.Linq2Db.Builder.Chain.Get;
 using LinqToDB;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain

@@ -1,6 +1,4 @@
-﻿using DALQueryChain.Interfaces.QueryBuilder.Get;
-
-namespace DALQueryChain.Linq2Db.Builder.Chain.Get
+﻿namespace DALQueryChain.Linq2Db.Builder.Chain.Get
 {
     internal abstract class BaseGetQueryChain<T>
     {

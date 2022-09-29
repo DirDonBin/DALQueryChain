@@ -2,7 +2,6 @@
 using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace DALQueryChain.EntityFramework.Builder.Chain
 {

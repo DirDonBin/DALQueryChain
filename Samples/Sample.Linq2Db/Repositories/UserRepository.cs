@@ -1,6 +1,4 @@
-﻿using DALQueryChain.Linq2Db.Extensions;
-using DALQueryChain.Linq2Db.Repositories;
-using LinqToDB;
+﻿using DALQueryChain.Linq2Db.Repositories;
 using ManualTest.Linq2Db.Context;
 using Sample.Linq2Db.Controllers;
 using static ManualTest.Linq2Db.Context.IdentitySchema;

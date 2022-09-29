@@ -2,9 +2,6 @@
 using DALQueryChain.Interfaces.QueryBuilder;
 using LinqToDB;
 using LinqToDB.Data;
-using LinqToDB.Linq;
-using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain
 {
@@ -16,7 +13,7 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         {
             _repository.InitTriggers(entities);
             _repository.OnBeforeUpdate();
-            
+
             using var transaction = _context.BeginTransaction();
 
             foreach (var entity in entities)
