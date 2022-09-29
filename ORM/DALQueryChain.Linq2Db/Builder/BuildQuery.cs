@@ -4,6 +4,7 @@ using DALQueryChain.Interfaces.QueryBuilder;
 using DALQueryChain.Linq2Db.Repositories;
 using LinqToDB.Data;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Concurrent;
 using System.Reflection;
 
@@ -13,7 +14,7 @@ namespace DALQueryChain.Linq2Db.Builder
     /// Helper for building queries to database
     /// </summary>
     /// <typeparam name="TContext">Data Connection</typeparam>
-    public class BuildQuery<TContext> : IDALQueryChain<TContext>
+    public class BuildQuery<TContext> : IDALQueryChain<TContext>, IDisposable
         where TContext : notnull, DataConnection
     {
         private readonly TContext _context;
@@ -26,6 +27,14 @@ namespace DALQueryChain.Linq2Db.Builder
             _context = context;
             _cacheQBC = new();
             _serviceProvider = serviceProvider;
+        }
+
+        public async void Dispose()
+        {
+            await _context.DisposeAsync();
+            _cachedRepositories.Clear();
+            _cacheQBC.Clear();
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>

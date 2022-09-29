@@ -13,7 +13,7 @@ namespace DALQueryChain.EntityFramework.Builder
     /// Helper for building queries to database
     /// </summary>
     /// <typeparam name="TContext">Data Connection</typeparam>
-    public class BuildQuery<TContext> : IDALQueryChain<TContext>
+    public class BuildQuery<TContext> : IDALQueryChain<TContext>, IDisposable
         where TContext : notnull, DbContext
     {
         private readonly TContext _context;
@@ -26,6 +26,14 @@ namespace DALQueryChain.EntityFramework.Builder
             _context = context;
             _cacheQBC = new();
             _serviceProvider = serviceProvider;
+        }
+
+        public async void Dispose()
+        {
+            await _context.DisposeAsync();
+            _cachedRepositories.Clear();
+            _cacheQBC.Clear();
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
