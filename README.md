@@ -191,4 +191,4 @@ var repository = queryChain.Repository<UserRepository>();
 repository.Method();
 ```
 
-P.S. Если используете в продакшене, молитесь, что бы в один прекрасный день оно не упало
+P.S. Если используете в продакшене, могу пожелать лишь удачи
