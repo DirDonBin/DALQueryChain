@@ -16,12 +16,8 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageOutputPath>..\nuget</PackageOutputPath>
-    <VersionPrefix>1.0.14</VersionPrefix>
+    <VersionPrefix>1.0.17</VersionPrefix>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Interfaces\QueryBuilder\IUpdatableSetterQueryChain.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\LICENSE.txt">
@@ -32,7 +28,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="Interfaces\QueryBuilder\IUpdatableSetterQueryChain.cs" />
   </ItemGroup>
 
   <ItemGroup>
