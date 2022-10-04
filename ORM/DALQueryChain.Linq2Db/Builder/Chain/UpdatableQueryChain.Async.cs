@@ -13,7 +13,17 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         {
             _repository.InitTriggers(entities);
             await _repository.OnBeforeUpdate(ctn);
-            await _context.UpdateAsync(entities, token: ctn);
+
+            using var transaction = await _context.BeginTransactionAsync();
+
+            foreach (var entity in entities)
+            {
+                if (ctn.IsCancellationRequested) break;
+                await _context.UpdateAsync(entity, token: ctn);
+            }
+
+            await transaction.CommitAsync(ctn);
+
             await _repository.OnAfterUpdate(ctn);
         }
 

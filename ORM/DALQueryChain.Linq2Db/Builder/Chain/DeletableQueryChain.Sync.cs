@@ -16,6 +16,14 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
             _repository.OnBeforeDelete();
             _context.Delete(entities);
+
+            using var transaction = _context.BeginTransaction();
+
+            foreach (var entity in entities)
+                _context.Delete(entity);
+
+            transaction.Commit();
+
             _repository.OnAfterDelete();
         }
 
