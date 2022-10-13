@@ -190,5 +190,3 @@ public class UserRepository : BaseRepository<TestContext, User>
 var repository = queryChain.Repository<UserRepository>();
 repository.Method();
 ```
-
-P.S. Если используете в продакшене, могу пожелать лишь удачи
