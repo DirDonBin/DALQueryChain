@@ -14,8 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DALQueryChain\DALQueryChain.csproj" />
-    <ProjectReference Include="..\..\ORM\DALQueryChain.Linq2Db\DALQueryChain.Linq2Db.csproj" />
+    <ProjectReference Include="..\..\src\DALQueryChain\DALQueryChain.csproj" />
+    <ProjectReference Include="..\..\src\ORM\DALQueryChain.Linq2Db\DALQueryChain.Linq2Db.csproj" />
+    <ProjectReference Include="..\..\src\DALQueryChain.Filter\DALQueryChain.Filter.csproj" />
   </ItemGroup>
 
   <ItemGroup>

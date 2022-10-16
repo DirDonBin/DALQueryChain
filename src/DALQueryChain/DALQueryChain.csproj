@@ -15,16 +15,16 @@
     <PackageProjectUrl>https://github.com/DirDonBin/DALQueryChain</PackageProjectUrl>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageOutputPath>..\nuget</PackageOutputPath>
+    <PackageOutputPath>..\..\nuget</PackageOutputPath>
     <VersionPrefix>1.0.18</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE.txt">
+    <None Include="..\..\LICENSE.txt">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\README.md">
+    <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
