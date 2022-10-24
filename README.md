@@ -3,7 +3,7 @@
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/DALQueryChain?includePreReleases=true)](https://www.nuget.org/packages/DALQueryChain/)
 [![License](https://img.shields.io/github/license/linq2db/linq2db)](LICENSE.txt)
 
-DALQueryChain позволяет упростить работу с DAL уровнем, предоставляя гибкую систему составления запроса, закрытым от прямого доступа к ORM и IQuearyble.
+DALQueryChain позволяет упростить работу с DAL уровнем, предоставляя гибкую систему составления запроса, закрытым от прямого доступа к ORM и IQueryable.
 
 ## **Начало работы:**
 
