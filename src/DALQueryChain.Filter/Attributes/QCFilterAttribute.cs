@@ -15,5 +15,15 @@ namespace DALQueryChain.Filter.Attributes
         {
 
         }
+
+        public QCFilterAttribute(string name)
+        {
+            Name = name;
+        }
+
+        public QCFilterAttribute(object name)
+        {
+            Name = name.ToString()!;
+        }
     }
 }

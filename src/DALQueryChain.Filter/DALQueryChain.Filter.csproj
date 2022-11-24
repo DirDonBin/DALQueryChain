@@ -10,4 +10,8 @@
     <PackageReference Include="GrEmit" Version="3.4.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DALQueryChain\DALQueryChain.csproj" />
+  </ItemGroup>
+
 </Project>

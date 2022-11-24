@@ -5,6 +5,7 @@
 // </auto-generated>
 // ---------------------------------------------------------------------------------------------------
 
+using LinqToDB;
 using LinqToDB.Configuration;
 using LinqToDB.Data;
 
@@ -15,35 +16,26 @@ namespace ManualTest.Linq2Db.Context
 {
 	public partial class TestContext : DataConnection
 	{
-		#region Schemas
-		public void InitSchemas()
-		{
-			Identity = new IdentitySchema.DataContext(this);
-		}
-
-		public IdentitySchema.DataContext Identity { get; set; } = null!;
-		#endregion
-
 		public TestContext()
 		{
-			InitSchemas();
 			InitDataContext();
 		}
 
 		public TestContext(string configuration)
 			: base(configuration)
 		{
-			InitSchemas();
 			InitDataContext();
 		}
 
 		public TestContext(LinqToDBConnectionOptions<TestContext> options)
 			: base(options)
 		{
-			InitSchemas();
 			InitDataContext();
 		}
 
 		partial void InitDataContext();
+
+		public ITable<Category> Categories => this.GetTable<Category>();
+		public ITable<Product>  Products   => this.GetTable<Product>();
 	}
 }

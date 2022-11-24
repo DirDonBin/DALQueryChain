@@ -10,10 +10,14 @@ namespace DALQueryChain.Filter
 {
     internal class TestIL
     {
-        internal Func<TestModel, bool> Where(TestModel filter)
+        internal Func<TestModel, bool> Where(TestModel filter) => x => (x.Id == filter.Id && x.DateCreate <= filter.DateCreate) || (x.Id == filter.Id && x.Name.Contains(filter.Name));
+
+        internal bool Test()
         {
-            Func<TestModel, bool> tmp = x => (x.Id == filter.Id && x.DateCreate <= filter.DateCreate) || (x.Id == filter.Id && x.Name.Contains(filter.Name));
-            return tmp;
+            Guid? a = new();
+            Guid? b = new();
+
+            return b == a;
         }
     }
 }

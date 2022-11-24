@@ -13,5 +13,17 @@ namespace DALQueryChain.Filter.Attributes
         {
             ConditionTypes = conditionTypes;
         }
+
+        public QCFilterFieldAttribute(string name, params QSFilterConditionType[] conditionTypes)
+        {
+            ConditionTypes = conditionTypes;
+            Name = name;
+        }
+
+        public QCFilterFieldAttribute(object name, params QSFilterConditionType[] conditionTypes)
+        {
+            ConditionTypes = conditionTypes;
+            Name = name.ToString()!;
+        }
     }
 }

@@ -14,8 +14,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ITestDI, TestDI>();
-
 builder.Services.AddQueryChain(Assembly.GetExecutingAssembly());
 
 builder.Services.AddLinqToDBContext<TestContext>((provider, options) =>
