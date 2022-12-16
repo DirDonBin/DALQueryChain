@@ -15,6 +15,7 @@ namespace DALQueryChain.EntityFramework.Repositories
 
         protected readonly IQueryable<TEntity> _query;
         protected IQueryBuilder<TEntity> QueryChain => _dalQueryChain!.For<TEntity>();
+        protected TRepository GetRepository<TRepository>() => _dalQueryChain!.Repository<TRepository>();
 
         public BaseRepository(TContext context) : base(context)
         {
