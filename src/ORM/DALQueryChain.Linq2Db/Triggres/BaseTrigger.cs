@@ -57,10 +57,7 @@ namespace DALQueryChain.Linq2Db.Triggres
         #region Get Data
 
         protected async Task<IEnumerable<TEntity>?> GetTriggerData(CancellationToken ctn = default)
-        {
-            _entities ??= (_query is null ? null : await _query.ToListAsync(ctn));
-            return _entities;
-        }
+            => _query is null ? _entities : await _query.ToListAsync(ctn);
 
         #endregion
 

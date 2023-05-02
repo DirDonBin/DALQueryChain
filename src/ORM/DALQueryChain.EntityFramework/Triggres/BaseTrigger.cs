@@ -31,12 +31,24 @@ namespace DALQueryChain.EntityFramework.Triggres
         {
             ClearData();
             _entities = new List<TEntity>() { entity };
+
+            if (!_entities.Any())
+            {
+                IsBeforeTriggerOn = false;
+                IsAfterTriggerOn = false;
+            }
         }
 
         internal void InitTriggers(IEnumerable<TEntity> entities)
         {
             ClearData();
             _entities = entities;
+
+            if (!_entities.Any())
+            {
+                IsBeforeTriggerOn = false;
+                IsAfterTriggerOn = false;
+            }
         }
 
         internal void InitTriggers(IQueryable<TEntity> query)

@@ -10,10 +10,12 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public async Task BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+            ArgumentNullException.ThrowIfNull(entities);
+
+            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
                 _repository.InitTriggers(entities);
 
-            if (_repository.IsBeforeTriggerOn)
+            if (_repository.IsBeforeTriggerOn && entities.Any())
                 await _repository.OnBeforeUpdate(ctn);
 
             //TODO: Проверить скорость работы
@@ -29,12 +31,14 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             await trans.CommitAsync(ctn);
 
-            if (_repository.IsAfterTriggerOn)
+            if (_repository.IsAfterTriggerOn && entities.Any())
                 await _repository.OnAfterUpdate(ctn);
         }
 
         public async Task UpdateAsync(TEntity entity, CancellationToken ctn = default)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(entity);
 

@@ -10,10 +10,12 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public async Task BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+            ArgumentNullException.ThrowIfNull(entities);
+
+            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
                 _repository.InitTriggers(entities);
 
-            if (_repository.IsBeforeTriggerOn)
+            if (_repository.IsBeforeTriggerOn && entities.Any())
                 await _repository.OnBeforeInsert(ctn);
 
             using var trans = await _context.Database.BeginTransactionAsync(ctn);
@@ -28,12 +30,14 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             await trans.CommitAsync(ctn);
 
-            if (_repository.IsAfterTriggerOn)
+            if (_repository.IsAfterTriggerOn && entities.Any())
                 await _repository.OnAfterInsert(ctn);
         }
 
         public async Task InsertAsync(TEntity entity, CancellationToken ctn = default)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(entity);
 
@@ -49,6 +53,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public async Task<TEntity> InsertWithObjectAsync(TEntity entity, CancellationToken ctn = default)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(entity);
 

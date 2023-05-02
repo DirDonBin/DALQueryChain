@@ -10,10 +10,12 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public void BulkInsert(IEnumerable<TEntity> entities)
         {
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+            ArgumentNullException.ThrowIfNull(entities);
+
+            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
                 _repository.InitTriggers(entities);
 
-            if (_repository.IsBeforeTriggerOn)
+            if (_repository.IsBeforeTriggerOn && entities.Any())
                 _repository.OnBeforeInsert();
 
             using var trans = _context.Database.BeginTransaction();
@@ -25,12 +27,14 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             trans.Commit();
 
-            if (_repository.IsAfterTriggerOn)
+            if (_repository.IsAfterTriggerOn && entities.Any())
                 _repository.OnAfterInsert();
         }
 
         public void Insert(TEntity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(entity);
 
@@ -46,6 +50,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public TEntity InsertWithObject(TEntity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(entity);
 

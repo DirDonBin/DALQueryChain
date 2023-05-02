@@ -12,20 +12,24 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public void BulkDelete(IEnumerable<TEntity> entities)
         {
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+            ArgumentNullException.ThrowIfNull(entities);
+
+            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
                 _repository.InitTriggers(entities);
 
-            if (_repository.IsBeforeTriggerOn)
+            if (_repository.IsBeforeTriggerOn && entities.Any())
                 _repository.OnBeforeDelete();
 
             _context.Delete(entities);
 
-            if (_repository.IsAfterTriggerOn)
+            if (_repository.IsAfterTriggerOn && entities.Any())
                 _repository.OnAfterDelete();
         }
 
         public void BulkDelete(Expression<Func<TEntity, bool>> predicate)
         {
+            ArgumentNullException.ThrowIfNull(predicate);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(predicate);
 
@@ -40,6 +44,8 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public void Delete(TEntity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(entity);
 
@@ -54,6 +60,8 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public void Delete(Expression<Func<TEntity, bool>> predicate)
         {
+            ArgumentNullException.ThrowIfNull(predicate);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(predicate);
 

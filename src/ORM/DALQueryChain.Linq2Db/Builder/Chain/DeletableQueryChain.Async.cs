@@ -12,10 +12,12 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public async Task BulkDeleteAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+            ArgumentNullException.ThrowIfNull(entities);
+
+            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
                 _repository.InitTriggers(entities);
 
-            if (_repository.IsBeforeTriggerOn)
+            if (_repository.IsBeforeTriggerOn && entities.Any())
                 await _repository.OnBeforeDelete(ctn);
 
             using var transaction = await _context.BeginTransactionAsync();
@@ -28,12 +30,14 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
             await transaction.CommitAsync(ctn);
 
-            if (_repository.IsAfterTriggerOn)
+            if (_repository.IsAfterTriggerOn && entities.Any())
                 await _repository.OnAfterDelete(ctn);
         }
 
         public async Task BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
         {
+            ArgumentNullException.ThrowIfNull(predicate);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(predicate);
 
@@ -48,6 +52,8 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public async Task DeleteAsync(TEntity entity, CancellationToken ctn = default)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(entity);
 
@@ -62,6 +68,8 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
         {
+            ArgumentNullException.ThrowIfNull(predicate);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(predicate);
 

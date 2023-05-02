@@ -1,6 +1,7 @@
 ﻿using DALQueryChain.Interfaces;
 using DALQueryChain.Linq2Db.Repositories;
 using LinqToDB;
+using LinqToDB.Data;
 using ManualTest.Linq2Db.Context;
 
 namespace Linq2Db.DAL.Repository
@@ -21,8 +22,8 @@ namespace Linq2Db.DAL.Repository
 
         public async Task Test()
         {
-            var tt1 = _context.Products.Where(x => x.Id == -555).GroupBy(x => x.CategoryId);
-            var tt2 = await tt1.ToListAsync();
+            var ttt = new List<Product>();
+            await _context.BulkCopyAsync(ttt);
         }
 
         protected override Task OnBeforeInsert(CancellationToken ctn = default)

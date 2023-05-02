@@ -11,20 +11,24 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public void BulkInsert(IEnumerable<TEntity> entities)
         {
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+            ArgumentNullException.ThrowIfNull(entities);
+
+            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
                 _repository.InitTriggers(entities);
 
-            if (_repository.IsBeforeTriggerOn)
+            if (_repository.IsBeforeTriggerOn && entities.Any())
                 _repository.OnBeforeInsert();
 
             _context.BulkCopy(entities);
 
-            if (_repository.IsAfterTriggerOn)
+            if (_repository.IsAfterTriggerOn && entities.Any())
                 _repository.OnAfterInsert();
         }
 
         public void Insert(TEntity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(entity);
 
@@ -39,6 +43,8 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public TEntity InsertWithObject(TEntity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+
             if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
                 _repository.InitTriggers(entity);
 
@@ -46,6 +52,9 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
                 _repository.OnBeforeInsert();
 
             var res = _context.GetTable<TEntity>().InsertWithOutput(entity);
+
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
 
             if (_repository.IsAfterTriggerOn)
                 _repository.OnAfterInsert();
