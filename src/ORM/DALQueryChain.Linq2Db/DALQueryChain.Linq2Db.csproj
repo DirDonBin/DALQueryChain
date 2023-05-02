@@ -1,44 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageTags>DALQueryChain, QueryChain, Linq2Db, DAL</PackageTags>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <RepositoryUrl>https://github.com/DirDonBin/DALQueryChain</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/DirDonBin/DALQueryChain</PackageProjectUrl>
-    <Description>Query Chain for Data Access Layer built on the Linq2Db ORM, allowing you to proxy queries to the DAL and use triggers</Description>
-    <Copyright>Etai-group</Copyright>
-    <Title>DAL Query Chain for Linq2Db</Title>
-    <Authors>etai-group</Authors>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryType>git</RepositoryType>
-    <VersionPrefix>1.0.19</VersionPrefix>
-    <PackageOutputPath>..\..\..\nuget</PackageOutputPath>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageTags>DALQueryChain, QueryChain, Linq2Db, DAL</PackageTags>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <PackageReleaseNotes></PackageReleaseNotes>
+        <RepositoryUrl>https://github.com/DirDonBin/DALQueryChain</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/DirDonBin/DALQueryChain</PackageProjectUrl>
+        <Description>Query Chain for Data Access Layer built on the Linq2Db ORM, allowing you to proxy queries to the DAL and use triggers</Description>
+        <Copyright>Etai-group</Copyright>
+        <Title>DAL Query Chain for Linq2Db</Title>
+        <Authors>etai-group</Authors>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryType>git</RepositoryType>
+        <VersionPrefix>1.1.0.1-preview</VersionPrefix>
+        <PackageOutputPath>..\..\..\nuget</PackageOutputPath>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\..\LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\..\LICENSE.txt">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\..\..\README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="linq2db" Version="4.3.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="linq2db" Version="5.1.1" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\DALQueryChain\DALQueryChain.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\DALQueryChain\DALQueryChain.csproj" />
+    </ItemGroup>
 
 </Project>

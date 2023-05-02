@@ -11,8 +11,11 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public async Task BulkDeleteAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(entities);
-            await _repository.OnBeforeDelete(ctn);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entities);
+
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeDelete(ctn);
 
             //TODO: Проверить скорость работы
             using var trans = await _context.Database.BeginTransactionAsync(ctn);
@@ -27,7 +30,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             await trans.CommitAsync(ctn);
 
-            await _repository.OnAfterDelete(ctn);
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterDelete(ctn);
         }
 
         public async Task BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
@@ -38,17 +42,26 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public async Task DeleteAsync(TEntity entity, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(entity);
-            await _repository.OnBeforeDelete(ctn);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeDelete(ctn);
+
             _context.Remove(entity);
             await _context.SaveChangesAsync(ctn);
-            await _repository.OnAfterDelete(ctn);
+
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterDelete(ctn);
         }
 
         public async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(predicate);
-            await _repository.OnBeforeDelete(ctn);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(predicate);
+
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeDelete(ctn);
 
             var entities = _context.Set<TEntity>().Where(predicate);
 
@@ -65,8 +78,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             await trans.CommitAsync(ctn);
 
-            await _context.SaveChangesAsync(ctn);
-            await _repository.OnAfterDelete(ctn);
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterDelete(ctn);
         }
 
         /// <summary>

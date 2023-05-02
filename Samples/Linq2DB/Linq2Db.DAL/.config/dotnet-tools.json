@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "linq2db.cli": {
+      "version": "5.1.0",
+      "commands": [
+        "dotnet-linq2db"
+      ]
+    }
+  }
+}

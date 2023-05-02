@@ -47,16 +47,46 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public List<T> ToList() => _prevQuery.ToList();
 
-        public T? Max() => _prevQuery.Max();
+        public T Max() => _prevQuery.Max()!;
+        public T? MaxOrDefault()
+        {
+            if (_prevQuery.Any()) return _prevQuery.Max();
+            return default;
+        }
 
-        public TResult? Max<TResult>(Expression<Func<T, TResult>> predicate) => _prevQuery.Max(predicate);
+        public TResult Max<TResult>(Expression<Func<T, TResult>> predicate) => _prevQuery.Max(predicate)!;
+        public TResult? MaxOrDefault<TResult>(Expression<Func<T, TResult>> predicate)
+        {
+            if (_prevQuery.Any()) return _prevQuery.Max(predicate);
+            return default;
+        }
 
-        public T? MaxBy<TKey>(Expression<Func<T, TKey>> keySelector) => _prevQuery.MaxBy(keySelector);
+        public T MaxBy<TKey>(Expression<Func<T, TKey>> keySelector) => _prevQuery.MaxBy(keySelector)!;
+        public T? MaxByOrDefault<TKey>(Expression<Func<T, TKey>> keySelector)
+        {
+            if (_prevQuery.Any()) return _prevQuery.MaxBy(keySelector);
+            return default;
+        }
 
-        public T? Min() => _prevQuery.Min();
+        public T Min() => _prevQuery.Min()!;
+        public T? MinOrDefault()
+        {
+            if (_prevQuery.Any()) return _prevQuery.Min();
+            return default;
+        }
 
-        public TResult? Min<TResult>(Expression<Func<T, TResult>> predicate) => _prevQuery.Min(predicate);
+        public TResult Min<TResult>(Expression<Func<T, TResult>> predicate) => _prevQuery.Min(predicate)!;
+        public TResult? MinOrDefault<TResult>(Expression<Func<T, TResult>> predicate)
+        {
+            if (_prevQuery.Any()) return _prevQuery.Min(predicate);
+            return default;
+        }
 
-        public T? MinBy<TKey>(Expression<Func<T, TKey>> keySelector) => _prevQuery.MinBy(keySelector);
+        public T MinBy<TKey>(Expression<Func<T, TKey>> keySelector) => _prevQuery.MinBy(keySelector)!;
+        public T? MinByOrDefault<TKey>(Expression<Func<T, TKey>> keySelector)
+        {
+            if (_prevQuery.Any()) return _prevQuery.MinBy(keySelector);
+            return default;
+        }
     }
 }

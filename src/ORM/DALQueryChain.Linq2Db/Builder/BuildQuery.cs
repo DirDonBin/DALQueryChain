@@ -86,8 +86,8 @@ namespace DALQueryChain.Linq2Db.Builder
         public TRepository Repository<TRepository>()
         {
             var repType = Configure.CachedRepoTypes
-                .Where(x => x.IsAssignableToGenericType(typeof(BaseRepository<,>)))
-                .FirstOrDefault(x => x.BaseType is not null && x.BaseType.GenericTypeArguments.Any(y => y == typeof(TContext)) && x.Name == typeof(TRepository).Name);
+                .Where(x => x.IsAssignableToGenericType(typeof(BaseRepository<,>), typeof(TContext)))
+                .FirstOrDefault(x => x.Name == typeof(TRepository).Name);
 
             if (repType is null)
                 throw new NullReferenceException($"Repository {nameof(TRepository)} inherited from BaseRepository<,> not found");

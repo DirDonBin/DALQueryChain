@@ -10,8 +10,11 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public async Task BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(entities);
-            await _repository.OnBeforeInsert(ctn);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entities);
+
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeInsert(ctn);
 
             using var trans = await _context.Database.BeginTransactionAsync(ctn);
 
@@ -25,29 +28,38 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             await trans.CommitAsync(ctn);
 
-            await _repository.OnAfterInsert(ctn);
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterInsert(ctn);
         }
 
         public async Task InsertAsync(TEntity entity, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(entity);
-            await _repository.OnBeforeInsert(ctn);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeInsert(ctn);
 
             _context.Set<TEntity>().Add(entity);
             await _context.SaveChangesAsync(ctn);
 
-            await _repository.OnAfterInsert(ctn);
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterInsert(ctn);
         }
 
         public async Task<TEntity> InsertWithObjectAsync(TEntity entity, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(entity);
-            await _repository.OnBeforeInsert(ctn);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeInsert(ctn);
 
             _context.Set<TEntity>().Add(entity);
             await _context.SaveChangesAsync(ctn);
 
-            await _repository.OnAfterInsert(ctn);
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterInsert(ctn);
 
             return entity;
         }

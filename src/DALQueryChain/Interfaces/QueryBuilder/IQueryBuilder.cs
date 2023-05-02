@@ -9,4 +9,6 @@ namespace DALQueryChain.Interfaces.QueryBuilder
         public IUpdatableQueryChain<TEntity> Update { get; }
         public IDeletableQueryChain<TEntity> Delete { get; }
     }
+
+
 }

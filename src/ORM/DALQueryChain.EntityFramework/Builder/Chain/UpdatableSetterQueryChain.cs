@@ -1,4 +1,5 @@
 ﻿using DALQueryChain.EntityFramework.Repositories;
+using DALQueryChain.Enums;
 using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,9 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
             _repository = repository;
             _context = context;
             _entities = entities;
+
+            _repository.IsBeforeTriggerOn = true;
+            _repository.IsAfterTriggerOn = true;
         }
 
         public IUpdatableSetterQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, TV value)
@@ -44,6 +48,14 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
                 var comp = Expression.Lambda<Func<TV>>(Expression.Invoke(value)).Compile();
                 _context.Entry(entity).Property(extract).CurrentValue = comp();
             }
+
+            return this;
+        }
+
+        public IUpdatableSetterQueryChain<TEntity> WithoutTriggers(TriggerType trigger = TriggerType.All)
+        {
+            _repository.IsBeforeTriggerOn = trigger is not TriggerType.All and not TriggerType.Before;
+            _repository.IsAfterTriggerOn = trigger is not TriggerType.All and not TriggerType.After;
 
             return this;
         }

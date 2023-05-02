@@ -8,7 +8,5 @@ namespace DALQueryChain.EntityFramework.Builder.Chain.Get
         public IncludableGetQueryChain(IQueryable<T> prevQuery) : base(prevQuery)
         {
         }
-
-        IQueryable<T> IFilterableQueryChain<T>.Query => _prevQuery;
     }
 }

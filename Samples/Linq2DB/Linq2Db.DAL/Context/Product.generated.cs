@@ -20,7 +20,7 @@ namespace ManualTest.Linq2Db.Context
 		[Column("Id"        , IsPrimaryKey = true , IsIdentity = true, SkipOnInsert = true, SkipOnUpdate = true)] public int      Id         { get; set; } // integer
 		[Column("Name"      , CanBeNull    = false                                                             )] public string   Name       { get; set; } = null!; // character varying(150)
 		[Column("Created"                                                                                      )] public DateTime Created    { get; set; } // date
-		[Column("Price"                                                                                        )] public decimal? Price      { get; set; } // money
+		[Column("Price"                                                                                        )] public decimal? Price      { get; set; } // numeric
 		[Column("Count"                                                                                        )] public int?     Count      { get; set; } // integer
 		[Column("CategoryId"                                                                                   )] public int?     CategoryId { get; set; } // integer
 		[Column("Raiting"                                                                                      )] public double?  Raiting    { get; set; } // double precision

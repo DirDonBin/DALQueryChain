@@ -1,4 +1,5 @@
-﻿using DALQueryChain.EntityFramework.Builder.Chain.Get;
+﻿using DALQueryChain.EntityFramework.Builder.Chain;
+using DALQueryChain.EntityFramework.Builder.Chain.Get;
 using DALQueryChain.Interfaces.QueryBuilder.Get;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -16,7 +17,8 @@ namespace DALQueryChain.EntityFramework.Extensions
             where TEntity : class
             where TProperty : class
         {
-            var qr = ((IIncludableQueryable<TEntity, TPreviousProperty>)source.Query).ThenInclude(selector);
+            var prevQuery = ((FilterableQueryChain<TEntity>)source).Query;
+            var qr = ((IIncludableQueryable<TEntity, TPreviousProperty>)prevQuery).ThenInclude(selector);
             return new IncludableGetQueryChain<TEntity, TProperty>(qr);
         }
 
@@ -28,13 +30,18 @@ namespace DALQueryChain.EntityFramework.Extensions
             where TEntity : class
             where TProperty : class
         {
-            var qr = ((IIncludableQueryable<TEntity, IEnumerable<TPreviousProperty>>)source.Query).ThenInclude(selector);
+            var prevQuery = ((FilterableQueryChain<TEntity>)source).Query;
+            var qr = ((IIncludableQueryable<TEntity, IEnumerable<TPreviousProperty>>)prevQuery).ThenInclude(selector);
             return new IncludableGetQueryChain<TEntity, TProperty>(qr);
         }
 
         public static IIncludableGetQueryChain<TEntity, TProperty> LoadWith<TEntity, TProperty>(this IFilterableQueryChain<TEntity> source,
             Expression<Func<TEntity, TProperty>> selector)
             where TProperty : class
-            where TEntity : class => new IncludableGetQueryChain<TEntity, TProperty>(source.Query.Include(selector));
+            where TEntity : class
+        {
+            var prevQuery = ((FilterableQueryChain<TEntity>)source).Query;
+            return new IncludableGetQueryChain<TEntity, TProperty>(prevQuery.Include(selector));
+        }
     }
 }

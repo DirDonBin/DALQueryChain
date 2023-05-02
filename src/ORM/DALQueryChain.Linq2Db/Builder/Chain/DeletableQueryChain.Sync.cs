@@ -12,46 +12,58 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public void BulkDelete(IEnumerable<TEntity> entities)
         {
-            _repository.InitTriggers(entities);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entities);
 
-            _repository.OnBeforeDelete();
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeDelete();
+
             _context.Delete(entities);
 
-            using var transaction = _context.BeginTransaction();
-
-            foreach (var entity in entities)
-                _context.Delete(entity);
-
-            transaction.Commit();
-
-            _repository.OnAfterDelete();
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterDelete();
         }
 
         public void BulkDelete(Expression<Func<TEntity, bool>> predicate)
         {
-            _repository.InitTriggers(predicate);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(predicate);
 
-            _repository.OnBeforeDelete();
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeDelete();
+
             _context.GetTable<TEntity>().Where(predicate).Delete();
-            _repository.OnAfterDelete();
+
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterDelete();
         }
 
         public void Delete(TEntity entity)
         {
-            _repository.InitTriggers(entity);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
 
-            _repository.OnBeforeDelete();
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeDelete();
+
             _context.Delete(entity);
-            _repository.OnAfterDelete();
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnAfterDelete();
         }
 
         public void Delete(Expression<Func<TEntity, bool>> predicate)
         {
-            _repository.InitTriggers(predicate);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(predicate);
 
-            _repository.OnBeforeDelete();
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeDelete();
+
             _context.GetTable<TEntity>().Where(predicate).Delete();
-            _repository.OnAfterDelete();
+
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterDelete();
         }
 
         /// <summary>

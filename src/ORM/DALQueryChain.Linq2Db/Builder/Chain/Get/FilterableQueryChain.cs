@@ -1,5 +1,6 @@
 ﻿using DALQueryChain.Interfaces.QueryBuilder.Get;
 using DALQueryChain.Linq2Db.Builder.Chain.Get;
+using LinqKit.Core;
 using LinqToDB;
 using System.Linq.Expressions;
 
@@ -8,26 +9,23 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     internal partial class FilterableQueryChain<T> : BaseGetQueryChain<T>, IFilterableQueryChain<T>
     {
 
-        IQueryable<T> IFilterableQueryChain<T>.Query => _prevQuery;
+        internal IQueryable<T> Query => _prevQuery;
 
         public FilterableQueryChain(IQueryable<T> prevQuery) : base(prevQuery)
         {
         }
 
+        public IFilterableQueryChain<T> AsExpandable()
+            => new FilterableQueryChain<T>(_prevQuery.AsExpandable());
+
         public IFilterableQueryChain<T[]> Chunk(int count)
-        {
-            return new FilterableQueryChain<T[]>(_prevQuery.Chunk(count));
-        }
+            => new FilterableQueryChain<T[]>(_prevQuery.Chunk(count));
 
         public IOrderableQueryChain<T> OrderBy(Expression<Func<T, object>> selector)
-        {
-            return new OrderableQueryChain<T>(_prevQuery.OrderBy(selector));
-        }
+            => new OrderableQueryChain<T>(_prevQuery.OrderBy(selector));
 
         public IOrderableQueryChain<T> OrderByDescending(Expression<Func<T, object>> selector)
-        {
-            return new OrderableQueryChain<T>(_prevQuery.OrderByDescending(selector));
-        }
+            => new OrderableQueryChain<T>(_prevQuery.OrderByDescending(selector));
 
         public IFilterableQueryChain<T> Skip(int count)
         {
@@ -66,5 +64,11 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
             return this;
         }
+
+        public IFilterableQueryChain<IGrouping<TKey, T>> GroupByAsEnumerable<TKey>(Expression<Func<T, TKey>> keySelector)
+             => new FilterableQueryChain<IGrouping<TKey, T>>(Enumerable.GroupBy(_prevQuery.AsEnumerable(), keySelector.Compile()).AsQueryable());
+
+        public IFilterableQueryChain<IGrouping<TKey, T>> GroupBy<TKey>(Expression<Func<T, TKey>> keySelector)
+            => new FilterableQueryChain<IGrouping<TKey, T>>(_prevQuery.GroupBy(keySelector));
     }
 }

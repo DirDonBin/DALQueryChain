@@ -1,7 +1,6 @@
 ﻿using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
 using DALQueryChain.Linq2Db.Triggres;
-using LinqToDB;
 using LinqToDB.Data;
 using System.Linq.Expressions;
 
@@ -11,17 +10,15 @@ namespace DALQueryChain.Linq2Db.Repositories
         where TContext : DataConnection
         where TEntity : class, IDbModelBase
     {
-        private readonly TContext _context;
+        protected readonly TContext _context;
         private IDALQueryChain<TContext>? _dalQueryChain;
 
-        protected readonly IQueryable<TEntity> _query;
         protected IQueryBuilder<TEntity> QueryChain => _dalQueryChain!.For<TEntity>();
         protected TRepository GetRepository<TRepository>() => _dalQueryChain!.Repository<TRepository>();
 
         public BaseRepository(TContext context) : base(context)
         {
             _context = context;
-            _query = context.GetTable<TEntity>().AsQueryable();
         }
 
         internal void InitQueryChain(IDALQueryChain<TContext> dalQueryChain)
@@ -30,8 +27,6 @@ namespace DALQueryChain.Linq2Db.Repositories
         }
 
         protected IQueryBuilder<T> GetQueryChain<T>() where T : class, IDbModelBase => _dalQueryChain!.For<T>();
-
-        protected IQueryable<T> GetQuery<T>() where T : class, IDbModelBase => _context.GetTable<T>().AsQueryable();
 
         #region Soft Delete
 

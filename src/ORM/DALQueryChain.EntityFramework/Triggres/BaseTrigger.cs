@@ -12,6 +12,9 @@ namespace DALQueryChain.EntityFramework.Triggres
         private IQueryable<TEntity>? _query = null;
         private readonly DbContext _context;
 
+        public bool IsBeforeTriggerOn { get; internal set; } = true;
+        public bool IsAfterTriggerOn { get; internal set; } = true;
+
         public BaseTrigger(DbContext context)
         {
             _context = context;

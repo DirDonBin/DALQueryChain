@@ -10,8 +10,11 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public void BulkInsert(IEnumerable<TEntity> entities)
         {
-            _repository.InitTriggers(entities);
-            _repository.OnBeforeInsert();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entities);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeInsert();
 
             using var trans = _context.Database.BeginTransaction();
 
@@ -22,29 +25,38 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             trans.Commit();
 
-            _repository.OnAfterInsert();
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterInsert();
         }
 
         public void Insert(TEntity entity)
         {
-            _repository.InitTriggers(entity);
-            _repository.OnBeforeInsert();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeInsert();
 
             _context.Set<TEntity>().Add(entity);
             _context.SaveChanges();
 
-            _repository.OnAfterInsert();
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterInsert();
         }
 
         public TEntity InsertWithObject(TEntity entity)
         {
-            _repository.InitTriggers(entity);
-            _repository.OnBeforeInsert();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeInsert();
 
             _context.Set<TEntity>().Add(entity);
             _context.SaveChanges();
 
-            _repository.OnAfterInsert();
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterInsert();
 
             return entity;
         }

@@ -132,14 +132,27 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// Returns the maximum value
         /// </summary>
         /// <returns></returns>
-        T? Max();
+        T Max();
+
+        /// <summary>
+        /// Returns the maximum value or default
+        /// </summary>
+        /// <returns></returns>
+        T? MaxOrDefault();
 
         /// <summary>
         /// Returns the maximum value of a sequence satisfy a condition 
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition</param>
         /// <returns></returns>
-        TResult? Max<TResult>(Expression<Func<T, TResult>> predicate);
+        TResult Max<TResult>(Expression<Func<T, TResult>> predicate);
+
+        /// <summary>
+        /// Returns the maximum value of a sequence satisfy a condition or default
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <returns></returns>
+        TResult? MaxOrDefault<TResult>(Expression<Func<T, TResult>> predicate);
 
         /// <summary>
         /// Returns the maximum value according to a specified key selector function.
@@ -147,20 +160,41 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        T? MaxBy<TKey>(Expression<Func<T, TKey>> keySelector);
+        T MaxBy<TKey>(Expression<Func<T, TKey>> keySelector);
+
+        /// <summary>
+        /// Returns the maximum value according to a specified key selector function or default.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        T? MaxByOrDefault<TKey>(Expression<Func<T, TKey>> keySelector);
 
         /// <summary>
         /// Returns the minimum value
         /// </summary>
         /// <returns></returns>
-        T? Min();
+        T Min();
+
+        /// <summary>
+        /// Returns the minimum value or default
+        /// </summary>
+        /// <returns></returns>
+        T? MinOrDefault();
 
         /// <summary>
         /// Returns the minimum value of a sequence satisfy a condition 
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition</param>
         /// <returns></returns>
-        TResult? Min<TResult>(Expression<Func<T, TResult>> predicate);
+        TResult Min<TResult>(Expression<Func<T, TResult>> predicate);
+
+        /// <summary>
+        /// Returns the minimum value of a sequence satisfy a condition or default
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <returns></returns>
+        TResult? MinOrDefault<TResult>(Expression<Func<T, TResult>> predicate);
 
         /// <summary>
         /// Returns the minimum value according to a specified key selector function.
@@ -168,6 +202,14 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        T? MinBy<TKey>(Expression<Func<T, TKey>> keySelector);
+        T MinBy<TKey>(Expression<Func<T, TKey>> keySelector);
+
+        /// <summary>
+        /// Returns the minimum value according to a specified key selector function or default.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        T? MinByOrDefault<TKey>(Expression<Func<T, TKey>> keySelector);
     }
 }

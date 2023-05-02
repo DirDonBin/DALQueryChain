@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DALQueryChain.Filter.Extensions
+﻿namespace DALQueryChain.Filter.Extensions
 {
     internal static class ITypeExtensions
     {
@@ -38,5 +32,8 @@ namespace DALQueryChain.Filter.Extensions
                 _ => false,
             };
         }
+
+        internal static bool IsNullableType(this Type t)
+            => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>);
     }
 }

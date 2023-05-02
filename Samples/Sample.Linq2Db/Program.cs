@@ -1,9 +1,4 @@
-using DALQueryChain.Linq2Db;
-using LinqToDB.AspNet;
-using LinqToDB.Configuration;
-using ManualTest.Linq2Db.Context;
-using Sample.Linq2Db.Controllers;
-using System.Reflection;
+using Linq2Db.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,13 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddQueryChain(Assembly.GetExecutingAssembly());
-
-builder.Services.AddLinqToDBContext<TestContext>((provider, options) =>
-{
-    options
-    .UsePostgreSQL(builder.Configuration.GetConnectionString("Default")!);
-});
+builder.Services.AddLinq2DbDAL(builder.Configuration.GetConnectionString("Default")!);
 
 var app = builder.Build();
 

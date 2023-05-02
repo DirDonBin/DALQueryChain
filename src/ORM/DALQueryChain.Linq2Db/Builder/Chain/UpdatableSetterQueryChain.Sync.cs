@@ -14,10 +14,16 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
             if (_prevUpdateQuery is null) throw new InvalidOperationException("No update entity values ​​set. Use Method 'Set'"); ;
 
-            _repository.InitTriggers(_prevQuery);
-            _repository.OnBeforeUpdate();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(_prevQuery);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeUpdate();
+
             _prevUpdateQuery.Update();
-            _repository.OnAfterUpdate();
+
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterUpdate();
         }
     }
 }

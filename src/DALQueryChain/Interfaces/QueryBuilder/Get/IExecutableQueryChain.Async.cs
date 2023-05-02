@@ -132,14 +132,27 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// Returns the maximum value
         /// </summary>
         /// <returns></returns>
-        Task<T?> MaxAsync(CancellationToken ctn = default);
+        Task<T> MaxAsync(CancellationToken ctn = default);
+
+        /// <summary>
+        /// Returns the maximum value or default
+        /// </summary>
+        /// <returns></returns>
+        Task<T?> MaxOrDefaultAsync(CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the maximum value of a sequence satisfy a condition 
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition</param>
         /// <returns></returns>
-        Task<TResult?> MaxAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default);
+        Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default);
+
+        /// <summary>
+        /// Returns the maximum value of a sequence satisfy a condition or default
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <returns></returns>
+        Task<TResult?> MaxOrDefaultAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the maximum value according to a specified key selector function.
@@ -147,20 +160,41 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<T?> MaxByAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default);
+        Task<T> MaxByAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default);
+
+        /// <summary>
+        /// Returns the maximum value according to a specified key selector function or default.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        Task<T?> MaxByOrDefaultAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the minimum value
         /// </summary>
         /// <returns></returns>
-        Task<T?> MinAsync(CancellationToken ctn = default);
+        Task<T> MinAsync(CancellationToken ctn = default);
+
+        /// <summary>
+        /// Returns the minimum value or default
+        /// </summary>
+        /// <returns></returns>
+        Task<T?> MinOrDefaultAsync(CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the minimum value of a sequence satisfy a condition 
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition</param>
         /// <returns></returns>
-        Task<TResult?> MinAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default);
+        Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default);
+
+        /// <summary>
+        /// Returns the minimum value of a sequence satisfy a condition or default 
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        /// <returns></returns>
+        Task<TResult?> MinOrDefaultAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the minimum value according to a specified key selector function.
@@ -168,6 +202,14 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<T?> MinByAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default);
+        Task<T> MinByAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default);
+
+        /// <summary>
+        /// Returns the minimum value according to a specified key selector function or default.
+        /// </summary>
+        /// <typeparam name="TKey">The type of key to compare elements by.</typeparam>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        Task<T?> MinByOrDefaultAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default);
     }
 }

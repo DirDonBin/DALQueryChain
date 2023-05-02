@@ -4,22 +4,23 @@ namespace DALQueryChain.Extensions
 {
     public static class TypeExtensions
     {
-        public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
+        public static bool IsAssignableToGenericType(this Type givenType, Type genericType, params Type[]? checkedTypes)
         {
+
+            if (CheckGenericType(givenType, genericType, checkedTypes))
+                return true;
+
             var interfaceTypes = givenType.GetInterfaces();
 
             foreach (var it in interfaceTypes)
             {
-                if (it.IsGenericType && it.GetGenericTypeDefinition() == genericType)
+                if (CheckGenericType(it, genericType, checkedTypes))
                     return true;
             }
 
-            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
-                return true;
-
             if (givenType.BaseType == null) return false;
 
-            return IsAssignableToGenericType(givenType.BaseType, genericType);
+            return IsAssignableToGenericType(givenType.BaseType, genericType, checkedTypes);
         }
 
         public static MethodInfo? GetMethodByAllParrent(this Type givenType, string name, BindingFlags flags)
@@ -32,5 +33,12 @@ namespace DALQueryChain.Extensions
 
             return GetMethodByAllParrent(givenType.BaseType, name, flags);
         }
+
+        private static bool CheckGenericType(Type givenType, Type genericType, Type[]? checkedTypes)
+        => givenType.IsGenericType
+            && givenType.GetGenericTypeDefinition() == genericType
+            && (checkedTypes == null
+                || checkedTypes.Length == 0
+                || checkedTypes.All(y => givenType.GenericTypeArguments.Contains(y)));
     }
 }

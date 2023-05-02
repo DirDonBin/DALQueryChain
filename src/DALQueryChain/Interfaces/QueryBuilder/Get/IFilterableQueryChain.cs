@@ -6,7 +6,8 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
     {
         //public IIncludableGetQueryChain<T, TProperty> LoadWith<TProperty>(Expression<Func<T, TProperty>> selector) where TProperty : class;
 
-        IQueryable<T> Query { get; }
+        public IFilterableQueryChain<IGrouping<TKey, T>> GroupByAsEnumerable<TKey>(Expression<Func<T, TKey>> keySelector);
+        public IFilterableQueryChain<IGrouping<TKey, T>> GroupBy<TKey>(Expression<Func<T, TKey>> keySelector);
 
         public IOrderableQueryChain<T> OrderBy(Expression<Func<T, object>> selector);
         public IOrderableQueryChain<T> OrderByDescending(Expression<Func<T, object>> selector);
@@ -20,5 +21,9 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         public IFilterableQueryChain<T> TakeWhile(Expression<Func<T, bool>> predicate);
 
         public IFilterableQueryChain<T[]> Chunk(int count);
+
+        IFilterableQueryChain<T> AsExpandable();
+
+
     }
 }

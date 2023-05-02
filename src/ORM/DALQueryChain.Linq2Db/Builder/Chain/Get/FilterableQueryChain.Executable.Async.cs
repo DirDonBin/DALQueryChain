@@ -47,16 +47,46 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public Task<List<T>> ToListAsync(CancellationToken ctn = default) => _prevQuery.ToListAsync(ctn);
 
-        public Task<T?> MaxAsync(CancellationToken ctn = default) => _prevQuery.MaxAsync(ctn);
+        public Task<T> MaxAsync(CancellationToken ctn = default) => _prevQuery.MaxAsync(ctn)!;
+        public async Task<T?> MaxOrDefaultAsync(CancellationToken ctn = default)
+        {
+            if (await _prevQuery.AnyAsync(ctn)) return await _prevQuery.MaxAsync(ctn);
+            return default;
+        }
 
-        public Task<TResult?> MaxAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default) => _prevQuery.MaxAsync(predicate, ctn);
+        public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default) => _prevQuery.MaxAsync(predicate, ctn)!;
+        public async Task<TResult?> MaxOrDefaultAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default)
+        {
+            if (await _prevQuery.AnyAsync(ctn)) return await _prevQuery.MaxAsync(predicate, ctn);
+            return default;
+        }
 
-        public Task<T?> MaxByAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstOrDefaultAsync(ctn);
+        public Task<T> MaxByAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstAsync(ctn);
+        public async Task<T?> MaxByOrDefaultAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default)
+        {
+            if (await _prevQuery.AnyAsync(ctn)) return await _prevQuery.OrderByDescending(keySelector).FirstAsync(ctn);
+            return default;
+        }
 
-        public Task<T?> MinAsync(CancellationToken ctn = default) => _prevQuery.MinAsync(ctn);
+        public Task<T> MinAsync(CancellationToken ctn = default) => _prevQuery.MinAsync(ctn)!;
+        public async Task<T?> MinOrDefaultAsync(CancellationToken ctn = default)
+        {
+            if (await _prevQuery.AnyAsync(ctn)) return await _prevQuery.MinAsync(ctn);
+            return default;
+        }
 
-        public Task<TResult?> MinAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default) => _prevQuery.MinAsync(predicate, ctn);
+        public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default) => _prevQuery.MinAsync(predicate, ctn)!;
+        public async Task<TResult?> MinOrDefaultAsync<TResult>(Expression<Func<T, TResult>> predicate, CancellationToken ctn = default)
+        {
+            if (await _prevQuery.AnyAsync(ctn)) return await _prevQuery.MinAsync(predicate, ctn);
+            return default;
+        }
 
-        public Task<T?> MinByAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderBy(keySelector).FirstOrDefaultAsync(ctn);
+        public Task<T> MinByAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderBy(keySelector).FirstAsync(ctn);
+        public async Task<T?> MinByOrDefaultAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default)
+        {
+            if (await _prevQuery.AnyAsync(ctn)) return await _prevQuery.OrderByDescending(keySelector).FirstAsync(ctn);
+            return default;
+        }
     }
 }

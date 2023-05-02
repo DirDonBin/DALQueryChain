@@ -12,10 +12,12 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public async Task BulkDeleteAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(entities);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entities);
 
-            await _repository.OnBeforeDelete(ctn);
-            
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeDelete(ctn);
+
             using var transaction = await _context.BeginTransactionAsync();
 
             foreach (var entity in entities)
@@ -26,34 +28,50 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
             await transaction.CommitAsync(ctn);
 
-            await _repository.OnAfterDelete(ctn);
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterDelete(ctn);
         }
 
         public async Task BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(predicate);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(predicate);
 
-            await _repository.OnBeforeDelete(ctn);
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeDelete(ctn);
+
             await _context.GetTable<TEntity>().Where(predicate).DeleteAsync(token: ctn);
-            await _repository.OnAfterDelete(ctn);
+
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterDelete(ctn);
         }
 
         public async Task DeleteAsync(TEntity entity, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(entity);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
 
-            await _repository.OnBeforeDelete(ctn);
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeDelete(ctn);
+
             await _context.DeleteAsync(entity, token: ctn);
-            await _repository.OnAfterDelete(ctn);
+
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterDelete(ctn);
         }
 
         public async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(predicate);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(predicate);
 
-            await _repository.OnBeforeDelete(ctn);
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeDelete(ctn);
+
             await _context.GetTable<TEntity>().Where(predicate).DeleteAsync(token: ctn);
-            await _repository.OnAfterDelete(ctn);
+
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterDelete(ctn);
         }
 
         /// <summary>

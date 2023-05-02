@@ -11,26 +11,45 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public void BulkInsert(IEnumerable<TEntity> entities)
         {
-            _repository.InitTriggers(entities);
-            _repository.OnBeforeInsert();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entities);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeInsert();
+
             _context.BulkCopy(entities);
-            _repository.OnAfterInsert();
+
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterInsert();
         }
 
         public void Insert(TEntity entity)
         {
-            _repository.InitTriggers(entity);
-            _repository.OnBeforeInsert();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeInsert();
+
             _context.Insert(entity);
-            _repository.OnAfterInsert();
+
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterInsert();
         }
 
         public TEntity InsertWithObject(TEntity entity)
         {
-            _repository.InitTriggers(entity);
-            _repository.OnBeforeInsert();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeInsert();
+
             var res = _context.GetTable<TEntity>().InsertWithOutput(entity);
-            _repository.OnAfterInsert();
+
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterInsert();
+
             return res;
         }
     }

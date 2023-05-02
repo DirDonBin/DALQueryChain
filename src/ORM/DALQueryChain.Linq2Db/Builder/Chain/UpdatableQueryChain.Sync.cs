@@ -11,8 +11,11 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public void BulkUpdate(IEnumerable<TEntity> entities)
         {
-            _repository.InitTriggers(entities);
-            _repository.OnBeforeUpdate();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entities);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeUpdate();
 
             using var transaction = _context.BeginTransaction();
 
@@ -21,15 +24,22 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
             transaction.Commit();
 
-            _repository.OnAfterUpdate();
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterUpdate();
         }
 
         public void Update(TEntity entity)
         {
-            _repository.InitTriggers(entity);
-            _repository.OnBeforeUpdate();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeUpdate();
+
             _context.Update(entity);
-            _repository.OnAfterUpdate();
+
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterUpdate();
         }
     }
 }

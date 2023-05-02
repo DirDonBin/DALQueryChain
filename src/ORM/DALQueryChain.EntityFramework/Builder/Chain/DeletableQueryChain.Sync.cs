@@ -11,8 +11,11 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         public void BulkDelete(IEnumerable<TEntity> entities)
         {
-            _repository.InitTriggers(entities);
-            _repository.OnBeforeDelete();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entities);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeDelete();
 
             //TODO: Проверить скорость работы
             using var trans = _context.Database.BeginTransaction();
@@ -24,7 +27,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             trans.Commit();
 
-            _repository.OnAfterDelete();
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterDelete();
         }
 
         public void BulkDelete(Expression<Func<TEntity, bool>> predicate)
@@ -35,17 +39,26 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public void Delete(TEntity entity)
         {
-            _repository.InitTriggers(entity);
-            _repository.OnBeforeDelete();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeDelete();
+
             _context.Remove(entity);
             _context.SaveChanges();
-            _repository.OnAfterDelete();
+
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterDelete();
         }
 
         public void Delete(Expression<Func<TEntity, bool>> predicate)
         {
-            _repository.InitTriggers(predicate);
-            _repository.OnBeforeDelete();
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(predicate);
+
+            if (_repository.IsBeforeTriggerOn)
+                _repository.OnBeforeDelete();
 
             var entities = _context.Set<TEntity>().Where(predicate);
 
@@ -59,8 +72,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
             trans.Commit();
 
-            _context.SaveChanges();
-            _repository.OnAfterDelete();
+            if (_repository.IsAfterTriggerOn)
+                _repository.OnAfterDelete();
         }
 
         /// <summary>

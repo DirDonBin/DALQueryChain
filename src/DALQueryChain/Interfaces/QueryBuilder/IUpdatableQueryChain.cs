@@ -2,7 +2,8 @@
 
 namespace DALQueryChain.Interfaces.QueryBuilder
 {
-    public partial interface IUpdatableQueryChain<TEntity> where TEntity : class, IDbModelBase
+    public partial interface IUpdatableQueryChain<TEntity> : IChainSettings<IUpdatableQueryChain<TEntity>>
+        where TEntity : class, IDbModelBase
     {
         public IUpdatableSetterQueryChain<TEntity> Where(Expression<Func<TEntity, bool>> predicate);
     }

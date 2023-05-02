@@ -27,7 +27,7 @@ namespace ManualTest.Linq2Db.Context
 		/// Products_CategoryId_fkey backreference
 		/// </summary>
 		[Association(ThisKey = nameof(Id), OtherKey = nameof(Product.CategoryId))]
-		public List<Product> ProductsCategoryIdfkeys { get; set; } = null!;
+		public List<Product> Products { get; set; } = null!;
 		#endregion
 	}
 }

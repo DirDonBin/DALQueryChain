@@ -11,8 +11,11 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public async Task BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(entities);
-            await _repository.OnBeforeUpdate(ctn);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entities);
+
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeUpdate(ctn);
 
             using var transaction = await _context.BeginTransactionAsync();
 
@@ -24,15 +27,22 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
             await transaction.CommitAsync(ctn);
 
-            await _repository.OnAfterUpdate(ctn);
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterUpdate(ctn);
         }
 
         public async Task UpdateAsync(TEntity entity, CancellationToken ctn = default)
         {
-            _repository.InitTriggers(entity);
-            await _repository.OnBeforeUpdate(ctn);
+            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                _repository.InitTriggers(entity);
+
+            if (_repository.IsBeforeTriggerOn)
+                await _repository.OnBeforeUpdate(ctn);
+
             await _context.UpdateAsync(entity, token: ctn);
-            await _repository.OnAfterUpdate(ctn);
+
+            if (_repository.IsAfterTriggerOn)
+                await _repository.OnAfterUpdate(ctn);
         }
     }
 }

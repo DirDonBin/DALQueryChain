@@ -6,7 +6,6 @@
 // ---------------------------------------------------------------------------------------------------
 
 using LinqToDB;
-using LinqToDB.Configuration;
 using LinqToDB.Data;
 
 #pragma warning disable 1573, 1591
@@ -27,8 +26,8 @@ namespace ManualTest.Linq2Db.Context
 			InitDataContext();
 		}
 
-		public TestContext(LinqToDBConnectionOptions<TestContext> options)
-			: base(options)
+		public TestContext(DataOptions<TestContext> options)
+			: base(options.Options)
 		{
 			InitDataContext();
 		}

@@ -13,6 +13,9 @@ namespace DALQueryChain.Linq2Db.Triggres
         private IQueryable<TEntity>? _query = null;
         private readonly DataConnection _context;
 
+        public bool IsBeforeTriggerOn { get; internal set; } = true;
+        public bool IsAfterTriggerOn { get; internal set; } = true;
+
         public BaseTrigger(DataConnection context)
         {
             _context = context;
