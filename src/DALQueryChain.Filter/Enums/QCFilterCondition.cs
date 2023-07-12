@@ -1,6 +1,6 @@
 ﻿namespace DALQueryChain.Filter.Enums
 {
-    public enum QSFilterCondition
+    public enum QCFilterCondition
     {
         Equals,
         NotEqual,

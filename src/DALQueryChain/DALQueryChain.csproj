@@ -16,7 +16,7 @@
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
         <PackageOutputPath>..\..\nuget</PackageOutputPath>
-        <VersionPrefix>1.1.0.2-preview</VersionPrefix>
+        <VersionPrefix>1.1.0.6-preview</VersionPrefix>
     </PropertyGroup>
 
     <ItemGroup>
@@ -31,7 +31,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="LinqKit.Core" Version="1.2.4" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     </ItemGroup>

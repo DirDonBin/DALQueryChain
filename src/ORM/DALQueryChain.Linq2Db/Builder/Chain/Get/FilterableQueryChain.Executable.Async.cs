@@ -47,6 +47,12 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public Task<List<T>> ToListAsync(CancellationToken ctn = default) => _prevQuery.ToListAsync(ctn);
 
+        public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, CancellationToken ctn = default) where TKey : notnull 
+            => _prevQuery.ToDictionaryAsync(keySelector, ctn);
+
+        public Task<Dictionary<TKey, TResult>> ToDictionaryAsync<TKey, TResult>(Func<T, TKey> keySelector, Func<T, TResult> valueSelector, CancellationToken ctn = default) where TKey : notnull
+            => _prevQuery.ToDictionaryAsync(keySelector, valueSelector, ctn);
+
         public Task<T> MaxAsync(CancellationToken ctn = default) => _prevQuery.MaxAsync(ctn)!;
         public async Task<T?> MaxOrDefaultAsync(CancellationToken ctn = default)
         {

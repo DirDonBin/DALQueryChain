@@ -2,10 +2,13 @@
 
 namespace DALQueryChain.Filter.Models
 {
-    internal class FilterModel
+    internal record FilterModel
     {
         public string SrcFieldName { get; set; } = null!;
         public string DestFieldName { get; set; } = null!;
-        public QSFilterCondition[] ConditionTypes { get; set; } = null!;
+
+        public QCFilterSetting Settings { get; set; } = new();
+
+        public QCFilterCondition[] ConditionTypes { get; set; } = null!;
     }
 }

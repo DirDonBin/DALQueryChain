@@ -6,12 +6,14 @@ using DALQueryChain.Interfaces.QueryBuilder.Get;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace DALQueryChain.Filter
 {
     internal static class FilterGenerator
     {
-        internal static IFilterableQueryChain<TEntity> Generate<TEntity, TFilterModel>(IFilterableQueryChain<TEntity> query, TFilterModel model, string name = "default")
+        internal static IFilterableQueryChain<TEntity> FilterGenerate<TEntity, TFilterModel>(IFilterableQueryChain<TEntity> query, TFilterModel model, string name = "default")
+            where TFilterModel : class
         {
             var filters = ReadFilterModel(model, name);
 
@@ -30,8 +32,17 @@ namespace DALQueryChain.Filter
                 {
                     Expression? predicate = null;
 
-                    Expression propertyEntity = Expression.Property(itemEntity, flt.DestFieldName);
-                    Expression propertyFilter = Expression.Property(itemFilter, flt.SrcFieldName);
+                    var entityPropertyPath = flt.DestFieldName.Split(".");
+                    var filterPropertyPath = flt.SrcFieldName.Split(".");
+
+                    Expression propertyEntity = itemEntity;
+                    Expression propertyFilter = itemFilter;
+
+                    foreach (var prop in entityPropertyPath)
+                        propertyEntity = Expression.Property(propertyEntity, prop);
+
+                    foreach (var prop in filterPropertyPath)
+                        propertyFilter = Expression.Property(propertyFilter, prop);
 
                     var nullConstant = Expression.Constant(null);
 
@@ -48,7 +59,10 @@ namespace DALQueryChain.Filter
                     {
                         if (right.Type == typeof(string))
                         {
-                            var invariant = Expression.Constant(StringComparison.InvariantCultureIgnoreCase);
+                            var invariant = Expression.Constant(flt.Settings.StringSensitiveCase
+                                ? StringComparison.InvariantCulture
+                                : StringComparison.InvariantCultureIgnoreCase);
+
                             MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string), typeof(StringComparison) })!;
                             return Expression.Call(left, method, right, invariant);
                         }
@@ -83,20 +97,38 @@ namespace DALQueryChain.Filter
                         }
                     };
 
+                    Func<Expression, Expression, Expression> equals = (left, right) =>
+                    {
+                        if (left.Type == typeof(string))
+                        {
+                            var invariant = Expression.Constant(flt.Settings.StringSensitiveCase
+                                ? StringComparison.InvariantCulture
+                                : StringComparison.InvariantCultureIgnoreCase);
+                            
+                            MethodInfo method = typeof(string).GetMethod("Equals", new[] { typeof(string), typeof(StringComparison) })!;
+                            return Expression.Call(left, method, right, invariant);
+                        }
+
+                        return Expression.Equal(left, right);
+                    };
+
                     foreach (var condition in flt.ConditionTypes)
                     {
                         var predicateCond = condition switch
                         {
-                            QSFilterCondition.Equals => Expression.Equal(propertyFilter, propertyEntity),
-                            QSFilterCondition.NotEqual => Expression.NotEqual(propertyFilter, propertyEntity),
-                            QSFilterCondition.Greater => Expression.GreaterThan(Expression.Convert(propertyFilter, propertyEntity.Type), propertyEntity),
-                            QSFilterCondition.GreaterOrEqual => Expression.GreaterThanOrEqual(Expression.Convert(propertyFilter, propertyEntity.Type), propertyEntity),
-                            QSFilterCondition.Less => Expression.LessThan(Expression.Convert(propertyFilter, propertyEntity.Type), propertyEntity),
-                            QSFilterCondition.LessOrEqual => Expression.LessThanOrEqual(Expression.Convert(propertyFilter, propertyEntity.Type), propertyEntity),
-                            QSFilterCondition.Contains => contains(propertyEntity, propertyFilter),
+                            QCFilterCondition.Equals => equals(propertyFilter, propertyEntity),
+                            QCFilterCondition.NotEqual => Expression.NotEqual(propertyFilter, propertyEntity),
+                            QCFilterCondition.Greater => Expression.GreaterThan(Expression.Convert(propertyFilter, propertyEntity.Type), propertyEntity),
+                            QCFilterCondition.GreaterOrEqual => Expression.GreaterThanOrEqual(Expression.Convert(propertyFilter, propertyEntity.Type), propertyEntity),
+                            QCFilterCondition.Less => Expression.LessThan(Expression.Convert(propertyFilter, propertyEntity.Type), propertyEntity),
+                            QCFilterCondition.LessOrEqual => Expression.LessThanOrEqual(Expression.Convert(propertyFilter, propertyEntity.Type), propertyEntity),
+                            QCFilterCondition.Contains => contains(propertyEntity, propertyFilter),
                             _ => throw new Exception()
                         };
 
+                        if (flt.Settings.NullValueIgnore)
+                            predicateCond = Expression.OrElse(Expression.Equal(propertyFilter, nullConstant), predicateCond);
+                        
                         predicate = predicate is null
                             ? predicateCond
                             : Expression.OrElse(predicate, predicateCond);
@@ -111,6 +143,66 @@ namespace DALQueryChain.Filter
             exp ??= Expression.Constant(false);
 
             return query.Where(Expression.Lambda<Func<TEntity, bool>>(exp, itemEntity));
+        }
+
+        internal static IOrderableQueryChain<TEntity> SortingGenerate<TEntity, TSortingModel>(IFilterableQueryChain<TEntity> query, Type modelType, IEnumerable<TSortingModel?>? sorting)
+            where TSortingModel : QCSorting
+        {
+            var orderQuery = query.OrderBy(x => x!);
+
+            if (sorting is null || modelType is null) return orderQuery;
+
+            sorting = sorting.Where(x => x is not null).DistinctBy(x => x!.Property);
+
+            if (sorting.Count() == 0) return orderQuery;
+
+            var properties = modelType
+                .GetProperties()
+                .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(QCSortingAttribute)))
+                .Where(x => sorting.Any(y => y!.Property.ToLower() == x.Name.ToLower()))
+                .ToDictionary(x => x.Name, y => (QCSortingAttribute?)y.GetCustomAttribute(typeof(QCSortingAttribute), false));
+
+            if (properties is null || properties.Count() == 0 || properties.All(x => x.Value is null)) return orderQuery;
+
+            IOrderableQueryChain<TEntity>? resultQuery = null;
+
+            foreach (var prop in properties)
+            {
+                if (prop.Value is null) continue;
+
+                var sort = sorting.First(x => x!.Property.ToLower() == prop.Key.ToLower());
+
+                var itemEntity = Expression.Parameter(typeof(TEntity), "entity");
+
+                var propertyPath = (prop.Value.FieldName ?? prop.Key).Split(".");
+
+                Expression propertyEntity = itemEntity;
+                foreach (var property in propertyPath)
+                    propertyEntity = Expression.Property(propertyEntity, property);
+
+                var conversion = Expression.Convert(propertyEntity, typeof(object));
+                var predicate = Expression.Lambda<Func<TEntity, object>>(conversion, itemEntity);
+
+                if (resultQuery is null)
+                    resultQuery = sort is { Ordering: QCSortingType.Ascending }
+                        ? orderQuery.OrderBy(predicate)
+                        : orderQuery.OrderByDescending(predicate);
+                else
+                    resultQuery = sort is { Ordering: QCSortingType.Ascending }
+                        ? resultQuery.ThenBy(predicate)
+                        : resultQuery.ThenByDescending(predicate);
+            }
+
+            return resultQuery ?? orderQuery;
+        }
+
+        internal static IFilterableQueryChain<TEntity> PaginateGenerate<TEntity, TPaginateModel>(IFilterableQueryChain<TEntity> query, TPaginateModel? model)
+            where TPaginateModel : QCPaginate
+        {
+            if (model is null)
+                return query;
+
+            return query.Skip(model.PageSize * model.Page - model.PageSize).Take(model.PageSize);
         }
 
         private static Dictionary<string, List<FilterModel>>? ReadFilterModel<TFilterModel>(TFilterModel filter, string name = "default")
@@ -155,6 +247,12 @@ namespace DALQueryChain.Filter
                     {
                         SrcFieldName = property.Name,
                         DestFieldName = group.Value.FieldName ?? property.Name,
+
+                        Settings = new()
+                        {
+                            NullValueIgnore = group.Value.NullValueIgnore,
+                            StringSensitiveCase = group.Value.StringSensitiveCase
+                        },
 
                         ConditionTypes = group.Value.ConditionTypes
                     });

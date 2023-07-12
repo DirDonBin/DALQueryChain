@@ -101,6 +101,16 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         Task<List<T>> ToListAsync(CancellationToken ctn = default);
 
         /// <summary>
+		/// Asynchronously loads data from query to a dictionary.
+		/// </summary>
+        Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, CancellationToken ctn = default) where TKey : notnull;
+
+        /// <summary>
+		/// Asynchronously loads data from query to a dictionary.
+		/// </summary>
+        Task<Dictionary<TKey, TResult>> ToDictionaryAsync<TKey, TResult>(Func<T, TKey> keySelector, Func<T, TResult> valueSelector, CancellationToken ctn = default) where TKey : notnull;
+
+        /// <summary>
         /// Returns the number of elements in a sequence
         /// </summary>
         Task<int> CountAsync(CancellationToken ctn = default);

@@ -101,6 +101,16 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         List<T> ToList();
 
         /// <summary>
+		/// Asynchronously loads data from query to a dictionary.
+		/// </summary>
+        Dictionary<TKey, T> ToDictionary<TKey>(Func<T, TKey> keySelector) where TKey : notnull;
+
+        /// <summary>
+		/// Asynchronously loads data from query to a dictionary.
+		/// </summary>
+        Dictionary<TKey, TResult> ToDictionary<TKey, TResult>(Func<T, TKey> keySelector, Func<T, TResult> valueSelector) where TKey : notnull;
+
+        /// <summary>
         /// Returns the number of elements in a sequence
         /// </summary>
         int Count();

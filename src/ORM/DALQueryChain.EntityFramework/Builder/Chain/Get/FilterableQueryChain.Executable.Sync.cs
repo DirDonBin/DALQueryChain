@@ -46,6 +46,12 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public List<T> ToList() => _prevQuery.ToList();
 
+        public Dictionary<TKey, T> ToDictionary<TKey>(Func<T, TKey> keySelector) where TKey : notnull
+            => _prevQuery.ToDictionary(keySelector);
+
+        public Dictionary<TKey, TResult> ToDictionary<TKey, TResult>(Func<T, TKey> keySelector, Func<T, TResult> valueSelector) where TKey : notnull
+            => _prevQuery.ToDictionary(keySelector, valueSelector);
+
         public T Max() => _prevQuery.Max()!;
         public T? MaxOrDefault()
         {

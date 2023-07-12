@@ -1,6 +1,5 @@
 ﻿using DALQueryChain.Interfaces.QueryBuilder.Get;
 using DALQueryChain.Linq2Db.Builder.Chain.Get;
-using LinqKit.Core;
 using LinqToDB;
 using System.Linq.Expressions;
 
@@ -14,9 +13,6 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         public FilterableQueryChain(IQueryable<T> prevQuery) : base(prevQuery)
         {
         }
-
-        public IFilterableQueryChain<T> AsExpandable()
-            => new FilterableQueryChain<T>(_prevQuery.AsExpandable());
 
         public IFilterableQueryChain<T[]> Chunk(int count)
             => new FilterableQueryChain<T[]>(_prevQuery.Chunk(count));

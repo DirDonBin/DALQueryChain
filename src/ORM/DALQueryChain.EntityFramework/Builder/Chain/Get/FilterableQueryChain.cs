@@ -1,6 +1,5 @@
 ﻿using DALQueryChain.EntityFramework.Builder.Chain.Get;
 using DALQueryChain.Interfaces.QueryBuilder.Get;
-using LinqKit.Core;
 using System.Linq.Expressions;
 
 namespace DALQueryChain.EntityFramework.Builder.Chain
@@ -12,9 +11,6 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         public FilterableQueryChain(IQueryable<T> prevQuery) : base(prevQuery)
         {
         }
-
-        public IFilterableQueryChain<T> AsExpandable()
-            => new FilterableQueryChain<T>(_prevQuery.AsExpandable());
 
         public IFilterableQueryChain<T[]> Chunk(int count)
             => new FilterableQueryChain<T[]>(_prevQuery.Chunk(count));

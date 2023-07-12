@@ -1,12 +1,16 @@
-﻿using DALQueryChain.Filter.Extensions;
+﻿using DALQueryChain.Filter.Enums;
+using DALQueryChain.Filter.Extensions;
 using DALQueryChain.Interfaces;
 using DALQueryChain.Linq2Db.Builder;
+using DALQueryChain.Linq2Db.Extensions;
 using DALQueryChain.Tests.Linq2DB.Common.Fixtures.Objects;
 using DALQueryChain.Tests.Linq2DB.Common.Models.Filters;
 using DALQueryChain.Tests.Linq2DB.Common.TestCases;
+using LinqToDB;
 using ManualTest.Linq2Db.Context;
 using Moq;
 using Npgsql;
+using System.ComponentModel;
 
 namespace DALQueryChain.Tests.Linq2DB.Tests
 {
@@ -34,7 +38,16 @@ namespace DALQueryChain.Tests.Linq2DB.Tests
                 DateTo = new DateTime(2022, 01, 01),
                 Raiting1 = 3,
                 Raiting2 = 2.25f,
-                Ids = new[] { 5, 22, 365, 844, 1236, 5487 }
+                Ids = new[] { 5, 22, 365, 844, 1236, 5487 },
+                CategoryId = 1,
+                Categories = new() {2,3,4},
+                Paginate = new() { Page = 5, PageSize = 10 },
+                Sorting = new() { Property = "price", Ordering = QCSortingType.Descending},
+                SortingList = new() { 
+                    new() { Property = "Count", Ordering = QCSortingType.Descending},
+                    new() { Property = "CategoryId", Ordering = QCSortingType.Ascending},
+                    new() { Property = "Price", Ordering = QCSortingType.Descending}
+                }
             };
         }
 
@@ -178,15 +191,124 @@ namespace DALQueryChain.Tests.Linq2DB.Tests
         [Fact]
         public void EnumerableContainsTest()
         {
-            var expect = DbContext.Products.Where(x => _filter.Ids.Contains(x.Id)).ToList();
+            var expect = DbContext.Products.Where(x => _filter.Ids!.Contains(x.Id)).ToList();
             var result = _dqc.For<Product>().Get.Filter(_filter, TestFiltersEnum.Ids).ToList();
 
             Assert.Equivalent(expect, result);
 
-            var expectNullable = DbContext.Products.Where(x => _nullableFilter.Ids.Contains(x.Id)).ToList();
+            var expectNullable = DbContext.Products.Where(x => _nullableFilter.Ids!.Contains(x.Id)).ToList();
             var resultNullable = _dqc.For<Product>().Get.Filter(_nullableFilter, TestFiltersEnum.Ids).ToList();
 
             Assert.Equivalent(expectNullable, resultNullable);
+        }
+
+        //[Fact]
+        //public void AnyEnumerableContainsTest()
+        //{
+        //    var expect = DbContext.Categories.LoadWith(x => x.Products).Where(x => x.Products.Any(y => _filter.Id == y.Id)).ToList();
+        //    var result = _dqc.For<Category>().Get.LoadWith(x => x.Products).Filter(_filter, TestFiltersEnum.AnyId).ToList();
+
+        //    Assert.Equivalent(expect, result);
+
+        //    var expectList = DbContext.Categories.LoadWith(x => x.Products).Where(x => x.Products.Any(y => _filter.Ids!.Contains(y.Id))).ToList();
+        //    var resultList = _dqc.For<Category>().Get.LoadWith(x => x.Products).Filter(_filter, TestFiltersEnum.AnyIds).ToList();
+
+        //    Assert.Equivalent(expectList, resultList);
+
+        //    var expectNullable = DbContext.Categories.LoadWith(x => x.Products).Where(x => x.Products.Any(y => _nullableFilter.Id == y.Id)).ToList();
+        //    var resultNullable = _dqc.For<Category>().Get.LoadWith(x => x.Products).Filter(_nullableFilter, TestFiltersEnum.AnyId).ToList();
+
+        //    Assert.Equivalent(expectNullable, resultNullable);
+
+        //    var expectListNullable = DbContext.Categories.LoadWith(x => x.Products).Where(x => x.Products.Any(y => _nullableFilter.Ids!.Contains(y.Id))).ToList();
+        //    var resultListNullable = _dqc.For<Category>().Get.LoadWith(x => x.Products).Filter(_nullableFilter, TestFiltersEnum.AnyIds).ToList();
+
+        //    Assert.Equivalent(expectListNullable, resultListNullable);
+        //}
+
+        [Fact]
+        public void FilterAssociateTest()
+        {
+            var expect = DbContext.Products
+                .LoadWith(x => x.Category)
+                .Where(x => x.Category!.Id == _filter.CategoryId || !_filter.CategoryId.HasValue)
+                .ToList();
+            var result = _dqc.For<Product>().Get.LoadWith(x => x.Category).Filter(_filter, TestFiltersEnum.Category).ToList();
+
+            Assert.Equivalent(expect, result);
+
+            var expectNullable = DbContext.Products
+                .LoadWith(x => x.Category)
+                .Where(x => x.Category!.Id == _nullableFilter.CategoryId || !_nullableFilter.CategoryId.HasValue)
+                .ToList();
+            var resultNullable = _dqc.For<Product>().Get.LoadWith(x => x.Category).Filter(_nullableFilter, TestFiltersEnum.Category).ToList();
+
+            Assert.Equivalent(expectNullable, resultNullable);
+
+
+            var expectList = DbContext.Products
+                .LoadWith(x => x.Category)
+                .Where(x => _filter.Categories != null && _filter.Categories.Contains(x.Category!.Id))
+                .ToList();
+            var resultList = _dqc.For<Product>().Get.LoadWith(x => x.Category).Filter(_filter, TestFiltersEnum.Categories).ToList();
+
+            Assert.Equivalent(expect, result);
+
+            var expectListNullable = DbContext.Products
+                .LoadWith(x => x.Category)
+                .Where(x => _nullableFilter.Categories != null && _nullableFilter.Categories.Contains(x.Category!.Id))
+                .ToList();
+            var resultListNullable = _dqc.For<Product>().Get.LoadWith(x => x.Category).Filter(_nullableFilter, TestFiltersEnum.Categories).ToList();
+
+            Assert.Equivalent(expectNullable, resultNullable);
+        }
+
+        [Fact]
+        public void PaginateTest()
+        {
+            var expect = DbContext.Products
+                .Skip(_filter.Paginate!.PageSize * _filter.Paginate!.Page - _filter.Paginate!.PageSize)
+                .Take(_filter.Paginate!.PageSize)
+                .ToList();
+            var result = _dqc.For<Product>().Get.Paginate(_filter.Paginate).ToList();
+
+            Assert.Equivalent(expect, result);
+
+            var expectNullable = DbContext.Products.ToList();
+            var resultNullable = _dqc.For<Product>().Get.Paginate(_nullableFilter.Paginate).ToList();
+
+            Assert.Equivalent(expectNullable, resultNullable);
+        }
+
+        [Fact]
+        public void SortingTest()
+        {
+            var expectSingle = DbContext.Products.OrderByDescending(x => x.Price).ToList();
+            var resultSingle = _dqc.For<Product>().Get.Sorting(typeof(TestFilterModel), _filter.Sorting).ToList();
+
+            Assert.Equivalent(expectSingle, resultSingle);
+
+            var expectNullableSingle = DbContext.Products.ToList();
+            var resultNullableSingle = _dqc.For<Product>().Get.Sorting(typeof(TestFilterModel), _nullableFilter.Sorting).ToList();
+
+            Assert.Equivalent(expectNullableSingle, resultNullableSingle);
+
+
+
+            var expectList = DbContext.Products
+                .LoadWith(x => x.Category)
+                .OrderByDescending(x => x.Count)
+                .ThenBy(x => x.Category!.Id)
+                .ThenByDescending(x => x.Price)
+                .ToList();
+            var resultList = _dqc.For<Product>().Get.LoadWith(x => x.Category).Sorting(typeof(TestFilterModel), _filter.SortingList).ToList();
+
+            Assert.Equivalent(expectList, resultList);
+
+            var expectNullableList = DbContext.Products.LoadWith(x => x.Category).ToList();
+            var resultNullableList = _dqc.For<Product>().Get.LoadWith(x => x.Category).Sorting(typeof(TestFilterModel), _nullableFilter.SortingList).ToList();
+
+            Assert.Equivalent(expectNullableList, resultNullableList);
         }
 
     }

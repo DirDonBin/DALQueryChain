@@ -9,10 +9,12 @@
         Category,
         Categories,
         Ids,
+        AnyIds,
+        AnyId,
         Count,
         Raiting1,
         Raiting2,
         PriceGreater,
-        PriceLess
+        PriceLess,
     }
 }

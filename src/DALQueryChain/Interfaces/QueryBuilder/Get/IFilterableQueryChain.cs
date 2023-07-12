@@ -22,8 +22,6 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
 
         public IFilterableQueryChain<T[]> Chunk(int count);
 
-        IFilterableQueryChain<T> AsExpandable();
-
 
     }
 }
