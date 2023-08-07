@@ -1,4 +1,5 @@
 ﻿using DALQueryChain.Interfaces;
+using DALQueryChain.Linq2Db.Extensions;
 using DALQueryChain.Linq2Db.Repositories;
 using LinqToDB;
 using LinqToDB.Data;
@@ -56,7 +57,7 @@ namespace Linq2Db.DAL.Repository
 
         public async Task Test()
         {
-            
+            var ere = _context.Categories.LoadWith(x => x.Products, x => x.Where(y => y.Name.Contains("Fresh"))).AsQueryChain();
             var ttt = await _context.Categories.LoadWith(x => x.Products, x => x.Where(y => y.Name.Contains("Fresh"))).ToListAsync();
         }
 

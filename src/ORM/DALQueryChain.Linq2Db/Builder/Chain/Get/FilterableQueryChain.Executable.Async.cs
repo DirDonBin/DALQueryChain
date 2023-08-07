@@ -2,6 +2,7 @@
 using DALQueryChain.Linq2Db.Builder.Chain.Get;
 using LinqToDB;
 using System.Linq.Expressions;
+using System.Numerics;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain
 {
@@ -47,7 +48,7 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public Task<List<T>> ToListAsync(CancellationToken ctn = default) => _prevQuery.ToListAsync(ctn);
 
-        public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, CancellationToken ctn = default) where TKey : notnull 
+        public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, CancellationToken ctn = default) where TKey : notnull
             => _prevQuery.ToDictionaryAsync(keySelector, ctn);
 
         public Task<Dictionary<TKey, TResult>> ToDictionaryAsync<TKey, TResult>(Func<T, TKey> keySelector, Func<T, TResult> valueSelector, CancellationToken ctn = default) where TKey : notnull
@@ -94,5 +95,25 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             if (await _prevQuery.AnyAsync(ctn)) return await _prevQuery.OrderByDescending(keySelector).FirstAsync(ctn);
             return default;
         }
+
+        public Task<int> SumAsync(Expression<Func<T, int>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<int?> SumAsync(Expression<Func<T, int?>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<long> SumAsync(Expression<Func<T, long>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<long?> SumAsync(Expression<Func<T, long?>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<float> SumAsync(Expression<Func<T, float>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<float?> SumAsync(Expression<Func<T, float?>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<decimal> SumAsync(Expression<Func<T, decimal>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<decimal?> SumAsync(Expression<Func<T, decimal?>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<double> SumAsync(Expression<Func<T, double>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<double?> SumAsync(Expression<Func<T, double?>> keySelector) => _prevQuery.SumAsync(keySelector);
     }
 }

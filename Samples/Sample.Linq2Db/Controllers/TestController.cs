@@ -61,6 +61,8 @@ namespace Sample.Linq2Db.Controllers
 
             //var ttt = await _qs.For<Product>().Get.LoadWith(x => x.Category).Where(x => x.Category == null).ToListAsync();
 
+            var trt = _qs.For<Category>().Get.LoadWith(x => x.Products, x => x.Where(y => y.Name.Contains("Fresh"))).Sum(x => x.Id).ToString();
+
             await _qs.Repository<ProductRepository>().Test();
 
             var ttt = await _qs.For<Category>().Get.LoadWith(x => x.Products, x => x.Where(y => y.Name.Contains("Fresh"))).ToListAsync();

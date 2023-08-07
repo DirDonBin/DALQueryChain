@@ -221,5 +221,75 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
         T? MinByOrDefault<TKey>(Expression<Func<T, TKey>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        int Sum(Expression<Func<T, int>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        int? Sum(Expression<Func<T, int?>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        long Sum(Expression<Func<T, long>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        long? Sum(Expression<Func<T, long?>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        float Sum(Expression<Func<T, float>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        float? Sum(Expression<Func<T, float?>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        decimal Sum(Expression<Func<T, decimal>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        decimal? Sum(Expression<Func<T, decimal?>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        double Sum(Expression<Func<T, double>> keySelector);
+
+        /// <summary>
+        /// Returns the sum values according to a specified key selector function.
+        /// </summary>
+        /// <param name="keySelector">A function to extract the key for each element</param>
+        /// <returns></returns>
+        double? Sum(Expression<Func<T, double?>> keySelector);
     }
 }

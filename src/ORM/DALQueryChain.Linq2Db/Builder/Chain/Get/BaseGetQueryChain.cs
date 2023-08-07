@@ -8,5 +8,7 @@
         {
             _prevQuery = prevQuery;
         }
+
+        public override string ToString() => _prevQuery.ToString() ?? string.Empty;
     }
 }

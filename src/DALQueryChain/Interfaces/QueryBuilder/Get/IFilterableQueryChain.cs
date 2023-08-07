@@ -21,7 +21,5 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         public IFilterableQueryChain<T> TakeWhile(Expression<Func<T, bool>> predicate);
 
         public IFilterableQueryChain<T[]> Chunk(int count);
-
-
     }
 }

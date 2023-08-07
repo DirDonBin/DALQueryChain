@@ -94,5 +94,25 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             if (_prevQuery.Any()) return _prevQuery.MinBy(keySelector);
             return default;
         }
+
+        public int Sum(Expression<Func<T, int>> keySelector) => _prevQuery.Sum(keySelector);
+
+        public int? Sum(Expression<Func<T, int?>> keySelector) => _prevQuery.Sum(keySelector);
+
+        public long Sum(Expression<Func<T, long>> keySelector) => _prevQuery.Sum(keySelector);
+
+        public long? Sum(Expression<Func<T, long?>> keySelector) => _prevQuery.Sum(keySelector);
+
+        public float Sum(Expression<Func<T, float>> keySelector) => _prevQuery.Sum(keySelector);
+
+        public float? Sum(Expression<Func<T, float?>> keySelector) => _prevQuery.Sum(keySelector);
+
+        public decimal Sum(Expression<Func<T, decimal>> keySelector) => _prevQuery.Sum(keySelector);
+
+        public decimal? Sum(Expression<Func<T, decimal?>> keySelector) => _prevQuery.Sum(keySelector);
+
+        public double Sum(Expression<Func<T, double>> keySelector) => _prevQuery.Sum(keySelector);
+
+        public double? Sum(Expression<Func<T, double?>> keySelector) => _prevQuery.Sum(keySelector);
     }
 }

@@ -94,5 +94,25 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
             if (await _prevQuery.AnyAsync(ctn)) return await _prevQuery.OrderByDescending(keySelector).FirstAsync(ctn);
             return default;
         }
+
+        public Task<int> SumAsync(Expression<Func<T, int>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<int?> SumAsync(Expression<Func<T, int?>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<long> SumAsync(Expression<Func<T, long>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<long?> SumAsync(Expression<Func<T, long?>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<float> SumAsync(Expression<Func<T, float>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<float?> SumAsync(Expression<Func<T, float?>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<decimal> SumAsync(Expression<Func<T, decimal>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<decimal?> SumAsync(Expression<Func<T, decimal?>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<double> SumAsync(Expression<Func<T, double>> keySelector) => _prevQuery.SumAsync(keySelector);
+
+        public Task<double?> SumAsync(Expression<Func<T, double?>> keySelector) => _prevQuery.SumAsync(keySelector);
     }
 }
