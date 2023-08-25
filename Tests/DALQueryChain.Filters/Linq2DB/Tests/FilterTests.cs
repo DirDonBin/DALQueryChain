@@ -283,8 +283,21 @@ namespace DALQueryChain.Tests.Linq2DB.Tests
         [Fact]
         public void SortingTest()
         {
-            var expectSingle = DbContext.Products.OrderByDescending(x => x.Price).ToList();
-            var resultSingle = _dqc.For<Product>().Get.Sorting(typeof(TestFilterModel), _filter.Sorting).ToList();
+            var expectSingle = DbContext.Products
+                .Select(x => new { x.Price, x.Id })
+                .OrderByDescending(x => x.Price)
+                .ThenBy(x => x.Id)
+                .ToList();
+            var resultSingle = _dqc.For<Product>().Get
+                .Select(x => new { x.Price, x.Id })
+                .Sorting(typeof(TestFilterModel), _filter.Sorting)
+                .ThenBy(x => x.Id)
+                .ToList();
+
+            var ttt = _dqc.For<Product>().Get
+                .Select(x => new { x.Price, x.Id })
+                .Sorting(typeof(TestFilterModel), _nullableFilter.Sorting)
+                .ThenBy(x => x.Id);
 
             Assert.Equivalent(expectSingle, resultSingle);
 

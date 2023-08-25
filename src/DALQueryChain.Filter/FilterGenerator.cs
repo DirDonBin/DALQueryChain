@@ -148,13 +148,13 @@ namespace DALQueryChain.Filter
         internal static IOrderableQueryChain<TEntity> SortingGenerate<TEntity, TSortingModel>(IFilterableQueryChain<TEntity> query, Type modelType, IEnumerable<TSortingModel?>? sorting)
             where TSortingModel : QCSorting
         {
-            var orderQuery = query.OrderBy(x => x!);
+            IOrderableQueryChain<TEntity> orderQuery = query.OrderBy(x => null!);
 
             if (sorting is null || modelType is null) return orderQuery;
 
             sorting = sorting.Where(x => x is not null).DistinctBy(x => x!.Property);
 
-            if (sorting.Count() == 0) return orderQuery;
+            if (!sorting.Any()) return orderQuery;
 
             var properties = modelType
                 .GetProperties()
