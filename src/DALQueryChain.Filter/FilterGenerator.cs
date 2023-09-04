@@ -19,7 +19,7 @@ namespace DALQueryChain.Filter
 
             if (filters is null || filters.Count == 0) return query;
 
-            Expression exp = default!;
+            Expression? exp = null;
 
             var itemEntity = Expression.Parameter(typeof(TEntity), "entity");
             var itemFilter = Expression.Constant(model);
