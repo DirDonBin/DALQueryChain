@@ -64,5 +64,35 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public IFilterableQueryChain<IGrouping<TKey, T>> GroupBy<TKey>(Expression<Func<T, TKey>> keySelector)
             => new FilterableQueryChain<IGrouping<TKey, T>>(_prevQuery.GroupBy(keySelector));
+
+        public IFilterableQueryChain<T> Concat(IFilterableQueryChain<T> second)
+        {
+            _prevQuery = _prevQuery.Concat(((FilterableQueryChain<T>)second).Query);
+            return this;
+        }
+
+        public IFilterableQueryChain<T> Union(IFilterableQueryChain<T> second)
+        {
+            _prevQuery = _prevQuery.Union(((FilterableQueryChain<T>)second).Query);
+            return this;
+        }
+
+        public IFilterableQueryChain<T> UnionBy<TKey>(IFilterableQueryChain<T> second, Expression<Func<T, TKey>> keySelector)
+        {
+            _prevQuery = _prevQuery.UnionBy(((FilterableQueryChain<T>)second).Query, keySelector);
+            return this;
+        }
+
+        public IFilterableQueryChain<T> Except(IFilterableQueryChain<T> second)
+        {
+            _prevQuery = _prevQuery.Except(((FilterableQueryChain<T>)second).Query);
+            return this;
+        }
+
+        public IFilterableQueryChain<T> ExceptBy(IFilterableQueryChain<T> second, Expression<Func<T, T>> keySelector)
+        {
+            _prevQuery = _prevQuery.ExceptBy(((FilterableQueryChain<T>)second).Query, keySelector);
+            return this;
+        }
     }
 }

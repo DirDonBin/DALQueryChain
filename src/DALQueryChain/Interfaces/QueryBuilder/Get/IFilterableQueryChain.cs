@@ -21,5 +21,11 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         public IFilterableQueryChain<T> TakeWhile(Expression<Func<T, bool>> predicate);
 
         public IFilterableQueryChain<T[]> Chunk(int count);
+
+        public IFilterableQueryChain<T> Concat(IFilterableQueryChain<T> second);
+        public IFilterableQueryChain<T> Union(IFilterableQueryChain<T> second);
+        public IFilterableQueryChain<T> UnionBy<TKey>(IFilterableQueryChain<T> second, Expression<Func<T, TKey>> keySelector);
+        public IFilterableQueryChain<T> Except(IFilterableQueryChain<T> second);
+        public IFilterableQueryChain<T> ExceptBy(IFilterableQueryChain<T> second, Expression<Func<T, T>> keySelector);
     }
 }

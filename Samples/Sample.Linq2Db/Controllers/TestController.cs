@@ -58,14 +58,13 @@ namespace Sample.Linq2Db.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> TestQWER()
         {
+            var ttt = await _qs.For<Product>().Get.Where(x => x.CategoryId == 1)
+                .Concat(_qs.For<Product>().Get.Where(x => x.CategoryId == 2))
+                .ToListAsync();
 
-            //var ttt = await _qs.For<Product>().Get.LoadWith(x => x.Category).Where(x => x.Category == null).ToListAsync();
-
-            var trt = _qs.For<Category>().Get.LoadWith(x => x.Products, x => x.Where(y => y.Name.Contains("Fresh"))).Sum(x => x.Id).ToString();
-
-            await _qs.Repository<ProductRepository>().Test();
-
-            var ttt = await _qs.For<Category>().Get.LoadWith(x => x.Products, x => x.Where(y => y.Name.Contains("Fresh"))).ToListAsync();
+            var ttt1 = await _qs.For<Product>().Get.Where(x => x.CategoryId == 1 || x.CategoryId == 2)
+                .Except(_qs.For<Product>().Get.Where(x => x.CategoryId == 2))
+                .ToListAsync();
 
             return Ok();
         }
