@@ -13,40 +13,71 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         {
             ArgumentNullException.ThrowIfNull(entities);
 
-            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
-                _repository.InitTriggers(entities);
+            using var trans = _context.Transaction is null
+                ? await _context.BeginTransactionAsync(ctn)
+                : null;
 
-            if (_repository.IsBeforeTriggerOn && entities.Any())
-                await _repository.OnBeforeUpdate(ctn);
-
-            using var transaction = await _context.BeginTransactionAsync();
-
-            foreach (var entity in entities)
+            try
             {
-                if (ctn.IsCancellationRequested) break;
-                await _context.UpdateAsync(entity, token: ctn);
+                if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
+                    _repository.InitTriggers(entities);
+
+                if (_repository.IsBeforeTriggerOn && entities.Any())
+                    await _repository.OnBeforeUpdate(ctn);
+
+                foreach (var entity in entities)
+                {
+                    if (ctn.IsCancellationRequested) break;
+                    await _context.UpdateAsync(entity, token: ctn);
+                }
+
+                if (_repository.IsAfterTriggerOn && entities.Any())
+                    await _repository.OnAfterUpdate(ctn);
+
+                if (trans is not null)
+                    await trans.CommitAsync(ctn);
             }
+            catch (Exception)
+            {
+                if (trans is not null)
+                    await trans.RollbackAsync(ctn);
 
-            await transaction.CommitAsync(ctn);
-
-            if (_repository.IsAfterTriggerOn && entities.Any())
-                await _repository.OnAfterUpdate(ctn);
+                throw;
+            }
         }
 
         public async Task UpdateAsync(TEntity entity, CancellationToken ctn = default)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+            using var trans = _context.Transaction is null
+                ? await _context.BeginTransactionAsync(ctn)
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                await _repository.OnBeforeUpdate(ctn);
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
 
-            await _context.UpdateAsync(entity, token: ctn);
+                if (_repository.IsBeforeTriggerOn)
+                    await _repository.OnBeforeUpdate(ctn);
 
-            if (_repository.IsAfterTriggerOn)
-                await _repository.OnAfterUpdate(ctn);
+                await _context.UpdateAsync(entity, token: ctn);
+
+                if (_repository.IsAfterTriggerOn)
+                    await _repository.OnAfterUpdate(ctn);
+
+                if (trans is not null)
+                    await trans.CommitAsync(ctn);
+            }
+            catch (Exception)
+            {
+                if (trans is not null)
+                    await trans.RollbackAsync(ctn);
+
+                throw;
+            }
+
         }
     }
 }

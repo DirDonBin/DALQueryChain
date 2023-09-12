@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# IDE0039: Использовать локальную функцию
+csharp_style_prefer_local_over_anonymous_function = false

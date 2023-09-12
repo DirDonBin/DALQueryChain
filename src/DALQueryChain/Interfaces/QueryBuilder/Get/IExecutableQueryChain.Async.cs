@@ -227,69 +227,69 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<int> SumAsync(Expression<Func<T, int>> keySelector);
+        Task<int> SumAsync(Expression<Func<T, int>> keySelector, CancellationToken ctn = default);
         
         /// <summary>
         /// Returns the sum values according to a specified key selector function.
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<int?> SumAsync(Expression<Func<T, int?>> keySelector);
+        Task<int?> SumAsync(Expression<Func<T, int?>> keySelector, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the sum values according to a specified key selector function.
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<long> SumAsync(Expression<Func<T, long>> keySelector);
+        Task<long> SumAsync(Expression<Func<T, long>> keySelector, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the sum values according to a specified key selector function.
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<long?> SumAsync(Expression<Func<T, long?>> keySelector);
+        Task<long?> SumAsync(Expression<Func<T, long?>> keySelector, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the sum values according to a specified key selector function.
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<float> SumAsync(Expression<Func<T, float>> keySelector);
+        Task<float> SumAsync(Expression<Func<T, float>> keySelector, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the sum values according to a specified key selector function.
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<float?> SumAsync(Expression<Func<T, float?>> keySelector);
+        Task<float?> SumAsync(Expression<Func<T, float?>> keySelector, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the sum values according to a specified key selector function.
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<decimal> SumAsync(Expression<Func<T, decimal>> keySelector);
+        Task<decimal> SumAsync(Expression<Func<T, decimal>> keySelector, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the sum values according to a specified key selector function.
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<decimal?> SumAsync(Expression<Func<T, decimal?>> keySelector);
+        Task<decimal?> SumAsync(Expression<Func<T, decimal?>> keySelector, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the sum values according to a specified key selector function.
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<double> SumAsync(Expression<Func<T, double>> keySelector);
+        Task<double> SumAsync(Expression<Func<T, double>> keySelector, CancellationToken ctn = default);
 
         /// <summary>
         /// Returns the sum values according to a specified key selector function.
         /// </summary>
         /// <param name="keySelector">A function to extract the key for each element</param>
         /// <returns></returns>
-        Task<double?> SumAsync(Expression<Func<T, double?>> keySelector);
+        Task<double?> SumAsync(Expression<Func<T, double?>> keySelector, CancellationToken ctn = default);
     }
 }

@@ -25,7 +25,7 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         }
 
         public IUpdatableSetterQueryChain<TEntity> Where(Expression<Func<TEntity, bool>> predicate)
-            => new UpdatableSetterQueryChain<TContext, TEntity>(_repository, _context.GetTable<TEntity>().Where(predicate));
+            => new UpdatableSetterQueryChain<TContext, TEntity>(_context, _repository, _context.GetTable<TEntity>().Where(predicate));
 
         public IUpdatableQueryChain<TEntity> WithoutTriggers(TriggerType trigger = TriggerType.All)
         {

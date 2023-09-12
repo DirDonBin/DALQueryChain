@@ -13,37 +13,63 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         {
             ArgumentNullException.ThrowIfNull(entities);
 
-            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
-                _repository.InitTriggers(entities);
+            using var trans = _context.Transaction is null
+                ? _context.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn && entities.Any())
-                _repository.OnBeforeUpdate();
+            try
+            {
+                if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
+                    _repository.InitTriggers(entities);
 
-            using var transaction = _context.BeginTransaction();
+                if (_repository.IsBeforeTriggerOn && entities.Any())
+                    _repository.OnBeforeUpdate();
 
-            foreach (var entity in entities)
-                _context.Update(entity);
+                foreach (var entity in entities)
+                    _context.Update(entity);
 
-            transaction.Commit();
+                if (_repository.IsAfterTriggerOn && entities.Any())
+                    _repository.OnAfterUpdate();
 
-            if (_repository.IsAfterTriggerOn && entities.Any())
-                _repository.OnAfterUpdate();
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         public void Update(TEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+            using var trans = _context.Transaction is null
+                ? _context.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnBeforeUpdate();
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
 
-            _context.Update(entity);
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnBeforeUpdate();
 
-            if (_repository.IsAfterTriggerOn)
-                _repository.OnAfterUpdate();
+                _context.Update(entity);
+
+                if (_repository.IsAfterTriggerOn)
+                    _repository.OnAfterUpdate();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
     }
 }

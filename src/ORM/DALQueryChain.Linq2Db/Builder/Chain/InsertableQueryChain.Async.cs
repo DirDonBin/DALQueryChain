@@ -13,51 +13,105 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         {
             ArgumentNullException.ThrowIfNull(entities);
 
-            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
-                _repository.InitTriggers(entities);
+            using var trans = _context.Transaction is null
+                ? await _context.BeginTransactionAsync(ctn)
+                : null;
 
-            if (_repository.IsBeforeTriggerOn && entities.Any())
-                await _repository.OnBeforeInsert(ctn);
+            try
+            {
+                if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
+                    _repository.InitTriggers(entities);
 
-            await _context.BulkCopyAsync(entities, ctn);
+                if (_repository.IsBeforeTriggerOn && entities.Any())
+                    await _repository.OnBeforeInsert(ctn);
 
-            if (_repository.IsAfterTriggerOn && entities.Any())
-                await _repository.OnAfterInsert(ctn);
+                await _context.BulkCopyAsync(entities, ctn);
+
+                if (_repository.IsAfterTriggerOn && entities.Any())
+                    await _repository.OnAfterInsert(ctn);
+
+                if (trans is not null)
+                    await trans.CommitAsync(ctn);
+            }
+            catch (Exception)
+            {
+                if (trans is not null)
+                    await trans.RollbackAsync(ctn);
+
+                throw;
+            }
         }
 
         public async Task InsertAsync(TEntity entity, CancellationToken ctn = default)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+            using var trans = _context.Transaction is null
+                ? await _context.BeginTransactionAsync(ctn)
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                await _repository.OnBeforeInsert(ctn);
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
 
-            await _context.InsertAsync(entity, token: ctn);
+                if (_repository.IsBeforeTriggerOn)
+                    await _repository.OnBeforeInsert(ctn);
 
-            if (_repository.IsAfterTriggerOn)
-                await _repository.OnAfterInsert(ctn);
+                await _context.InsertAsync(entity, token: ctn);
+
+                if (_repository.IsAfterTriggerOn)
+                    await _repository.OnAfterInsert(ctn);
+
+                if (trans is not null)
+                    await trans.CommitAsync(ctn);
+            }
+            catch (Exception)
+            {
+                if (trans is not null)
+                    await trans.RollbackAsync(ctn);
+
+                throw;
+            }
+
         }
 
         public async Task<TEntity> InsertWithObjectAsync(TEntity entity, CancellationToken ctn = default)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+            using var trans = _context.Transaction is null
+               ? await _context.BeginTransactionAsync(ctn)
+               : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                await _repository.OnBeforeInsert(ctn);
+            TEntity res = default!;
 
-            var res = await _context.GetTable<TEntity>().InsertWithOutputAsync(entity, ctn);
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(res);
+                if (_repository.IsBeforeTriggerOn)
+                    await _repository.OnBeforeInsert(ctn);
 
-            if (_repository.IsAfterTriggerOn)
-                await _repository.OnAfterInsert(ctn);
+                res = await _context.GetTable<TEntity>().InsertWithOutputAsync(entity, ctn);
+
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(res);
+
+                if (_repository.IsAfterTriggerOn)
+                    await _repository.OnAfterInsert(ctn);
+
+                if (trans is not null)
+                    await trans.CommitAsync(ctn);
+            }
+            catch (Exception)
+            {
+                if (trans is not null)
+                    await trans.RollbackAsync(ctn);
+
+                throw;
+            }
 
             return res;
         }

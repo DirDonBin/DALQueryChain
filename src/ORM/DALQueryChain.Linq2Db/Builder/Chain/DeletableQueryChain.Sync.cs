@@ -14,64 +14,124 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         {
             ArgumentNullException.ThrowIfNull(entities);
 
-            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
-                _repository.InitTriggers(entities);
+            using var trans = _context.Transaction is null
+                ? _context.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn && entities.Any())
-                _repository.OnBeforeDelete();
+            try
+            {
+                if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
+                    _repository.InitTriggers(entities);
 
-            _context.Delete(entities);
+                if (_repository.IsBeforeTriggerOn && entities.Any())
+                    _repository.OnBeforeDelete();
 
-            if (_repository.IsAfterTriggerOn && entities.Any())
-                _repository.OnAfterDelete();
+                _context.Delete(entities);
+
+                if (_repository.IsAfterTriggerOn && entities.Any())
+                    _repository.OnAfterDelete();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         public void BulkDelete(Expression<Func<TEntity, bool>> predicate)
         {
             ArgumentNullException.ThrowIfNull(predicate);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(predicate);
+            using var trans = _context.Transaction is null
+                ? _context.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnBeforeDelete();
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(predicate);
 
-            _context.GetTable<TEntity>().Where(predicate).Delete();
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnBeforeDelete();
 
-            if (_repository.IsAfterTriggerOn)
-                _repository.OnAfterDelete();
+                _context.GetTable<TEntity>().Where(predicate).Delete();
+
+                if (_repository.IsAfterTriggerOn)
+                    _repository.OnAfterDelete();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         public void Delete(TEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+            using var trans = _context.Transaction is null
+                ? _context.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnBeforeDelete();
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
 
-            _context.Delete(entity);
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnBeforeDelete();
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnAfterDelete();
+                _context.Delete(entity);
+
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnAfterDelete();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         public void Delete(Expression<Func<TEntity, bool>> predicate)
         {
             ArgumentNullException.ThrowIfNull(predicate);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(predicate);
+            using var trans = _context.Transaction is null
+                ? _context.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnBeforeDelete();
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(predicate);
 
-            _context.GetTable<TEntity>().Where(predicate).Delete();
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnBeforeDelete();
 
-            if (_repository.IsAfterTriggerOn)
-                _repository.OnAfterDelete();
+                _context.GetTable<TEntity>().Where(predicate).Delete();
+
+                if (_repository.IsAfterTriggerOn)
+                    _repository.OnAfterDelete();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -83,7 +143,7 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         /// <summary>
         /// Soft Delete record. Need to override the SoftDelete method in the repository
         /// </summary>
-        /// <param name="predicate">Сondition for entries to be deleted</param>
+        /// <param name="predicate">Condition for entries to be deleted</param>
         public void SoftDelete(Expression<Func<TEntity, bool>> predicate) => _repository.SoftDelete(predicate);
 
         /// <summary>
@@ -95,7 +155,7 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         /// <summary>
         /// Soft Delete records. Need to override the SoftDelete method in the repository
         /// </summary>
-        /// <param name="predicate">Сondition for entries to be deleted</param>
+        /// <param name="predicate">Condition for entries to be deleted</param>
         public void BulkSoftDelete(Expression<Func<TEntity, bool>> predicate) => _repository.SoftBulkDelete(predicate);
     }
 }

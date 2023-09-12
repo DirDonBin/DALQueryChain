@@ -12,16 +12,31 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         {
             if (_entities is null) throw new InvalidOperationException("Has not been used of method Where");
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(_entities);
+            using var trans = _context.Database.CurrentTransaction is null
+                ? _context.Database.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnBeforeUpdate();
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(_entities);
 
-            _context.SaveChanges();
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnBeforeUpdate();
 
-            if (_repository.IsAfterTriggerOn)
-                _repository.OnAfterUpdate();
+                _context.SaveChanges();
+
+                if (_repository.IsAfterTriggerOn)
+                    _repository.OnAfterUpdate();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
     }
 }

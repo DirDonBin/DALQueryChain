@@ -13,24 +13,34 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         {
             ArgumentNullException.ThrowIfNull(entities);
 
-            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
-                _repository.InitTriggers(entities);
+            using var trans = _context.Database.CurrentTransaction is null
+                ? _context.Database.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn && entities.Any())
-                _repository.OnBeforeDelete();
+            try
+            {
+                if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
+                    _repository.InitTriggers(entities);
 
-            //TODO: Проверить скорость работы
-            using var trans = _context.Database.BeginTransaction();
+                if (_repository.IsBeforeTriggerOn && entities.Any())
+                    _repository.OnBeforeDelete();
 
-            foreach (var entity in entities)
-                _context.Remove(entity);
+                foreach (var entity in entities)
+                    _context.Remove(entity);
 
-            _context.SaveChanges();
+                _context.SaveChanges();
 
-            trans.Commit();
+                if (_repository.IsAfterTriggerOn && entities.Any())
+                    _repository.OnAfterDelete();
 
-            if (_repository.IsAfterTriggerOn && entities.Any())
-                _repository.OnAfterDelete();
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         public void BulkDelete(Expression<Func<TEntity, bool>> predicate)
@@ -43,43 +53,68 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+            using var trans = _context.Database.CurrentTransaction is null
+                ? _context.Database.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnBeforeDelete();
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
 
-            _context.Remove(entity);
-            _context.SaveChanges();
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnBeforeDelete();
 
-            if (_repository.IsAfterTriggerOn)
-                _repository.OnAfterDelete();
+                _context.Remove(entity);
+                _context.SaveChanges();
+
+                if (_repository.IsAfterTriggerOn)
+                    _repository.OnAfterDelete();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         public void Delete(Expression<Func<TEntity, bool>> predicate)
         {
             ArgumentNullException.ThrowIfNull(predicate);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(predicate);
+            using var trans = _context.Database.CurrentTransaction is null
+                ? _context.Database.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnBeforeDelete();
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(predicate);
 
-            var entities = _context.Set<TEntity>().Where(predicate);
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnBeforeDelete();
 
-            //TODO: Проверить скорость работы
-            using var trans = _context.Database.BeginTransaction();
+                var entities = _context.Set<TEntity>().Where(predicate);
 
-            foreach (var entity in entities)
-                _context.Remove(entity);
+                foreach (var entity in entities)
+                    _context.Remove(entity);
 
-            _context.SaveChanges();
+                _context.SaveChanges();
 
-            trans.Commit();
+                if (_repository.IsAfterTriggerOn)
+                    _repository.OnAfterDelete();
 
-            if (_repository.IsAfterTriggerOn)
-                _repository.OnAfterDelete();
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         /// <summary>

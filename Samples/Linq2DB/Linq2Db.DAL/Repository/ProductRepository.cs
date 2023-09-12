@@ -57,17 +57,32 @@ namespace Linq2Db.DAL.Repository
 
         public async Task Test()
         {
-            var ere = _context.Categories.LoadWith(x => x.Products, x => x.Where(y => y.Name.Contains("Fresh"))).AsQueryChain();
-            var ttt = await _context.Categories.LoadWith(x => x.Products, x => x.Where(y => y.Name.Contains("Fresh"))).ToListAsync();
+            var t1 = _context.Transaction;
+
+            _context.BeginTransaction();
+            var t2 = _context.Transaction;
+
+            _context.CommitTransaction();
+
+            var t3 = _context.Transaction;
+
+            await _context.BeginTransactionAsync();
+            var t4 = _context.Transaction;
+
+            await _context.CommitTransactionAsync();
+
+            var t5 = _context.Transaction;
         }
 
         protected override Task OnBeforeInsert(CancellationToken ctn = default)
         {
+            var t1 = _context.Transaction;
             return base.OnBeforeInsert(ctn);
         }
 
         protected override Task OnAfterInsert(CancellationToken ctn = default)
         {
+            var t1 = _context.Transaction;
             return base.OnAfterInsert(ctn);
         }
     }

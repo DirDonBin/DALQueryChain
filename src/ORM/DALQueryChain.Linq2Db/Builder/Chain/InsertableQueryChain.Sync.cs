@@ -13,51 +13,98 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         {
             ArgumentNullException.ThrowIfNull(entities);
 
-            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
-                _repository.InitTriggers(entities);
+            using var trans = _context.Transaction is null
+                ? _context.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn && entities.Any())
-                _repository.OnBeforeInsert();
+            try
+            {
+                if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
+                    _repository.InitTriggers(entities);
 
-            _context.BulkCopy(entities);
+                if (_repository.IsBeforeTriggerOn && entities.Any())
+                    _repository.OnBeforeInsert();
 
-            if (_repository.IsAfterTriggerOn && entities.Any())
-                _repository.OnAfterInsert();
+                _context.BulkCopy(entities);
+
+                if (_repository.IsAfterTriggerOn && entities.Any())
+                    _repository.OnAfterInsert();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         public void Insert(TEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+            using var trans = _context.Transaction is null
+                ? _context.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnBeforeInsert();
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
 
-            _context.Insert(entity);
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnBeforeInsert();
 
-            if (_repository.IsAfterTriggerOn)
-                _repository.OnAfterInsert();
+                _context.Insert(entity);
+
+                if (_repository.IsAfterTriggerOn)
+                    _repository.OnAfterInsert();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
         }
 
         public TEntity InsertWithObject(TEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+            using var trans = _context.Transaction is null
+                ? _context.BeginTransaction()
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                _repository.OnBeforeInsert();
+            TEntity res = default!;
 
-            var res = _context.GetTable<TEntity>().InsertWithOutput(entity);
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+                if (_repository.IsBeforeTriggerOn)
+                    _repository.OnBeforeInsert();
 
-            if (_repository.IsAfterTriggerOn)
-                _repository.OnAfterInsert();
+                res = _context.GetTable<TEntity>().InsertWithOutput(entity);
+
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
+
+                if (_repository.IsAfterTriggerOn)
+                    _repository.OnAfterInsert();
+
+                trans?.Commit();
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+
+                throw;
+            }
 
             return res;
         }

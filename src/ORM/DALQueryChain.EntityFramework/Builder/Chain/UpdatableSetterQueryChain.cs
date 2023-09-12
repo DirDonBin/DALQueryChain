@@ -52,6 +52,21 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
             return this;
         }
 
+        public IUpdatableSetterQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, Expression<Func<TEntity, TV>> update)
+        {
+            if (_entities is null) throw new InvalidOperationException("Has not been used of method Where");
+
+            _context.Set<TEntity>().AttachRange(_entities);
+
+            foreach (var entity in _entities)
+            {
+                var comp = Expression.Lambda<Func<TV>>(Expression.Invoke(update, Expression.Constant(entity))).Compile();
+                _context.Entry(entity).Property(extract).CurrentValue = comp();
+            }
+
+            return this;
+        }
+
         public IUpdatableSetterQueryChain<TEntity> WithoutTriggers(TriggerType trigger = TriggerType.All)
         {
             _repository.IsBeforeTriggerOn = trigger is not TriggerType.All and not TriggerType.Before;

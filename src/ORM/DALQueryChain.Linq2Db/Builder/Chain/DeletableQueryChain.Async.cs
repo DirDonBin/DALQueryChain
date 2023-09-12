@@ -14,72 +14,136 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         {
             ArgumentNullException.ThrowIfNull(entities);
 
-            if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
-                _repository.InitTriggers(entities);
+            using var trans = _context.Transaction is null
+                ? await _context.BeginTransactionAsync(ctn)
+                : null;
 
-            if (_repository.IsBeforeTriggerOn && entities.Any())
-                await _repository.OnBeforeDelete(ctn);
-
-            using var transaction = await _context.BeginTransactionAsync();
-
-            foreach (var entity in entities)
+            try
             {
-                if (ctn.IsCancellationRequested) break;
-                await _context.DeleteAsync(entity, token: ctn);
+                if ((_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn) && entities.Any())
+                    _repository.InitTriggers(entities);
+
+                if (_repository.IsBeforeTriggerOn && entities.Any())
+                    await _repository.OnBeforeDelete(ctn);
+
+                foreach (var entity in entities)
+                {
+                    if (ctn.IsCancellationRequested) break;
+                    await _context.DeleteAsync(entity, token: ctn);
+                }
+
+                if (_repository.IsAfterTriggerOn && entities.Any())
+                    await _repository.OnAfterDelete(ctn);
+
+                if (trans is not null)
+                    await trans.CommitAsync(ctn);
             }
+            catch (Exception)
+            {
+                if (trans is not null)
+                    await trans.RollbackAsync(ctn);
 
-            await transaction.CommitAsync(ctn);
-
-            if (_repository.IsAfterTriggerOn && entities.Any())
-                await _repository.OnAfterDelete(ctn);
+                throw;
+            }
         }
 
         public async Task BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
         {
             ArgumentNullException.ThrowIfNull(predicate);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(predicate);
+            using var trans = _context.Transaction is null
+                ? await _context.BeginTransactionAsync(ctn)
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                await _repository.OnBeforeDelete(ctn);
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(predicate);
 
-            await _context.GetTable<TEntity>().Where(predicate).DeleteAsync(token: ctn);
+                if (_repository.IsBeforeTriggerOn)
+                    await _repository.OnBeforeDelete(ctn);
 
-            if (_repository.IsAfterTriggerOn)
-                await _repository.OnAfterDelete(ctn);
+                await _context.GetTable<TEntity>().Where(predicate).DeleteAsync(token: ctn);
+
+                if (_repository.IsAfterTriggerOn)
+                    await _repository.OnAfterDelete(ctn);
+
+                if (trans is not null)
+                    await trans.CommitAsync(ctn);
+            }
+            catch (Exception)
+            {
+                if (trans is not null)
+                    await trans.RollbackAsync(ctn);
+
+                throw;
+            }
         }
 
         public async Task DeleteAsync(TEntity entity, CancellationToken ctn = default)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(entity);
+            using var trans = _context.Transaction is null
+                ? await _context.BeginTransactionAsync(ctn)
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                await _repository.OnBeforeDelete(ctn);
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(entity);
 
-            await _context.DeleteAsync(entity, token: ctn);
+                if (_repository.IsBeforeTriggerOn)
+                    await _repository.OnBeforeDelete(ctn);
 
-            if (_repository.IsAfterTriggerOn)
-                await _repository.OnAfterDelete(ctn);
+                await _context.DeleteAsync(entity, token: ctn);
+
+                if (_repository.IsAfterTriggerOn)
+                    await _repository.OnAfterDelete(ctn);
+
+                if (trans is not null)
+                    await trans.CommitAsync(ctn);
+            }
+            catch (Exception)
+            {
+                if (trans is not null)
+                    await trans.RollbackAsync(ctn);
+
+                throw;
+            }
         }
 
         public async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ctn = default)
         {
             ArgumentNullException.ThrowIfNull(predicate);
 
-            if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
-                _repository.InitTriggers(predicate);
+            using var trans = _context.Transaction is null
+                ? await _context.BeginTransactionAsync(ctn)
+                : null;
 
-            if (_repository.IsBeforeTriggerOn)
-                await _repository.OnBeforeDelete(ctn);
+            try
+            {
+                if (_repository.IsBeforeTriggerOn || _repository.IsAfterTriggerOn)
+                    _repository.InitTriggers(predicate);
 
-            await _context.GetTable<TEntity>().Where(predicate).DeleteAsync(token: ctn);
+                if (_repository.IsBeforeTriggerOn)
+                    await _repository.OnBeforeDelete(ctn);
 
-            if (_repository.IsAfterTriggerOn)
-                await _repository.OnAfterDelete(ctn);
+                await _context.GetTable<TEntity>().Where(predicate).DeleteAsync(token: ctn);
+
+                if (_repository.IsAfterTriggerOn)
+                    await _repository.OnAfterDelete(ctn);
+
+                if (trans is not null)
+                    await trans.CommitAsync(ctn);
+            }
+            catch (Exception)
+            {
+                if (trans is not null)
+                    await trans.RollbackAsync(ctn);
+
+                throw;
+            }
         }
 
         /// <summary>

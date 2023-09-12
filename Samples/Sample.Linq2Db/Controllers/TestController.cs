@@ -58,13 +58,21 @@ namespace Sample.Linq2Db.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> TestQWER()
         {
-            var ttt = await _qs.For<Product>().Get.Where(x => x.CategoryId == 1)
-                .Concat(_qs.For<Product>().Get.Where(x => x.CategoryId == 2))
-                .ToListAsync();
+            await _qs.Repository<CategoryRepository>().Test();
 
-            var ttt1 = await _qs.For<Product>().Get.Where(x => x.CategoryId == 1 || x.CategoryId == 2)
-                .Except(_qs.For<Product>().Get.Where(x => x.CategoryId == 2))
-                .ToListAsync();
+            var ttt = await _qs.For<Category>().Get.Where(x => x.Name.Contains("Tesetesttest")).ToListAsync();
+
+            await _qs.For<Category>().Insert.InsertAsync(new Category { Created = DateTime.Now, Name = "Tesetesttest 1" });
+
+            var ttt1 = await _qs.For<Category>().Get.Where(x => x.Name.Contains("Tesetesttest")).ToListAsync();
+
+            await _qs.TransactionAsync(async (x, cnt) =>
+            {
+                await x.For<Category>().Insert.InsertAsync(new Category { Created = DateTime.Now, Name = "Tesetesttest 2" });
+                await _qs.For<Category>().Insert.InsertAsync(new Category { Created = DateTime.Now, Name = "Tesetesttest 3" });
+            });
+
+            var ttt2 = await _qs.For<Category>().Get.Where(x => x.Name.Contains("Tesetesttest")).ToListAsync();
 
             return Ok();
         }

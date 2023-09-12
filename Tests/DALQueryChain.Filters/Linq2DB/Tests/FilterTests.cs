@@ -57,7 +57,7 @@ namespace DALQueryChain.Tests.Linq2DB.Tests
             TestFilterModel? filter = null;
 
             var expect = DbContext.Products.Where(x => filter != null).ToList();
-            var result = _dqc.For<Product>().Get.Filter(filter).ToList(); // add exception
+            var result = _dqc.For<Product>().Get.Filter(filter!).ToList(); // add exception
 
             Assert.Equivalent(expect, result);
         }
@@ -88,18 +88,18 @@ namespace DALQueryChain.Tests.Linq2DB.Tests
         [Fact]
         public void ContainsStringTest()
         {
-            var expect = DbContext.Products.Where(x => x.Name.Contains(_filter.Name)).ToList();
+            var expect = DbContext.Products.Where(x => x.Name.Contains(_filter.Name!)).ToList();
             var result = _dqc.For<Product>().Get.Filter(_filter, TestFiltersEnum.ContainsName).ToList();
 
             Assert.Equivalent(expect, result);
 
-            var expectNullable = () => DbContext.Products.Where(x => x.Name.Contains(_nullableFilter.Name)).ToList();
+            var expectNullable = () => DbContext.Products.Where(x => x.Name.Contains(_nullableFilter.Name!)).ToList();
             var resultNullable = () => _dqc.For<Product>().Get.Filter(_nullableFilter, TestFiltersEnum.ContainsName).ToList();
 
-            var excpectThrow = Assert.Throws<PostgresException>(expectNullable);
+            var expectThrow = Assert.Throws<PostgresException>(expectNullable);
             var resultThrow = Assert.Throws<PostgresException>(expectNullable);
 
-            Assert.Equal(excpectThrow.Message, resultThrow.Message);
+            Assert.Equal(expectThrow.Message, resultThrow.Message);
 
             var filter = new TestFilterModel()
             {
