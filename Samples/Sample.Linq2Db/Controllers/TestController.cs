@@ -72,8 +72,8 @@ namespace Sample.Linq2Db.Controllers
 
             var query = _qs.For<Product>().Get
                 .LoadWith(x => x.Category)
-                    .ThenLoad(x => x.ArchiveProducts, q => q.Where(x => x.Price > 50000m))
-                .Where(x => x.Price < 50000m);
+                    .ThenLoad(x => x.ArchiveProducts)
+                        .ThenLoad(x => x.Category);
 
             var res = await query.ToListAsync();
 

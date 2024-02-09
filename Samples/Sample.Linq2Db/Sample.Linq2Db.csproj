@@ -25,4 +25,6 @@
     <ProjectReference Include="..\Linq2DB\Linq2Db.DAL\Linq2Db.DAL.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 </Project>

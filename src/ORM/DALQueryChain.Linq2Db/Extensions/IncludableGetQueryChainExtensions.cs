@@ -34,9 +34,9 @@ namespace DALQueryChain.Linq2Db.Extensions
         {
             var prevQuery = ((FilterableQueryChain<TEntity>)source).Query;
 
-            var prevPropertyQuery = ((IncludableGetQueryChain<TEntity, TPreviousProperty>)source).QueryPreviousProperty.Select(selector);
+            //var prevPropertyQuery = ((IncludableGetQueryChain<TEntity, TPreviousProperty>)source).QueryPreviousProperty.Select(selector);
             var qr = ((ILoadWithQueryable<TEntity, IEnumerable<TPreviousProperty>>)prevQuery).ThenLoad(selector);
-            return new IncludableGetQueryChain<TEntity, TProperty>(qr, prevPropertyQuery!);
+            return new IncludableGetQueryChain<TEntity, TProperty>(qr);
         }
 
         //public static IIncludableGetQueryChain<TEntity, TProperty> ThenLoad<TEntity, TPreviousProperty, TProperty>(

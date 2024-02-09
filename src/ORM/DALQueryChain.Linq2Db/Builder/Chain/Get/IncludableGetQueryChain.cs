@@ -10,5 +10,10 @@ namespace DALQueryChain.Linq2Db.Builder.Chain.Get
         {
             QueryPreviousProperty = queryPreviousProperty;
         }
+
+        public IncludableGetQueryChain(IQueryable<T> prevQuery) : base(prevQuery)
+        {
+            QueryPreviousProperty = null;
+        }
     }
 }
