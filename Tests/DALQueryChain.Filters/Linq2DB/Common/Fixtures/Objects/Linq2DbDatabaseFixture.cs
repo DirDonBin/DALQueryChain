@@ -1,6 +1,6 @@
-﻿using LinqToDB;
+﻿using Linq2Db.DAL.Context;
+using LinqToDB;
 using LinqToDB.Data;
-using ManualTest.Linq2Db.Context;
 
 namespace DALQueryChain.Tests.Linq2DB.Common.Fixtures.Objects
 {

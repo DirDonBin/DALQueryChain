@@ -7,11 +7,12 @@
 
 using LinqToDB;
 using LinqToDB.Data;
+using ManualTest.Linq2Db.Context;
 
 #pragma warning disable 1573, 1591
 #nullable enable
 
-namespace ManualTest.Linq2Db.Context
+namespace Linq2Db.DAL.Context
 {
 	public partial class TestContext : DataConnection
 	{

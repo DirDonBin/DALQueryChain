@@ -10,7 +10,7 @@ namespace DALQueryChain.EntityFramework.Repositories
         where TContext : DbContext
         where TEntity : class, IDbModelBase
     {
-        private readonly TContext _context;
+        protected readonly TContext _context;
         private IDALQueryChain<TContext>? _dalQueryChain;
 
         protected readonly IQueryable<TEntity> _query;

@@ -1,4 +1,5 @@
 ﻿using DALQueryChain.Tests.Linq2DB.Common.Fixtures.Objects;
+using Linq2Db.DAL.Context;
 using LinqToDB;
 using ManualTest.Linq2Db.Context;
 using Npgsql;

@@ -1,11 +1,12 @@
 ﻿using DALQueryChain.Linq2Db;
+using FluentMigrator.Runner;
+using Linq2Db.DAL.Context;
 using LinqToDB;
 using LinqToDB.AspNet;
 using LinqToDB.AspNet.Logging;
 using ManualTest.Linq2Db.Context;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using FluentMigrator.Runner;
 
 namespace Linq2Db.DAL
 {

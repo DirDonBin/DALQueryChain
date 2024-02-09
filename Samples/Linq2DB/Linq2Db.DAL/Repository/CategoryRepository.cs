@@ -1,4 +1,5 @@
-﻿using ManualTest.Linq2Db.Context;
+﻿using Linq2Db.DAL.Context;
+using ManualTest.Linq2Db.Context;
 
 namespace Linq2Db.DAL.Repository
 {

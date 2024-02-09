@@ -1,12 +1,8 @@
-﻿using DALQueryChain.Interfaces;
-using DALQueryChain.Linq2Db.Extensions;
-using DALQueryChain.Linq2Db.Repositories;
-using Linq2Db.DAL.Context;
-using LinqToDB;
-using LinqToDB.Data;
-using ManualTest.Linq2Db.Context;
+﻿using DALQueryChain.EntityFramework.Repositories;
+using DALQueryChain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
-namespace Linq2Db.DAL.Repository
+namespace EntityFramework.DAL.Repository
 {
     public class BaseTestContextRepository<TEntity> : BaseRepository<TestContext, TEntity>
         where TEntity : class, IDbModelBase
@@ -63,16 +59,16 @@ namespace Linq2Db.DAL.Repository
             var res = await t1.ToListAsync();
         }
 
-        protected override Task OnBeforeInsert(CancellationToken ctn = default)
-        {
-            var t1 = _context.Transaction;
-            return base.OnBeforeInsert(ctn);
-        }
+        //protected override Task OnBeforeInsert(CancellationToken ctn = default)
+        //{
+        //    var t1 = _context.Transaction;
+        //    return base.OnBeforeInsert(ctn);
+        //}
 
-        protected override Task OnAfterInsert(CancellationToken ctn = default)
-        {
-            var t1 = _context.Transaction;
-            return base.OnAfterInsert(ctn);
-        }
+        //protected override Task OnAfterInsert(CancellationToken ctn = default)
+        //{
+        //    var t1 = _context.Transaction;
+        //    return base.OnAfterInsert(ctn);
+        //}
     }
 }

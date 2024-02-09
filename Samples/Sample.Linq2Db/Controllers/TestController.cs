@@ -1,10 +1,6 @@
 using Bogus;
-using DALQueryChain.Enums;
 using DALQueryChain.Interfaces;
-using DALQueryChain.Linq2Db.Extensions;
-using Linq2Db.DAL.Repository;
-using LinqToDB;
-using ManualTest.Linq2Db.Context;
+using EntityFramework.DAL;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Sample.Linq2Db.Controllers
@@ -68,18 +64,16 @@ namespace Sample.Linq2Db.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> TestQWER()
         {
-            //await _qs.Repository<ProductRepository>().Test();
+            await _qs.Repository<EntityFramework.DAL.Repository.ProductRepository>().Test();
 
-            var query = _qs.For<Product>().Get
-                .LoadWith(x => x.Category)
-                    .ThenLoad(x => x.ArchiveProducts)
-                        .ThenLoad(x => x.Category);
+            //var query = _qs.For<Product>().Get
+            //    .Where(x => _qs.For<Product>().Get.Where(y => y.Price > 50000).First().Id == x.Id);
 
-            var res = await query.ToListAsync();
+            //var res = await query.ToListAsync();
 
             //var res = await _qs.For<Product>().Get.Select((x,i) => new { x.Name, number = i}).ToListAsync();
 
-            return Ok(res);
+            return Ok();
         }
     }
 }

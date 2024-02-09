@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Samples\Linq2DB\Linq2Db.DAL\Linq2Db.DAL.csproj" />
     <ProjectReference Include="..\..\src\DALQueryChain.Filter\DALQueryChain.Filter.csproj" />
+    <ProjectReference Include="..\..\src\EntityFramework.DAL\EntityFramework.DAL.csproj" />
   </ItemGroup>
 
 </Project>

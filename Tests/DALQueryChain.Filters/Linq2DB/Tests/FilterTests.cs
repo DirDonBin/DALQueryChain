@@ -6,11 +6,11 @@ using DALQueryChain.Linq2Db.Extensions;
 using DALQueryChain.Tests.Linq2DB.Common.Fixtures.Objects;
 using DALQueryChain.Tests.Linq2DB.Common.Models.Filters;
 using DALQueryChain.Tests.Linq2DB.Common.TestCases;
+using Linq2Db.DAL.Context;
 using LinqToDB;
 using ManualTest.Linq2Db.Context;
 using Moq;
 using Npgsql;
-using System.ComponentModel;
 
 namespace DALQueryChain.Tests.Linq2DB.Tests
 {
@@ -40,10 +40,10 @@ namespace DALQueryChain.Tests.Linq2DB.Tests
                 Raiting2 = 2.25f,
                 Ids = new[] { 5, 22, 365, 844, 1236, 5487 },
                 CategoryId = 1,
-                Categories = new() {2,3,4},
+                Categories = new() { 2, 3, 4 },
                 Paginate = new() { Page = 5, PageSize = 10 },
-                Sorting = new() { Property = "price", Ordering = QCSortingType.Descending},
-                SortingList = new() { 
+                Sorting = new() { Property = "price", Ordering = QCSortingType.Descending },
+                SortingList = new() {
                     new() { Property = "Count", Ordering = QCSortingType.Descending},
                     new() { Property = "CategoryId", Ordering = QCSortingType.Ascending},
                     new() { Property = "Price", Ordering = QCSortingType.Descending}
