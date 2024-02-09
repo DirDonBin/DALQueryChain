@@ -34,7 +34,9 @@ namespace ManualTest.Linq2Db.Context
 
 		partial void InitDataContext();
 
-		public ITable<Category> Categories => this.GetTable<Category>();
-		public ITable<Product>  Products   => this.GetTable<Product>();
+		public ITable<ArchiveProduct> ArchiveProducts => this.GetTable<ArchiveProduct>();
+		public ITable<Category>       Categories      => this.GetTable<Category>();
+		public ITable<Product>        Products        => this.GetTable<Product>();
+		public ITable<VersionInfo>    VersionInfos    => this.GetTable<VersionInfo>();
 	}
 }

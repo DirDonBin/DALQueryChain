@@ -1,0 +1,38 @@
+{
+  "Profiles": [
+    {
+      "Name": "Default",
+      "Filter": "",
+      "UseTye": false,
+      "TyePort": 8000,
+      "LoggingTargetType": 0,
+      "LoggingPath": "./.logs",
+      "LoggerUrl": null,
+      "Services": [
+        {
+          "ServiceType": 0,
+          "Name": "DALQueryChain.Tests",
+          "TyeName": null,
+          "Bindings": null,
+          "Arguments": null,
+          "EnvVariables": null,
+          "Replicas": 1,
+          "ProjectFile": "..\\Tests\\DALQueryChain.Filters\\DALQueryChain.Tests.csproj",
+          "DefaultSelected": false
+        },
+        {
+          "ServiceType": 0,
+          "Name": "Sample.Linq2Db",
+          "TyeName": null,
+          "Bindings": null,
+          "Arguments": null,
+          "EnvVariables": null,
+          "Replicas": 1,
+          "ProjectFile": "..\\Samples\\Sample.Linq2Db\\Sample.Linq2Db.csproj",
+          "DefaultSelected": false
+        }
+      ]
+    }
+  ],
+  "SettingsId": "a373378d-7431-4e02-a9fe-b0dd0e023c66"
+}

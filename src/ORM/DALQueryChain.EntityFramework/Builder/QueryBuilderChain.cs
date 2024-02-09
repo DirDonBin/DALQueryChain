@@ -17,7 +17,7 @@ namespace DALQueryChain.EntityFramework.Builder
 
         IInsertableQueryChain<TEntity> IQueryBuilder<TEntity>.Insert => new InsertableQueryChain<TContext, TEntity>(_context, _baseRepository);
 
-        IUpdatableQueryChain<TEntity> IQueryBuilder<TEntity>.Update => new UpdatableQueryChain<TContext, TEntity>(_context, _baseRepository);
+        IUpdatableQueryChain<TEntity> IQueryBuilder<TEntity>.Update => new UpdatableQueryChain<TContext, TEntity>(_context, _baseRepository, _context.Set<TEntity>());
 
         IDeletableQueryChain<TEntity> IQueryBuilder<TEntity>.Delete => new DeletableQueryChain<TContext, TEntity>(_context, _baseRepository);
 

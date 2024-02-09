@@ -1,10 +1,11 @@
-﻿using System.Linq.Expressions;
+﻿using DALQueryChain.Interfaces.QueryBuilder.Get;
+using System.ComponentModel;
 
 namespace DALQueryChain.Interfaces.QueryBuilder
 {
-    public partial interface IUpdatableQueryChain<TEntity> : IChainSettings<IUpdatableQueryChain<TEntity>>
+    public partial interface IUpdatableQueryChain<TEntity> : IChainSettings<IUpdatableQueryChain<TEntity>>, IUpdateFilterableQueryChain<TEntity>
         where TEntity : class, IDbModelBase
     {
-        public IUpdatableSetterQueryChain<TEntity> Where(Expression<Func<TEntity, bool>> predicate);
+        
     }
 }

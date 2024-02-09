@@ -1,10 +1,11 @@
-﻿using DALQueryChain.Interfaces;
+﻿using DALQueryChain.Enums;
+using DALQueryChain.Interfaces;
 using DALQueryChain.Interfaces.QueryBuilder;
 using Microsoft.EntityFrameworkCore;
 
 namespace DALQueryChain.EntityFramework.Builder.Chain
 {
-    internal partial class UpdatableQueryChain<TContext, TEntity> : IUpdatableQueryChain<TEntity>
+    internal partial class UpdatableQueryChain<TContext, TEntity>
         where TContext : DbContext
         where TEntity : class, IDbModelBase
     {

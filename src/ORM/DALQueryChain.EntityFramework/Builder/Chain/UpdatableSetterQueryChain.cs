@@ -13,13 +13,14 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     {
         private readonly BaseRepository<TContext, TEntity> _repository;
         private readonly TContext _context;
-        private readonly IEnumerable<TEntity> _entities;
+        private IEnumerable<TEntity>? _entities;
+        protected IQueryable<TEntity> _prevQuery;
 
-        public UpdatableSetterQueryChain(TContext context, BaseRepository<TContext, TEntity> repository, IEnumerable<TEntity> entities)
+        public UpdatableSetterQueryChain(TContext context, BaseRepository<TContext, TEntity> repository, IQueryable<TEntity> prevQuery)
         {
             _repository = repository;
             _context = context;
-            _entities = entities;
+            _prevQuery = prevQuery;
 
             _repository.IsBeforeTriggerOn = true;
             _repository.IsAfterTriggerOn = true;
@@ -27,7 +28,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public IUpdatableSetterQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, TV value)
         {
-            if (_entities is null) throw new InvalidOperationException("Has not been used of method Where");
+            if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+            _entities ??= _prevQuery.ToList();
 
             _context.Set<TEntity>().AttachRange(_entities);
 
@@ -39,7 +41,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public IUpdatableSetterQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, Expression<Func<TV>> value)
         {
-            if (_entities is null) throw new InvalidOperationException("Has not been used of method Where");
+            if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+            _entities ??= _prevQuery.ToList();
 
             _context.Set<TEntity>().AttachRange(_entities);
 
@@ -54,7 +57,8 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public IUpdatableSetterQueryChain<TEntity> Set<TV>(Expression<Func<TEntity, TV>> extract, Expression<Func<TEntity, TV>> update)
         {
-            if (_entities is null) throw new InvalidOperationException("Has not been used of method Where");
+            if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+            _entities ??= _prevQuery.ToList();
 
             _context.Set<TEntity>().AttachRange(_entities);
 
@@ -67,10 +71,56 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
             return this;
         }
 
-        public IUpdatableSetterQueryChain<TEntity> WithoutTriggers(TriggerType trigger = TriggerType.All)
+        public IUpdatableSetterQueryChain<TEntity> SetIf<TV>(bool condition, Expression<Func<TEntity, TV>> extract, TV value)
         {
-            _repository.IsBeforeTriggerOn = trigger is not TriggerType.All and not TriggerType.Before;
-            _repository.IsAfterTriggerOn = trigger is not TriggerType.All and not TriggerType.After;
+            if(condition)
+            {
+                if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+                _entities ??= _prevQuery.ToList();
+
+                _context.Set<TEntity>().AttachRange(_entities);
+
+                foreach (var entity in _entities)
+                    _context.Entry(entity).Property(extract).CurrentValue = value;
+            }
+
+            return this;
+        }
+
+        public IUpdatableSetterQueryChain<TEntity> SetIf<TV>(bool condition, Expression<Func<TEntity, TV>> extract, Expression<Func<TV>> value)
+        {
+            if (condition)
+            {
+                if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+                _entities ??= _prevQuery.ToList();
+
+                _context.Set<TEntity>().AttachRange(_entities);
+
+                foreach (var entity in _entities)
+                {
+                    var comp = Expression.Lambda<Func<TV>>(Expression.Invoke(value)).Compile();
+                    _context.Entry(entity).Property(extract).CurrentValue = comp();
+                } 
+            }
+
+            return this;
+        }
+
+        public IUpdatableSetterQueryChain<TEntity> SetIf<TV>(bool condition, Expression<Func<TEntity, TV>> extract, Expression<Func<TEntity, TV>> update)
+        {
+            if (condition)
+            {
+                if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+                _entities ??= _prevQuery.ToList();
+
+                _context.Set<TEntity>().AttachRange(_entities);
+
+                foreach (var entity in _entities)
+                {
+                    var comp = Expression.Lambda<Func<TV>>(Expression.Invoke(update, Expression.Constant(entity))).Compile();
+                    _context.Entry(entity).Property(extract).CurrentValue = comp();
+                } 
+            }
 
             return this;
         }

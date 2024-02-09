@@ -26,6 +26,19 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// <param name="predicate">A function to test each element for a condition</param>
         T First(Expression<Func<T, bool>> predicate);
 
+        //// <summary>
+        /// Returns the only element of a sequence;
+        /// this method throws an exception if there is more than one element in the sequence.
+        /// </summary>
+		T Single();
+
+        /// <summary>
+        /// Returns the only element of a sequence;
+        /// this method throws an exception if there is more than one element in the sequence.
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        T Single(Expression<Func<T, bool>> predicate);
+
         /// <summary>
         /// Returns the only element of a sequence, or a default value if the sequence is empty;
         /// this method throws an exception if there is more than one element in the sequence.
@@ -120,6 +133,17 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition</param>
         int Count(Expression<Func<T, bool>> predicate);
+
+        /// <summary>
+        /// Returns the number of elements in a sequence
+        /// </summary>
+        long LongCount();
+
+        /// <summary>
+        /// Returns a number that represents how many elements in the specified sequence satisfy a condition
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        long LongCount(Expression<Func<T, bool>> predicate);
 
         /// <summary>
         /// Determines whether a sequence contains any elements

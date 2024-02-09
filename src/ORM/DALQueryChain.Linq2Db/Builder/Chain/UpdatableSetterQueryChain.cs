@@ -15,10 +15,10 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         private readonly TContext _context;
         private readonly BaseRepository<TContext, TEntity> _repository;
-        private readonly IQueryable<TEntity>? _prevQuery;
+        protected IQueryable<TEntity> _prevQuery;
         private IUpdatable<TEntity>? _prevUpdateQuery;
 
-        public UpdatableSetterQueryChain(TContext context, BaseRepository<TContext, TEntity> repository, IQueryable<TEntity>? prevQuery)
+        public UpdatableSetterQueryChain(TContext context, BaseRepository<TContext, TEntity> repository, IQueryable<TEntity> prevQuery)
         {
             _repository = repository;
             _context = context;
@@ -67,10 +67,50 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             return this;
         }
 
-        public IUpdatableSetterQueryChain<TEntity> WithoutTriggers(TriggerType trigger = TriggerType.All)
+        public IUpdatableSetterQueryChain<TEntity> SetIf<TV>(bool condition, Expression<Func<TEntity, TV>> extract, TV value)
         {
-            _repository.IsBeforeTriggerOn = trigger is not TriggerType.All and not TriggerType.Before;
-            _repository.IsAfterTriggerOn = trigger is not TriggerType.All and not TriggerType.After;
+            if (condition)
+            {
+                if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+
+                _prevUpdateQuery = true switch
+                {
+                    { } when _prevUpdateQuery is null => _prevQuery.Set(extract, value),
+                    _ => _prevUpdateQuery!.Set(extract, value)
+                }; 
+            }
+
+            return this;
+        }
+
+        public IUpdatableSetterQueryChain<TEntity> SetIf<TV>(bool condition, Expression<Func<TEntity, TV>> extract, Expression<Func<TV>> value)
+        {
+            if (condition)
+            {
+                if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+
+                _prevUpdateQuery = true switch
+                {
+                    { } when _prevUpdateQuery is null => _prevQuery.Set(extract, value),
+                    _ => _prevUpdateQuery!.Set(extract, value)
+                }; 
+            }
+
+            return this;
+        }
+
+        public IUpdatableSetterQueryChain<TEntity> SetIf<TV>(bool condition, Expression<Func<TEntity, TV>> extract, Expression<Func<TEntity, TV>> update)
+        {
+            if (condition)
+            {
+                if (_prevQuery is null) throw new InvalidOperationException("Has not been used of method Where");
+
+                _prevUpdateQuery = true switch
+                {
+                    { } when _prevUpdateQuery is null => _prevQuery.Set(extract, update),
+                    _ => _prevUpdateQuery!.Set(extract, update)
+                }; 
+            }
 
             return this;
         }

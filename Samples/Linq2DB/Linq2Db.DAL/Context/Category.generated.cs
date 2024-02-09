@@ -15,18 +15,24 @@ using System.Collections.Generic;
 
 namespace ManualTest.Linq2Db.Context
 {
-	[Table("Categories")]
+	[Table("Category")]
 	public class Category : IDbModelBase
 	{
 		[Column("Id"     , IsPrimaryKey = true , IsIdentity = true, SkipOnInsert = true, SkipOnUpdate = true)] public int      Id      { get; set; } // integer
-		[Column("Name"   , CanBeNull    = false                                                             )] public string   Name    { get; set; } = null!; // character varying(150)
-		[Column("Created"                                                                                   )] public DateTime Created { get; set; } // date
+		[Column("Name"   , CanBeNull    = false                                                             )] public string   Name    { get; set; } = null!; // text
+		[Column("Created"                                                                                   )] public DateTime Created { get; set; } // timestamp (6) without time zone
 
 		#region Associations
 		/// <summary>
-		/// Products_CategoryId_fkey backreference
+		/// FK_ArchiveProducts_Categoryid_Category_Id backreference
 		/// </summary>
-		[Association(ThisKey = nameof(Id), OtherKey = nameof(Product.CategoryId))]
+		[Association(ThisKey = nameof(Id), OtherKey = nameof(ArchiveProduct.Categoryid))]
+		public List<ArchiveProduct> ArchiveProducts { get; set; } = null!;
+
+		/// <summary>
+		/// FK_Products_Categoryid_Category_Id backreference
+		/// </summary>
+		[Association(ThisKey = nameof(Id), OtherKey = nameof(Product.Categoryid))]
 		public List<Product> Products { get; set; } = null!;
 		#endregion
 	}

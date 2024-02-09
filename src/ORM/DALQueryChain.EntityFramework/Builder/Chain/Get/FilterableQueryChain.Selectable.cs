@@ -11,7 +11,17 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
             return new FilterableQueryChain<TResult>(_prevQuery.Select(selector));
         }
 
+        public IFilterableQueryChain<TResult> Select<TResult>(Expression<Func<T, int, TResult>> selector)
+        {
+            return new FilterableQueryChain<TResult>(_prevQuery.Select(selector));
+        }
+
         public IFilterableQueryChain<TResult> SelectMany<TResult>(Expression<Func<T, IEnumerable<TResult>>> selector)
+        {
+            return new FilterableQueryChain<TResult>(_prevQuery.SelectMany(selector));
+        }
+
+        public IFilterableQueryChain<TResult> SelectMany<TResult>(Expression<Func<T, int, IEnumerable<TResult>>> selector)
         {
             return new FilterableQueryChain<TResult>(_prevQuery.SelectMany(selector));
         }

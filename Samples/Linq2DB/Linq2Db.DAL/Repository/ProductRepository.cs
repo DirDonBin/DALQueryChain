@@ -57,21 +57,12 @@ namespace Linq2Db.DAL.Repository
 
         public async Task Test()
         {
-            var t1 = _context.Transaction;
+            var t1 = _context.Products
+                .LoadWith(x => x.Category)
+                    .ThenLoad(x => x.Products, q => q.Where(x => x.Price > 50000m).Reverse().OrderBy(x => x.Id))
+                .Where(x => x.Price < 50000m);
 
-            _context.BeginTransaction();
-            var t2 = _context.Transaction;
-
-            _context.CommitTransaction();
-
-            var t3 = _context.Transaction;
-
-            await _context.BeginTransactionAsync();
-            var t4 = _context.Transaction;
-
-            await _context.CommitTransactionAsync();
-
-            var t5 = _context.Transaction;
+            var res = await t1.ToListAsync();
         }
 
         protected override Task OnBeforeInsert(CancellationToken ctn = default)

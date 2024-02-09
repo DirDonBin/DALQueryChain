@@ -5,7 +5,7 @@ using LinqToDB.Data;
 
 namespace DALQueryChain.Linq2Db.Builder.Chain
 {
-    internal partial class UpdatableQueryChain<TContext, TEntity> : IUpdatableQueryChain<TEntity>
+    internal partial class UpdatableQueryChain<TContext, TEntity>
         where TContext : DataConnection
         where TEntity : class, IDbModelBase
     {

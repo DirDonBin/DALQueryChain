@@ -7,45 +7,39 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 {
     internal partial class FilterableQueryChain<T> : BaseGetQueryChain<T>, IFilterableQueryChain<T>
     {
-        public async Task<bool> AllAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => await _prevQuery.AllAsync(predicate, ctn);
+        public Task<bool> AllAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.AllAsync(predicate, ctn);
 
-        public async Task<bool> AnyAsync(CancellationToken ctn = default) => await _prevQuery.AnyAsync(ctn);
+        public Task<bool> AnyAsync(CancellationToken ctn = default) => _prevQuery.AnyAsync(ctn);
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.AnyAsync(predicate, ctn);
 
-        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => await _prevQuery.AnyAsync(predicate, ctn);
+        public Task<int> CountAsync(CancellationToken ctn = default) => _prevQuery.CountAsync(ctn);
+        public Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.CountAsync(predicate, ctn);
+        public Task<long> LongCountAsync(CancellationToken ctn = default) => _prevQuery.LongCountAsync(ctn);
+        public Task<long> LongCountAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.LongCountAsync(predicate, ctn);
 
-        public async Task<int> CountAsync(CancellationToken ctn = default) => await _prevQuery.CountAsync(ctn);
 
-        public async Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => await _prevQuery.CountAsync(predicate, ctn);
+        public Task<T> FirstAsync(CancellationToken ctn = default) => _prevQuery.FirstAsync(ctn);
+        public Task<T> FirstAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.FirstAsync(predicate, ctn);
+        public Task<T?> FirstOrDefaultAsync(CancellationToken ctn = default) => _prevQuery.FirstOrDefaultAsync(ctn);
+        public Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.FirstOrDefaultAsync(predicate, ctn);
 
-        public async Task<T> FirstAsync(CancellationToken ctn = default) => await _prevQuery.FirstAsync(ctn);
 
-        public async Task<T> FirstAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => await _prevQuery.FirstAsync(predicate, ctn);
-
-        public async Task<T?> FirstOrDefaultAsync(CancellationToken ctn = default) => await _prevQuery.FirstOrDefaultAsync(ctn);
-
-        public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => await _prevQuery.FirstOrDefaultAsync(predicate, ctn);
-
-        public async Task<T?> SingleOrDefaultAsync(CancellationToken ctn = default) => await _prevQuery.SingleOrDefaultAsync(ctn);
-
-        public async Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => await _prevQuery.SingleOrDefaultAsync(predicate, ctn);
+        public Task<T> SingleAsync(CancellationToken ctn = default) => _prevQuery.SingleAsync(ctn);
+        public Task<T> SingleAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.SingleAsync(predicate, ctn);
+        public Task<T?> SingleOrDefaultAsync(CancellationToken ctn = default) => _prevQuery.SingleOrDefaultAsync(ctn);
+        public Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.SingleOrDefaultAsync(predicate, ctn);
 
         public Task<T> LastAsync(CancellationToken ctn = default) => _prevQuery.LastAsync(ctn);
-
         public Task<T> LastAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.LastAsync(predicate, ctn);
-
         public Task<T> LastAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstAsync(ctn);
-
         public Task<T> LastAsync<TKey>(Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstAsync(predicate, ctn);
-
         public Task<T?> LastOrDefaultAsync(CancellationToken ctn = default) => _prevQuery.LastOrDefaultAsync(ctn);
-
         public Task<T?> LastOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.LastOrDefaultAsync(predicate, ctn);
-
         public Task<T?> LastOrDefaultAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstOrDefaultAsync(ctn);
-
         public Task<T?> LastOrDefaultAsync<TKey>(Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstOrDefaultAsync(predicate, ctn);
 
-        public async Task<List<T>> ToListAsync(CancellationToken ctn = default) => await _prevQuery.ToListAsync(ctn);
+
+        public Task<List<T>> ToListAsync(CancellationToken ctn = default) => _prevQuery.ToListAsync(ctn);
 
         public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, CancellationToken ctn = default) where TKey : notnull
             => _prevQuery.ToDictionaryAsync(keySelector, ctn);

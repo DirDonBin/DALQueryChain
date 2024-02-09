@@ -5,6 +5,7 @@ using LinqToDB.AspNet.Logging;
 using ManualTest.Linq2Db.Context;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using FluentMigrator.Runner;
 
 namespace Linq2Db.DAL
 {
@@ -19,6 +20,17 @@ namespace Linq2Db.DAL
                     .UsePostgreSQL(connectionString)
                     .UseDefaultLogging(provider);
             });
+
+            var provider = services
+                .AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                    .AddPostgres()
+                    .WithGlobalConnectionString(connectionString)
+                    .ScanIn(typeof(Configure).Assembly).For.Migrations().For.EmbeddedResources())
+                .AddLogging(lb => lb.AddFluentMigratorConsole())
+                .BuildServiceProvider();
+
+            provider.GetRequiredService<IMigrationRunner>().MigrateUp();
 
             services.AddQueryChain(Assembly.GetExecutingAssembly());
             return services;

@@ -10,41 +10,38 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public Task<bool> AllAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.AllAsync(predicate, ctn);
 
-        public Task<bool> AnyAsync(CancellationToken ctn = default) => _prevQuery.AnyAsync(ctn);
 
+        public Task<bool> AnyAsync(CancellationToken ctn = default) => _prevQuery.AnyAsync(ctn);
         public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.AnyAsync(predicate, ctn);
 
-        public Task<int> CountAsync(CancellationToken ctn = default) => _prevQuery.CountAsync(ctn);
 
+        public Task<int> CountAsync(CancellationToken ctn = default) => _prevQuery.CountAsync(ctn);
         public Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.CountAsync(predicate, ctn);
+        public Task<long> LongCountAsync(CancellationToken ctn = default) => _prevQuery.LongCountAsync(ctn);
+        public Task<long> LongCountAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.LongCountAsync(predicate, ctn);
+
+
 
         public Task<T> FirstAsync(CancellationToken ctn = default) => _prevQuery.FirstAsync(ctn);
-
         public Task<T> FirstAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.FirstAsync(predicate, ctn);
-
         public Task<T?> FirstOrDefaultAsync(CancellationToken ctn = default) => _prevQuery.FirstOrDefaultAsync(ctn);
-
         public Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.FirstOrDefaultAsync(predicate, ctn);
 
+        public Task<T> SingleAsync(CancellationToken ctn = default) => _prevQuery.SingleAsync(ctn);
+        public Task<T> SingleAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.SingleAsync(predicate, ctn);
         public Task<T?> SingleOrDefaultAsync(CancellationToken ctn = default) => _prevQuery.SingleOrDefaultAsync(ctn);
-
         public Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.SingleOrDefaultAsync(predicate, ctn);
 
+
         public Task<T> LastAsync(CancellationToken ctn = default) => _prevQuery.OrderByDescending(x => x).FirstAsync(ctn);
-
         public Task<T> LastAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.OrderByDescending(x => x).FirstAsync(predicate, ctn);
-
         public Task<T> LastAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstAsync(ctn);
-
         public Task<T> LastAsync<TKey>(Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstAsync(predicate, ctn);
-
         public Task<T?> LastOrDefaultAsync(CancellationToken ctn = default) => _prevQuery.OrderByDescending(x => x).FirstOrDefaultAsync(ctn);
-
         public Task<T?> LastOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default) => _prevQuery.OrderByDescending(x => x).FirstOrDefaultAsync(predicate, ctn);
-
         public Task<T?> LastOrDefaultAsync<TKey>(Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstOrDefaultAsync(ctn);
-
         public Task<T?> LastOrDefaultAsync<TKey>(Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> keySelector, CancellationToken ctn = default) => _prevQuery.OrderByDescending(keySelector).FirstOrDefaultAsync(predicate, ctn);
+
 
         public Task<List<T>> ToListAsync(CancellationToken ctn = default) => _prevQuery.ToListAsync(ctn);
 
@@ -96,24 +93,16 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             return default;
         }
 
+
         public Task<int> SumAsync(Expression<Func<T, int>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
-
         public Task<int?> SumAsync(Expression<Func<T, int?>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
-
         public Task<long> SumAsync(Expression<Func<T, long>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
-
         public Task<long?> SumAsync(Expression<Func<T, long?>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
-
         public Task<float> SumAsync(Expression<Func<T, float>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
-
         public Task<float?> SumAsync(Expression<Func<T, float?>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
-
         public Task<decimal> SumAsync(Expression<Func<T, decimal>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
-
         public Task<decimal?> SumAsync(Expression<Func<T, decimal?>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
-
         public Task<double> SumAsync(Expression<Func<T, double>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
-
         public Task<double?> SumAsync(Expression<Func<T, double?>> keySelector, CancellationToken ctn = default) => _prevQuery.SumAsync(keySelector, ctn);
     }
 }

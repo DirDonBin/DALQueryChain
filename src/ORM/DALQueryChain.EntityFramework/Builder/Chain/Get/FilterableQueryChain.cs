@@ -1,5 +1,6 @@
 ﻿using DALQueryChain.EntityFramework.Builder.Chain.Get;
 using DALQueryChain.Interfaces.QueryBuilder.Get;
+using System;
 using System.Linq.Expressions;
 
 namespace DALQueryChain.EntityFramework.Builder.Chain
@@ -7,6 +8,7 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
     internal partial class FilterableQueryChain<T> : BaseGetQueryChain<T>, IFilterableQueryChain<T>
     {
         internal IQueryable<T> Query => _prevQuery;
+        internal Expression<Func<IQueryable<T>, IQueryable<T>>> LoadFunc;
 
         public FilterableQueryChain(IQueryable<T> prevQuery) : base(prevQuery)
         {
@@ -23,39 +25,46 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public IFilterableQueryChain<T> Skip(int count)
         {
-            _prevQuery = _prevQuery.Skip(count);
+            QueryApply(q => q.Skip(count));
             return this;
         }
 
         public IFilterableQueryChain<T> SkipWhile(Expression<Func<T, bool>> predicate)
         {
-            _prevQuery = _prevQuery.SkipWhile(predicate);
+            QueryApply(q => q.SkipWhile(predicate));
             return this;
         }
 
         public IFilterableQueryChain<T> Take(int count)
         {
-            _prevQuery = _prevQuery.Take(count);
+            QueryApply(q => q.Take(count));
             return this;
         }
 
         public IFilterableQueryChain<T> TakeWhile(Expression<Func<T, bool>> predicate)
         {
-            _prevQuery = _prevQuery.TakeWhile(predicate);
+            QueryApply(q => q.TakeWhile(predicate));
             return this;
         }
 
         public IFilterableQueryChain<T> Where(Expression<Func<T, bool>> predicate)
         {
-            _prevQuery = _prevQuery.Where(predicate);
+            QueryApply(q => q.Where(predicate));
             return this;
         }
 
         public IFilterableQueryChain<T> WhereIf(bool condition, Expression<Func<T, bool>> predicate)
         {
             if (condition)
-                _prevQuery = _prevQuery.Where(predicate);
+                QueryApply(q => q.Where(predicate));
 
+            return this;
+        }
+
+        public IFilterableQueryChain<T> When(bool condition, Func<IFilterableQueryChain<T>, IFilterableQueryChain<T>> query)
+        {
+            if (condition) return query(this);
+                
             return this;
         }
 
@@ -67,32 +76,45 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public IFilterableQueryChain<T> Concat(IFilterableQueryChain<T> second)
         {
-            _prevQuery = _prevQuery.Concat(((FilterableQueryChain<T>)second).Query);
+            QueryApply(q => q.Concat(((FilterableQueryChain<T>)second).Query));
             return this;
         }
 
         public IFilterableQueryChain<T> Union(IFilterableQueryChain<T> second)
         {
-            _prevQuery = _prevQuery.Union(((FilterableQueryChain<T>)second).Query);
+            QueryApply(q => q.Union(((FilterableQueryChain<T>)second).Query));
             return this;
         }
 
         public IFilterableQueryChain<T> UnionBy<TKey>(IFilterableQueryChain<T> second, Expression<Func<T, TKey>> keySelector)
         {
-            _prevQuery = _prevQuery.UnionBy(((FilterableQueryChain<T>)second).Query, keySelector);
+            QueryApply(q => q.UnionBy(((FilterableQueryChain<T>)second).Query, keySelector));
             return this;
         }
 
         public IFilterableQueryChain<T> Except(IFilterableQueryChain<T> second)
         {
-            _prevQuery = _prevQuery.Except(((FilterableQueryChain<T>)second).Query);
+            QueryApply(q => q.Except(((FilterableQueryChain<T>)second).Query));
             return this;
         }
 
         public IFilterableQueryChain<T> ExceptBy(IFilterableQueryChain<T> second, Expression<Func<T, T>> keySelector)
         {
-            _prevQuery = _prevQuery.ExceptBy(((FilterableQueryChain<T>)second).Query, keySelector);
+            QueryApply(q => q.ExceptBy(((FilterableQueryChain<T>)second).Query, keySelector));
             return this;
+        }
+
+        public IFilterableQueryChain<T> Reverse()
+        {
+            QueryApply(q => q.Reverse());
+            return this;
+        }
+
+        private void QueryApply(Expression<Func<IQueryable<T>, IQueryable<T>>> func)
+        {
+            _prevQuery = func.Compile()(_prevQuery);
+
+            LoadFunc = q => func.Compile()(LoadFunc.Compile()(q));
         }
     }
 }

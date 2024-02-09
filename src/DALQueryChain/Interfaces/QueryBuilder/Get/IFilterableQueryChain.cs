@@ -15,6 +15,8 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         public IFilterableQueryChain<T> Where(Expression<Func<T, bool>> predicate);
         public IFilterableQueryChain<T> WhereIf(bool condition, Expression<Func<T, bool>> predicate);
 
+        public IFilterableQueryChain<T> When(bool condition, Func<IFilterableQueryChain<T>, IFilterableQueryChain<T>> query);
+
         public IFilterableQueryChain<T> Skip(int count);
         public IFilterableQueryChain<T> SkipWhile(Expression<Func<T, bool>> predicate);
         public IFilterableQueryChain<T> Take(int count);
@@ -27,5 +29,7 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         public IFilterableQueryChain<T> UnionBy<TKey>(IFilterableQueryChain<T> second, Expression<Func<T, TKey>> keySelector);
         public IFilterableQueryChain<T> Except(IFilterableQueryChain<T> second);
         public IFilterableQueryChain<T> ExceptBy(IFilterableQueryChain<T> second, Expression<Func<T, T>> keySelector);
+
+        public IFilterableQueryChain<T> Reverse();
     }
 }

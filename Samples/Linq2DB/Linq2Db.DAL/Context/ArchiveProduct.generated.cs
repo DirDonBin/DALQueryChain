@@ -14,8 +14,8 @@ using System;
 
 namespace ManualTest.Linq2Db.Context
 {
-	[Table("Products")]
-	public class Product : IDbModelBase
+	[Table("ArchiveProducts")]
+	public class ArchiveProduct : IDbModelBase
 	{
 		[Column("Id"        , IsPrimaryKey = true , IsIdentity = true, SkipOnInsert = true, SkipOnUpdate = true)] public int      Id         { get; set; } // integer
 		[Column("Name"      , CanBeNull    = false                                                             )] public string   Name       { get; set; } = null!; // text
@@ -27,7 +27,7 @@ namespace ManualTest.Linq2Db.Context
 
 		#region Associations
 		/// <summary>
-		/// FK_Products_Categoryid_Category_Id
+		/// FK_ArchiveProducts_Categoryid_Category_Id
 		/// </summary>
 		[Association(ThisKey = nameof(Categoryid), OtherKey = nameof(Context.Category.Id))]
 		public Category? Category { get; set; }

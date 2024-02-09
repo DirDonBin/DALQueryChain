@@ -27,6 +27,19 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         Task<T> FirstAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default);
 
         /// <summary>
+        /// Returns the only element of a sequence;
+        /// this method throws an exception if there is more than one element in the sequence.
+        /// </summary>
+        Task<T> SingleAsync(CancellationToken ctn = default);
+
+        /// <summary>
+        /// Returns the only element of a sequence that satisfies a specified condition;
+        /// this method throws an exception if more than one element satisfies the condition.
+        /// </summary>
+        /// <param name="predicate">A function to test an element for a condition</param>
+        Task<T> SingleAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default);
+
+        /// <summary>
         /// Returns the only element of a sequence, or a default value if the sequence is empty;
         /// this method throws an exception if there is more than one element in the sequence.
         /// </summary>
@@ -120,6 +133,17 @@ namespace DALQueryChain.Interfaces.QueryBuilder.Get
         /// </summary>
         /// <param name="predicate">A function to test each element for a condition</param>
         Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default);
+
+        /// <summary>
+        /// Returns the number of elements in a sequence
+        /// </summary>
+        Task<long> LongCountAsync(CancellationToken ctn = default);
+
+        /// <summary>
+        /// Returns a number that represents how many elements in the specified sequence satisfy a condition
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition</param>
+        Task<long> LongCountAsync(Expression<Func<T, bool>> predicate, CancellationToken ctn = default);
 
         /// <summary>
         /// Determines whether a sequence contains any elements

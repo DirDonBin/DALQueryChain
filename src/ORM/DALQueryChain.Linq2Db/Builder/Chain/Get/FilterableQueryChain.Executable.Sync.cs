@@ -9,41 +9,37 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
     {
         public bool All(Expression<Func<T, bool>> predicate) => _prevQuery.All(predicate);
 
-        public bool Any() => _prevQuery.Any();
 
+        public bool Any() => _prevQuery.Any();
         public bool Any(Expression<Func<T, bool>> predicate) => _prevQuery.Any(predicate);
 
-        public int Count() => _prevQuery.Count();
 
+        public int Count() => _prevQuery.Count();
         public int Count(Expression<Func<T, bool>> predicate) => _prevQuery.Count(predicate);
+        public long LongCount() => _prevQuery.LongCount();
+        public long LongCount(Expression<Func<T, bool>> predicate) => _prevQuery.LongCount(predicate);
+
 
         public T First() => _prevQuery.First();
-
         public T First(Expression<Func<T, bool>> predicate) => _prevQuery.First(predicate);
-
         public T? FirstOrDefault() => _prevQuery.FirstOrDefault();
-
         public T? FirstOrDefault(Expression<Func<T, bool>> predicate) => _prevQuery.FirstOrDefault(predicate);
 
+        public T Single() => _prevQuery.Single();
+        public T Single(Expression<Func<T, bool>> predicate) => _prevQuery.Single(predicate);
         public T? SingleOrDefault() => _prevQuery.SingleOrDefault();
-
         public T? SingleOrDefault(Expression<Func<T, bool>> predicate) => _prevQuery.SingleOrDefault(predicate);
 
+
         public T Last() => _prevQuery.OrderByDescending(x => x).First();
-
         public T Last(Expression<Func<T, bool>> predicate) => _prevQuery.OrderByDescending(x => x).First(predicate);
-
         public T Last<TKey>(Expression<Func<T, TKey>> keySelector) => _prevQuery.OrderByDescending(keySelector).First();
-
         public T Last<TKey>(Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> keySelector) => _prevQuery.OrderByDescending(keySelector).First(predicate);
-
         public T? LastOrDefault() => _prevQuery.OrderByDescending(x => x).FirstOrDefault();
-
         public T? LastOrDefault(Expression<Func<T, bool>> predicate) => _prevQuery.OrderByDescending(x => x).FirstOrDefault(predicate);
-
         public T? LastOrDefault<TKey>(Expression<Func<T, TKey>> keySelector) => _prevQuery.OrderByDescending(keySelector).FirstOrDefault();
-
         public T? LastOrDefault<TKey>(Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> keySelector) => _prevQuery.OrderByDescending(keySelector).FirstOrDefault(predicate);
+
 
         public List<T> ToList() => _prevQuery.ToList();
 
@@ -95,24 +91,16 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             return default;
         }
 
+
         public int Sum(Expression<Func<T, int>> keySelector) => _prevQuery.Sum(keySelector);
-
         public int? Sum(Expression<Func<T, int?>> keySelector) => _prevQuery.Sum(keySelector);
-
         public long Sum(Expression<Func<T, long>> keySelector) => _prevQuery.Sum(keySelector);
-
         public long? Sum(Expression<Func<T, long?>> keySelector) => _prevQuery.Sum(keySelector);
-
         public float Sum(Expression<Func<T, float>> keySelector) => _prevQuery.Sum(keySelector);
-
         public float? Sum(Expression<Func<T, float?>> keySelector) => _prevQuery.Sum(keySelector);
-
         public decimal Sum(Expression<Func<T, decimal>> keySelector) => _prevQuery.Sum(keySelector);
-
         public decimal? Sum(Expression<Func<T, decimal?>> keySelector) => _prevQuery.Sum(keySelector);
-
         public double Sum(Expression<Func<T, double>> keySelector) => _prevQuery.Sum(keySelector);
-
         public double? Sum(Expression<Func<T, double?>> keySelector) => _prevQuery.Sum(keySelector);
     }
 }

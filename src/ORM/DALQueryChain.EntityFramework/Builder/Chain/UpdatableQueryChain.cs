@@ -7,14 +7,15 @@ using System.Linq.Expressions;
 
 namespace DALQueryChain.EntityFramework.Builder.Chain
 {
-    internal partial class UpdatableQueryChain<TContext, TEntity> : IUpdatableQueryChain<TEntity>
+    internal partial class UpdatableQueryChain<TContext, TEntity> : UpdatableSetterQueryChain<TContext, TEntity>, IUpdatableQueryChain<TEntity>
         where TContext : DbContext
         where TEntity : class, IDbModelBase
     {
         private readonly BaseRepository<TContext, TEntity> _repository;
         private readonly TContext _context;
 
-        public UpdatableQueryChain(TContext context, BaseRepository<TContext, TEntity> repository)
+        public UpdatableQueryChain(TContext context, BaseRepository<TContext, TEntity> repository, IQueryable<TEntity> prevQuery)
+            : base(context, repository, prevQuery)
         {
             _repository = repository;
             _context = context;
@@ -23,8 +24,26 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
             _repository.IsAfterTriggerOn = true;
         }
 
-        public IUpdatableSetterQueryChain<TEntity> Where(Expression<Func<TEntity, bool>> predicate)
-            => new UpdatableSetterQueryChain<TContext, TEntity>(_context, _repository, _context.Set<TEntity>().Where(predicate).ToList());
+        public IUpdateFilterableQueryChain<TEntity> Where(Expression<Func<TEntity, bool>> predicate)
+        {
+            _prevQuery = _prevQuery.Where(predicate);
+            return this;
+        }
+
+        public IUpdateFilterableQueryChain<TEntity> WhereIf(bool condition, Expression<Func<TEntity, bool>> predicate)
+        {
+            if (condition)
+                _prevQuery = _prevQuery.Where(predicate);
+
+            return this;
+        }
+
+        public IUpdateFilterableQueryChain<TEntity> When(bool condition, Func<IUpdateFilterableQueryChain<TEntity>, IUpdateFilterableQueryChain<TEntity>> query)
+        {
+            if (condition) return query(this);
+
+            return this;
+        }
 
         public IUpdatableQueryChain<TEntity> WithoutTriggers(TriggerType trigger = TriggerType.All)
         {
