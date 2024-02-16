@@ -64,14 +64,17 @@ namespace Sample.Linq2Db.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> TestQWER()
         {
-            await _qs.Repository<EntityFramework.DAL.Repository.ProductRepository>().Test();
+            var query = await _qs.For<Product>().Get.OrderByDescending(x => x.Name).ToListAsync();
+            var qq = await _qs.For<Product>().Get.ToListAsync();
+            var recsq = _qs.For<Product>().Get.Reverse();
+            var recs11q = _qs.For<Product>().Get.Reverse().Reverse();
+            var recs1q = _qs.For<Product>().Get.Reverse().Where(x => true).Reverse();
+            var recs2q = _qs.For<Product>().Get.Reverse().Take(50).Reverse();
 
-            //var query = _qs.For<Product>().Get
-            //    .Where(x => _qs.For<Product>().Get.Where(y => y.Price > 50000).First().Id == x.Id);
-
-            //var res = await query.ToListAsync();
-
-            //var res = await _qs.For<Product>().Get.Select((x,i) => new { x.Name, number = i}).ToListAsync();
+            var recs = await recsq.ToListAsync();
+            var recs11 = await recs11q.ToListAsync();
+            var recs1 = await recs1q.ToListAsync();
+            var recs2 = await recs2q.ToListAsync();
 
             return Ok();
         }

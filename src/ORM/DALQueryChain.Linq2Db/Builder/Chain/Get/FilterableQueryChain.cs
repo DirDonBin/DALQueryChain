@@ -84,7 +84,7 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
         }
 
         public IFilterableQueryChain<T> Union(IFilterableQueryChain<T> second)
-        {   
+        {
             QueryApply(q => q.Union(((FilterableQueryChain<T>)second).Query));
             return this;
         }
@@ -109,7 +109,10 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
 
         public IFilterableQueryChain<T> Reverse()
         {
-            QueryApply(q => q.Reverse());
+            Expression<Func<IQueryable<T>, IQueryable<T>>> func = q
+                => q.AsSubQuery().OrderByDescending(x => Sql.Ext.RowNumber().Over().ToValue()).Skip(0);
+
+            QueryApply(func);
             return this;
         }
 
@@ -120,8 +123,8 @@ namespace DALQueryChain.Linq2Db.Builder.Chain
             LoadFunc = q => func.Compile()(LoadFunc.Compile()(q));
         }
 
-        
+
     }
 
-    
+
 }

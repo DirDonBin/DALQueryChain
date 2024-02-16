@@ -6,6 +6,7 @@ using DALQueryChain.Tests.Linq2DB.Common.Models.Filters;
 using DALQueryChain.Tests.Linq2DB.Common.TestCases;
 using Linq2Db.DAL.Context;
 using LinqToDB;
+using LinqToDB.Data;
 using ManualTest.Linq2Db.Context;
 using Moq;
 using System;
@@ -100,6 +101,24 @@ namespace DALQueryChain.Tests.Linq2DB.Tests
             var resultLastOrDefaultAsync = await _dqc.For<Product>().Get.LastOrDefaultAsync();
 
             Assert.Equivalent(expectLastOrDefaultAsync, resultLastOrDefaultAsync);
+        }
+
+        [Fact]
+        public async Task ToListTest()
+        {
+            var data = await DbContext.Products.OrderByDescending(x => x).ToListAsync();
+
+            var query = await _dqc.For<Product>().Get.OrderByDescending(x => x.Name).Reverse().ToListAsync();
+            var qq = await _dqc.For<Product>().Get.ToListAsync();
+            var recsq = _dqc.For<Product>().Get.Reverse();
+            var recs11q = _dqc.For<Product>().Get.Reverse().Reverse();
+            var recs1q = _dqc.For<Product>().Get.Reverse().Where(x => true).Reverse();
+            var recs2q = _dqc.For<Product>().Get.Reverse().Take(50).Reverse();
+
+            var recs = await recsq.ToListAsync();
+            var recs11 = await recs11q.ToListAsync();
+            var recs1 = await recs1q.ToListAsync();
+            var recs2 = await recs2q.ToListAsync();
         }
     }
 }

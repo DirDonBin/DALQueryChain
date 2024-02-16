@@ -1,6 +1,6 @@
 ﻿using DALQueryChain.EntityFramework.Builder.Chain.Get;
+using DALQueryChain.EntityFramework.Extensions;
 using DALQueryChain.Interfaces.QueryBuilder.Get;
-using System;
 using System.Linq.Expressions;
 
 namespace DALQueryChain.EntityFramework.Builder.Chain
@@ -64,7 +64,7 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         public IFilterableQueryChain<T> When(bool condition, Func<IFilterableQueryChain<T>, IFilterableQueryChain<T>> query)
         {
             if (condition) return query(this);
-                
+
             return this;
         }
 
@@ -106,7 +106,10 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
 
         public IFilterableQueryChain<T> Reverse()
         {
-            QueryApply(q => q.Reverse());
+            Expression<Func<IQueryable<T>, IQueryable<T>>> func = q
+                => q.AsSubQuery().OrderByDescending(x => Sql.Ext.RowNumber().Over().ToValue()).Skip(0);
+
+            QueryApply(func);
             return this;
         }
 
