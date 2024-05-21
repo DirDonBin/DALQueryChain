@@ -1,6 +1,8 @@
 using Bogus;
 using DALQueryChain.Interfaces;
-using EntityFramework.DAL;
+using DALQueryChain.Linq2Db.Extensions;
+using Linq2Db.DAL.Context;
+using ManualTest.Linq2Db.Context;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Sample.Linq2Db.Controllers
@@ -77,6 +79,19 @@ namespace Sample.Linq2Db.Controllers
             var recs2 = await recs2q.ToListAsync();
 
             return Ok();
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> TestQWER2()
+        {
+            var query = _qs.For<Product>().Get.LoadWith(x => x.Category);
+            var t = query
+                .Where(x => x.Category.Id == 1)
+                .Union(query.Where(x => x.Id == 1))
+                .Union(query.Where(x => x.Id == 6))
+                ;
+
+            return Ok(await t.ToListAsync());
         }
     }
 }

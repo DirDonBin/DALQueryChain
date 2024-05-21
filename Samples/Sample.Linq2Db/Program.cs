@@ -1,4 +1,4 @@
-using EntityFramework.DAL;
+using Linq2Db.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //builder.Services.AddLinq2DbDAL(builder.Configuration.GetConnectionString("Default")!);
-builder.Services.AddEFDAL(builder.Configuration.GetConnectionString("Default")!);
+builder.Services.AddLinq2DbDAL(builder.Configuration.GetConnectionString("Default")!);
 
 var app = builder.Build();
 
