@@ -52,7 +52,7 @@ namespace DALQueryChain.EntityFramework.Builder.Chain
         public IFilterableQueryChain<T> WhereIf(bool condition, Expression<Func<T, bool>> predicate)
         {
             if (condition)
-                QueryApply(q => q.Where(predicate));
+                return QueryApply(q => q.Where(predicate));
 
             return QueryApply(q => Query);
         }
